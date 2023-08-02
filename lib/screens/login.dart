@@ -10,10 +10,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  Widget invalidCredentialsMessage(BuildContext context) {
+    return Text(context.watch<AuthProvider>().loginStatus,
+        style: TextStyle(color: Colors.red));
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
+
+    final _formKey = GlobalKey<FormState>();
+    String? emailValue;
+    String? passwordValue;
 
     final email = TextField(
       key: const Key('emailField'),
@@ -22,6 +31,22 @@ class _LoginPageState extends State<LoginPage> {
         hintText: "Email",
       ),
     );
+
+    final emailField = TextFormField(
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: "Email",
+          labelText: "Enter email address",
+          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Email is Required!';
+          }
+        },
+        onSaved: ((String? value) {
+          emailValue = value!;
+        }));
 
     final password = TextField(
       key: const Key('pwField'),
@@ -32,12 +57,35 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
 
+    final passwordField = TextFormField(
+        obscureText: true,
+        decoration: const InputDecoration(
+          border: OutlineInputBorder(),
+          hintText: "Password",
+          labelText: "Enter Password",
+          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Password is Required!';
+          }
+        },
+        onSaved: ((String? value) {
+          passwordValue = value!;
+        }));
+
     final loginButton = Padding(
       key: const Key('loginButton'),
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
-        onPressed: () {
-         
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState?.save();
+          }
+          print("i am here");
+          await context
+              .read<AuthProvider>()
+              .signIn(emailValue!, passwordValue!);
         },
         child: const Text('Log In', style: TextStyle(color: Colors.white)),
       ),
@@ -61,6 +109,8 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
+          child: Form(
+        key: _formKey,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 40.0, right: 40.0),
@@ -70,13 +120,14 @@ class _LoginPageState extends State<LoginPage> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 25),
             ),
-            email,
-            password,
+            emailField,
+            passwordField,
+            invalidCredentialsMessage(context),
             loginButton,
             signUpButton,
           ],
         ),
-      ),
+      )),
     );
   }
 }
