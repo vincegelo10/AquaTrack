@@ -9,8 +9,10 @@ import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/models/todo_model.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
+import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/screens/modal_todo.dart';
 import 'package:week7_networking_discussion/models/sensor_data_model.dart';
+import 'package:week7_networking_discussion/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_database/firebase_database.dart';
@@ -66,6 +68,8 @@ class _PHPageState extends State<PH_Page> {
 
   @override
   Widget build(BuildContext context) {
+    User? user = context.watch<UserProvider>().user;
+
     // access the list of todos in the provider
     // DateTime current_date = DateTime.now();
     // String date_today = current_date.toString();
@@ -95,19 +99,86 @@ class _PHPageState extends State<PH_Page> {
             title: const Text('Logout'),
             onTap: () {
               context.read<AuthProvider>().signOut();
+              context.read<UserProvider>().removeLoggedInUserDetails();
               Navigator.pushNamed(context, "/");
             },
           ),
         ])),
         appBar: AppBar(
-          title: Text("PH Page"),
+          title: Text("Hello ${user!.firstName}"),
         ),
-        body: Center(
+        body: Container(
+            padding: const EdgeInsets.all(10.0),
             child: Column(
-          children: [
-            Text("PH Level: $phVal"),
-            _currentDateGraphBuilder(dataList)
-          ],
-        )));
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Container(
+                            height: 140, // Set the desired height of the square
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .red, // Set the desired color of the square
+                              borderRadius: BorderRadius.circular(
+                                  20), // Adjust the radius to control the roundness
+                            ),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "PH Level: $phVal",
+                                    style: TextStyle(
+                                      fontWeight:
+                                          FontWeight.bold, // Make the text bold
+                                      color: Colors
+                                          .white, // Set the text color to white
+                                    ),
+                                  ),
+                                ])),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.all(0),
+                        child: Container(
+                          height: 140, // Set the desired height of the square
+                          decoration: BoxDecoration(
+                            color: Colors
+                                .yellow, // Set the desired color of the square
+                            borderRadius: BorderRadius.circular(
+                                20), // Adjust the radius to control the roundness
+                          ),
+                          child: Column(children: [
+                            Text(
+                              "PH Threshold",
+                              style: TextStyle(
+                                color:
+                                    Colors.white, // Set the text color to white
+                              ),
+                            ),
+                            SizedBox(height: 30),
+                            Text(
+                              "${user!.lowerPH} - ${user!.upperPH}",
+                              style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold, // Make the text bold
+                                  color: Colors
+                                      .white, // Set the text color to white
+                                  fontSize: 40),
+                            ),
+                          ]),
+                        ),
+                      ),
+                    ),
+
+                    // Text("PH Level: $phVal"),
+                    // Text("PH Threshold: ${user!.lowerPH}-${user!.upperPH}"),
+                  ],
+                ),
+                _currentDateGraphBuilder(dataList)
+              ],
+            )));
   }
 }

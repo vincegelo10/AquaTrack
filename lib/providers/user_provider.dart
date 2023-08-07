@@ -13,7 +13,7 @@ class UserProvider with ChangeNotifier {
   }
 
   String get signUpStatus => _signUpStatus;
-
+  User? get user => _loggedInUser;
   checkForExistingEmail(String email) async {
     _signUpStatus = await firebaseService.checkForExistingEmail(email);
     notifyListeners();
@@ -23,7 +23,23 @@ class UserProvider with ChangeNotifier {
     await firebaseService.addPH(email, lowerPH, upperPH);
   }
 
-  void addTemp(String email, double lowerTemp, double upperTemp) async {
+  Future<void> addTemp(String email, double lowerTemp, double upperTemp) async {
     await firebaseService.addTemp(email, lowerTemp, upperTemp);
+  }
+
+  Future<void> getLoggedInUserDetails(String email) async {
+    Map<String, dynamic> user =
+        await firebaseService.getLoggedInUserDetails(email);
+    if (user["success"]) {
+      _loggedInUser = User.fromJson(user);
+      notifyListeners();
+    } else {
+      print("the credentials are invalid");
+    }
+  }
+
+  void removeLoggedInUserDetails() {
+    _loggedInUser = null;
+    notifyListeners();
   }
 }

@@ -154,7 +154,11 @@ class _SignupPageState extends State<SignupPage> {
                 firstName: firstNameValue!,
                 lastName: lastNameValue!,
                 dateCreated: dateCreated,
-                password: passwordValue!);
+                password: passwordValue!,
+                lowerPH: 0,
+                upperPH: 0,
+                lowerTemp: 0,
+                upperTemp: 0);
             print("The details of the user\n");
             print("User email: ${user.email}\n");
             print("User firstName: ${user.firstName}\n");

@@ -136,10 +136,12 @@ class _SetTempPageState extends State<SetTempPage> {
               double upperTempCelsius = (upperTemp! - 32) * (5 / 9);
               print("lower temp (celsius): $lowerTempCelsius");
               print("upper temp (celsius): $upperTempCelsius");
-              context
+              await context
                   .read<UserProvider>()
                   .addTemp(args.email, lowerTempCelsius, upperTempCelsius);
-
+              await context
+                  .read<UserProvider>()
+                  .getLoggedInUserDetails(args.email);
               // User user = User.setupTempThreshold(
               //     email: widget.user.email,
               //     firstName: widget.user.firstName,
@@ -161,9 +163,12 @@ class _SetTempPageState extends State<SetTempPage> {
               // print("User upper temp: ${user.upperTemp}");
             } else {
               print("unit is in celsius");
-              context
+              await context
                   .read<UserProvider>()
                   .addTemp(args.email, lowerTemp!, upperTemp!);
+              await context
+                  .read<UserProvider>()
+                  .getLoggedInUserDetails(args.email);
               // User user = User.setupTempThreshold(
               //     email: widget.user.email,
               //     firstName: widget.user.firstName,
@@ -194,6 +199,7 @@ class _SetTempPageState extends State<SetTempPage> {
               //     user.lowerTemp!,
               //     user.upperTemp!);
             }
+            context.read<UserProvider>().getLoggedInUserDetails(args.email);
             Navigator.pushNamed(context, '/');
 
             // bool success = await context

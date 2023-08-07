@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:week7_networking_discussion/models/user_model.dart';
 
 class FirebaseUserAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
@@ -39,5 +40,25 @@ class FirebaseUserAPI {
             });
 
     return 'Setting Temperature successfull';
+  }
+
+  Future<Map<String, dynamic>> getLoggedInUserDetails(String email) async {
+    Map<String, dynamic> user;
+    try {
+      var querySnapshot =
+          await db.collection("users").where('email', isEqualTo: email).get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        user = querySnapshot.docs.first.data();
+        user["success"] = true;
+      } else {
+        // Handle the case when no user is found with the given email
+        user = {"success": false};
+      }
+    } catch (e) {
+      print("Error: $e");
+      user = {"success": false};
+    }
+    return user;
   }
 }

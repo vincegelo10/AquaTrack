@@ -16,6 +16,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 //for firebase real time database
 import 'package:firebase_database/firebase_database.dart';
+import 'package:week7_networking_discussion/models/user_model.dart';
+import 'package:week7_networking_discussion/providers/user_provider.dart';
 
 class SensorData {
   final double waterTemperature;
@@ -89,9 +91,11 @@ class _TodoPageState extends State<TodoPage> {
 
   @override
   Widget build(BuildContext context) {
+    // User? user = context.read<AuthProvider>().user;
     // access the list of todos in the provider
     // Stream<QuerySnapshot> todosStream = context.watch<TodoListProvider>().todos;
     // var lastVal = 'none';
+    User? user = context.watch<UserProvider>().user;
     return Scaffold(
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: [
@@ -100,6 +104,7 @@ class _TodoPageState extends State<TodoPage> {
             title: const Text('Logout'),
             onTap: () {
               context.read<AuthProvider>().signOut();
+              context.read<UserProvider>().removeLoggedInUserDetails();
               Navigator.pop(context);
             },
           ),
@@ -119,7 +124,7 @@ class _TodoPageState extends State<TodoPage> {
                   alignment:
                       Alignment.center, // Center the text within the container
                   child: Text(
-                    "What do you want to track?",
+                    "Hello, What do you want to track?",
                     style: TextStyle(
                       fontWeight: FontWeight.bold, // Make the text bold
                       color: Colors.black, // Set the text color to white

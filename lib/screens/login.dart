@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
+import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/screens/signup.dart';
 
 class LoginPage extends StatefulWidget {
@@ -86,6 +87,9 @@ class _LoginPageState extends State<LoginPage> {
           await context
               .read<AuthProvider>()
               .signIn(emailValue!, passwordValue!);
+          await context
+              .read<UserProvider>()
+              .getLoggedInUserDetails(emailValue!);
         },
         child: const Text('Log In', style: TextStyle(color: Colors.white)),
       ),
