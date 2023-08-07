@@ -28,6 +28,8 @@ class PH_Page extends StatefulWidget {
 }
 
 class _PHPageState extends State<PH_Page> {
+  TextEditingController dateController = TextEditingController();
+
   Widget _currentDateGraphBuilder(List<SensorData> dataList) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -90,7 +92,29 @@ class _PHPageState extends State<PH_Page> {
     //}
     List<SensorData> dataList =
         context.watch<SensorDataProvider>().dataFromSensor;
-    var phVal = context.watch<SensorDataProvider>().phLevel;
+    var phVal = context.watch<SensorDataProvider>().phLevel == ''
+        ? 'NA'
+        : context.watch<SensorDataProvider>().phLevel;
+
+    Widget recentTimeUpload() {
+      if (dataList.length == 0) {
+        return Text("Data not available",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, // Make the text bold
+                color: Colors.white, // Set the text color to white
+                fontSize: 10));
+      } else {
+        DateTime lastUpload = dataList[dataList.length - 1].timeUpload;
+        String formattedTime =
+            DateFormat('hh:mm a').format(lastUpload).toString();
+        return Text("last uploaded by Arduino at $formattedTime",
+            style: TextStyle(
+                fontWeight: FontWeight.bold, // Make the text bold
+                color: Colors.white, // Set the text color to white
+                fontSize: 10));
+      }
+    }
+
     return Scaffold(
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: [
@@ -105,7 +129,7 @@ class _PHPageState extends State<PH_Page> {
           ),
         ])),
         appBar: AppBar(
-          title: Text("Hello ${user!.firstName}"),
+          title: Text("PH Level Page"),
         ),
         body: Container(
             padding: const EdgeInsets.all(10.0),
@@ -120,23 +144,37 @@ class _PHPageState extends State<PH_Page> {
                             height: 140, // Set the desired height of the square
                             decoration: BoxDecoration(
                               color: Colors
-                                  .red, // Set the desired color of the square
+                                  .green, // Set the desired color of the square
                               borderRadius: BorderRadius.circular(
                                   20), // Adjust the radius to control the roundness
                             ),
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "PH Level: $phVal",
-                                    style: TextStyle(
-                                      fontWeight:
-                                          FontWeight.bold, // Make the text bold
-                                      color: Colors
-                                          .white, // Set the text color to white
-                                    ),
-                                  ),
-                                ])),
+                            child: Column(children: [
+                              Text(
+                                "PH Level",
+                                style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold, // Make the text bold
+                                  color: Colors
+                                      .white, // Set the text color to white
+                                ),
+                              ),
+                              SizedBox(height: 25),
+                              Text(
+                                "$phVal",
+                                style: TextStyle(
+                                    fontWeight:
+                                        FontWeight.bold, // Make the text bold
+                                    color: Colors
+                                        .white, // Set the text color to white
+                                    fontSize: 40),
+                              ),
+                              Expanded(
+                                  child: Align(
+                                alignment: Alignment.bottomCenter,
+                                child: recentTimeUpload(),
+                              )),
+                              SizedBox(height: 8),
+                            ])),
                       ),
                     ),
                     Expanded(
@@ -154,6 +192,8 @@ class _PHPageState extends State<PH_Page> {
                             Text(
                               "PH Threshold",
                               style: TextStyle(
+                                fontWeight:
+                                    FontWeight.bold, // Make the text bold
                                 color:
                                     Colors.white, // Set the text color to white
                               ),
@@ -166,7 +206,7 @@ class _PHPageState extends State<PH_Page> {
                                       FontWeight.bold, // Make the text bold
                                   color: Colors
                                       .white, // Set the text color to white
-                                  fontSize: 40),
+                                  fontSize: 35),
                             ),
                           ]),
                         ),
@@ -177,7 +217,53 @@ class _PHPageState extends State<PH_Page> {
                     // Text("PH Threshold: ${user!.lowerPH}-${user!.upperPH}"),
                   ],
                 ),
-                _currentDateGraphBuilder(dataList)
+                SizedBox(height: 20),
+                Text(
+                  "PH level trends today",
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, // Make the text bold
+                      color: Colors.black, // Set the text color to white
+                      fontSize: 20),
+                ),
+                Center(child: _currentDateGraphBuilder(dataList)),
+                TextField(
+                    controller:
+                        dateController, //editing controller of this TextField
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.calendar_today), //icon of text field
+                        labelText:
+                            "Enter a date to see PH level trends of other dates" //label text of field
+
+                        ),
+                    readOnly: true, // when true user cannot edit text
+
+                    onTap: () async {
+                      //when click we have to show the datepicker
+
+                      DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(), //get today's date
+                          firstDate: DateTime(
+                              2000), //DateTime.now() - not to allow to choose before today.
+                          lastDate: DateTime(2101));
+                      print("I'm here");
+                      if (pickedDate != null) {
+                        print(
+                            pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
+                        String formattedDate = DateFormat('yyyy-MM-dd').format(
+                            pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                        print(
+                            formattedDate); //formatted date output using intl package =>  2022-07-04
+                        //You can format date as per your need
+
+                        setState(() {
+                          dateController.text =
+                              formattedDate; //set foratted date to TextField value.
+                        });
+                      } else {
+                        print("Date is not selected");
+                      }
+                    })
               ],
             )));
   }
