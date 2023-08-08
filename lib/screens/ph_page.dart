@@ -70,7 +70,15 @@ class _PHPageState extends State<PH_Page> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime currentDate = DateTime.now();
+    String formattedDateToday = currentDate.toString().split(' ')[0];
+
     User? user = context.watch<UserProvider>().user;
+    print(formattedDateToday);
+    String labelData = dateController.text != formattedDateToday &&
+            dateController.text.isNotEmpty
+        ? "PH Level trends on ${dateController.text}"
+        : "PH Level trends today";
 
     // access the list of todos in the provider
     // DateTime current_date = DateTime.now();
@@ -91,10 +99,33 @@ class _PHPageState extends State<PH_Page> {
     // });
     //}
     List<SensorData> dataList =
-        context.watch<SensorDataProvider>().dataFromSensor;
+        context.watch<SensorDataProvider>().dataFromOtherDate != []
+            ? context.watch<SensorDataProvider>().dataFromOtherDate
+            : context.watch<SensorDataProvider>().dataFromSensor;
+
     var phVal = context.watch<SensorDataProvider>().phLevel == ''
         ? 'NA'
         : context.watch<SensorDataProvider>().phLevel;
+
+    void showNoDataDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('No Data Available'),
+            content: Text('Sorry, no data is available.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     Widget recentTimeUpload() {
       if (dataList.length == 0) {
@@ -219,7 +250,7 @@ class _PHPageState extends State<PH_Page> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  "PH level trends today",
+                  labelData,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, // Make the text bold
                       color: Colors.black, // Set the text color to white
@@ -260,6 +291,13 @@ class _PHPageState extends State<PH_Page> {
                           dateController.text =
                               formattedDate; //set foratted date to TextField value.
                         });
+                        bool success = await context
+                            .read<SensorDataProvider>()
+                            .fetchDataFromOtherDate(formattedDate);
+
+                        if (!success) {
+                          showNoDataDialog(context);
+                        }
                       } else {
                         print("Date is not selected");
                       }

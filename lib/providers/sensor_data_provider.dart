@@ -4,8 +4,13 @@ import 'package:firebase_database/firebase_database.dart';
 
 class SensorDataProvider with ChangeNotifier {
   List<SensorData> dataList = [];
+  List<SensorData> dataFromOtherDates = [];
   var recentPH = '';
   var recentWaterTemp = '';
+
+  final ref = FirebaseDatabase(
+      databaseURL:
+          "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
   SensorDataProvider() {
     fetchData();
@@ -14,14 +19,44 @@ class SensorDataProvider with ChangeNotifier {
   String get phLevel => recentPH;
   String get waterTemp => recentWaterTemp;
   List<SensorData> get dataFromSensor => dataList;
+  List<SensorData> get dataFromOtherDate => dataFromOtherDates;
+
+  Future<bool> fetchDataFromOtherDate(String date) async {
+    print(date);
+    DataSnapshot snapshot = await ref.reference().child(date).get();
+
+    if (snapshot.exists) {
+      Map<dynamic, dynamic> data = snapshot.value
+          as Map<dynamic, dynamic>; // Assuming the snapshot value is a Map
+
+      if (data != null) {
+        data.forEach((key, value) {
+          print("Key: $key, Value: $value");
+          var pH = value["ph"].toDouble();
+          var waterTemperature = value["water_temperature"].toDouble();
+          var timestamp = int.parse(key); // Parse the timestamp from the key
+          var millis = timestamp;
+          DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
+          dataFromOtherDates
+              .add(SensorData(waterTemperature, pH, timestamp, dt));
+        });
+        dataFromOtherDates.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        notifyListeners();
+        return true;
+      } else {
+        print('Data is null.');
+        return false;
+      }
+    } else {
+      dataFromOtherDates = [];
+      notifyListeners();
+      return false;
+    }
+  }
 
   void fetchData() async {
     DateTime current_date = DateTime.now();
     String date_today = current_date.toString().split(' ')[0];
-
-    final ref = FirebaseDatabase(
-        databaseURL:
-            "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
     void streamSubscription = await ref
         .reference()
