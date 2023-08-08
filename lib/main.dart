@@ -16,6 +16,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:week7_networking_discussion/screens/PH_Page.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
+import 'package:week7_networking_discussion/screens/water_temperature_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,6 +51,7 @@ class MyApp extends StatelessWidget {
         '/setPhPage': (context) => const SetPhPage(),
         '/setTempPage': (context) => const SetTempPage(),
         '/phPage': (context) => const PH_Page(),
+        '/tempPage': (context) => const WaterTemperaturePage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

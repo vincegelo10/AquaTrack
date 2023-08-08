@@ -136,6 +136,7 @@ class _SetTempPageState extends State<SetTempPage> {
               double upperTempCelsius = (upperTemp! - 32) * (5 / 9);
               print("lower temp (celsius): $lowerTempCelsius");
               print("upper temp (celsius): $upperTempCelsius");
+
               await context
                   .read<UserProvider>()
                   .addTemp(args.email, lowerTempCelsius, upperTempCelsius);

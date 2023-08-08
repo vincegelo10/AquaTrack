@@ -281,7 +281,7 @@ class _TodoPageState extends State<TodoPage> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    print("Water Temperature!");
+                    Navigator.pushNamed(context, '/tempPage');
                   },
                   child: Padding(
                     padding: EdgeInsets.all(15),

@@ -20,14 +20,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
-class PH_Page extends StatefulWidget {
-  const PH_Page({super.key});
+class WaterTemperaturePage extends StatefulWidget {
+  const WaterTemperaturePage({super.key});
 
   @override
-  State<PH_Page> createState() => _PHPageState();
+  State<WaterTemperaturePage> createState() => _WaterTemperaturePageState();
 }
 
-class _PHPageState extends State<PH_Page> {
+class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
   TextEditingController dateController = TextEditingController();
 
   Widget _currentDateGraphBuilder(List<SensorData> dataList) {
@@ -38,7 +38,7 @@ class _PHPageState extends State<PH_Page> {
           backgroundColor: Colors.white,
           primaryXAxis: DateTimeAxis(
             title: AxisTitle(
-                text: "PH level over time",
+                text: "Water temperature over time",
                 textStyle: TextStyle(
                     color: Colors.deepOrange,
                     fontFamily: 'Roboto',
@@ -59,7 +59,7 @@ class _PHPageState extends State<PH_Page> {
             LineSeries<SensorData, DateTime>(
               dataSource: dataList,
               xValueMapper: (SensorData data, _) => data.timeUpload,
-              yValueMapper: (SensorData data, _) => data.ph,
+              yValueMapper: (SensorData data, _) => data.waterTemperature,
               markerSettings: MarkerSettings(isVisible: true),
             ),
           ],
@@ -77,8 +77,8 @@ class _PHPageState extends State<PH_Page> {
     print(formattedDateToday);
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
-        ? "PH Level trends on ${dateController.text}"
-        : "PH Level trends today";
+        ? "Water temperature trends on ${dateController.text}"
+        : "Water temperature trends today";
 
     // access the list of todos in the provider
     // DateTime current_date = DateTime.now();
@@ -160,7 +160,7 @@ class _PHPageState extends State<PH_Page> {
           ),
         ])),
         appBar: AppBar(
-          title: Text("PH Level Page"),
+          title: Text("Water Temperature Page"),
         ),
         body: Container(
             padding: const EdgeInsets.all(10.0),
@@ -181,7 +181,7 @@ class _PHPageState extends State<PH_Page> {
                             ),
                             child: Column(children: [
                               Text(
-                                "PH Level",
+                                "Water Temperature",
                                 style: TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold
@@ -221,7 +221,7 @@ class _PHPageState extends State<PH_Page> {
                           ),
                           child: Column(children: [
                             Text(
-                              "PH Threshold",
+                              "Temperature Threshold",
                               style: TextStyle(
                                 fontWeight:
                                     FontWeight.bold, // Make the text bold
@@ -231,7 +231,7 @@ class _PHPageState extends State<PH_Page> {
                             ),
                             SizedBox(height: 30),
                             Text(
-                              "${user!.lowerPH} - ${user!.upperPH}",
+                              "${user!.lowerTemp} - ${user!.upperTemp}",
                               style: TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold
@@ -263,7 +263,7 @@ class _PHPageState extends State<PH_Page> {
                     decoration: const InputDecoration(
                         icon: Icon(Icons.calendar_today), //icon of text field
                         labelText:
-                            "Enter a date from which to see PH trends" //label text of field
+                            "Enter a date from which to see water temperature trends" //label text of field
 
                         ),
                     readOnly: true, // when true user cannot edit text
