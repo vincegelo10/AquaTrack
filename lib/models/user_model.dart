@@ -13,6 +13,8 @@ class User {
   late double lowerTemp;
   late double upperTemp;
 
+  late bool inFahrenheit;
+
   User(
       {required this.email,
       required this.firstName,
@@ -22,21 +24,22 @@ class User {
       required this.lowerPH,
       required this.upperPH,
       required this.lowerTemp,
-      required this.upperTemp});
+      required this.upperTemp,
+      required this.inFahrenheit});
 
   // Factory constructor to instantiate object from json format
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      email: json['email'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      dateCreated: json['dateCreated'],
-      password: 'hidden_password',
-      lowerPH: json['lowerPH'],
-      upperPH: json['upperPH'],
-      lowerTemp: json['lowerTemp'],
-      upperTemp: json['upperTemp'],
-    );
+        email: json['email'],
+        firstName: json['firstName'],
+        lastName: json['lastName'],
+        dateCreated: json['dateCreated'],
+        password: 'hidden_password',
+        lowerPH: json['lowerPH'],
+        upperPH: json['upperPH'],
+        lowerTemp: json['lowerTemp'],
+        upperTemp: json['upperTemp'],
+        inFahrenheit: json['inFahrenheit']);
   }
   // User.setupPHThreshold(
   //     {required String email,

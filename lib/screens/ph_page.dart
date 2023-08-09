@@ -98,11 +98,23 @@ class _PHPageState extends State<PH_Page> {
     //   print("Received data: ${event.snapshot.value}");
     // });
     //}
-    List<SensorData> dataList =
-        context.watch<SensorDataProvider>().dataFromOtherDate != []
-            ? context.watch<SensorDataProvider>().dataFromOtherDate
-            : context.watch<SensorDataProvider>().dataFromSensor;
-
+    // List<SensorData> dataList =
+    //     context.watch<SensorDataProvider>().dataFromOtherDate.isNotEmpty
+    //         ? context.watch<SensorDataProvider>().dataFromOtherDate
+    //         : context.watch<SensorDataProvider>().dataFromSensor;
+    List<SensorData> dataList = dateController.text != formattedDateToday &&
+            dateController.text.isNotEmpty
+        ? context.watch<SensorDataProvider>().dataFromOtherDate
+        : context.watch<SensorDataProvider>().dataFromSensor;
+    print("----------------------");
+    print(dateController.text);
+    print(formattedDateToday);
+    print(dateController.text != formattedDateToday);
+    print("----------------------");
+    // print(context.watch<SensorDataProvider>().dataFromOtherDate);
+    // print(context.watch<SensorDataProvider>().dataFromOtherDate.isEmpty);
+    // print(context.watch<SensorDataProvider>().dataFromSensor);
+    // print(context.watch<SensorDataProvider>().dataFromOtherDate == []);
     var phVal = context.watch<SensorDataProvider>().phLevel == ''
         ? 'NA'
         : context.watch<SensorDataProvider>().phLevel;

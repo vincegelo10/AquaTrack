@@ -137,9 +137,8 @@ class _SetTempPageState extends State<SetTempPage> {
               print("lower temp (celsius): $lowerTempCelsius");
               print("upper temp (celsius): $upperTempCelsius");
 
-              await context
-                  .read<UserProvider>()
-                  .addTemp(args.email, lowerTempCelsius, upperTempCelsius);
+              await context.read<UserProvider>().addTemp(
+                  args.email, lowerTempCelsius, upperTempCelsius, true);
               await context
                   .read<UserProvider>()
                   .getLoggedInUserDetails(args.email);
@@ -166,7 +165,7 @@ class _SetTempPageState extends State<SetTempPage> {
               print("unit is in celsius");
               await context
                   .read<UserProvider>()
-                  .addTemp(args.email, lowerTemp!, upperTemp!);
+                  .addTemp(args.email, lowerTemp!, upperTemp!, false);
               await context
                   .read<UserProvider>()
                   .getLoggedInUserDetails(args.email);

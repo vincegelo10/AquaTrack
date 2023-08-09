@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:week7_networking_discussion/models/sensor_data_model.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'dart:async';
 
 class SensorDataProvider with ChangeNotifier {
   List<SensorData> dataList = [];
@@ -13,7 +14,10 @@ class SensorDataProvider with ChangeNotifier {
           "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
 
   SensorDataProvider() {
+    //initial fetch- this is the data being fetched right after the user logs in
     fetchData();
+    //schedule fetch
+    _scheduleMidnightFetch();
   }
 
   String get phLevel => recentPH;
@@ -65,7 +69,7 @@ class SensorDataProvider with ChangeNotifier {
         .listen((DatabaseEvent event) {
       if (event.snapshot.value == null) {
         print(
-            "no collection available yet in firebase realtimed database for the date: $date_today");
+            "no collection available yet in firebase realtime database for the date: $date_today");
       } else {
         Map<dynamic, dynamic> sensorDataMap =
             event.snapshot.value as Map<dynamic, dynamic>;
@@ -96,6 +100,20 @@ class SensorDataProvider with ChangeNotifier {
           recentWaterTemp = 'No data found.';
           notifyListeners();
         }
+      }
+    });
+  }
+
+  void _scheduleMidnightFetch() {
+    Timer.periodic(Duration(hours: 24), (timer) {
+      DateTime now = DateTime.now();
+      DateTime midnight = DateTime(now.year, now.month, now.day, 0, 0, 0);
+
+      if (now.isAfter(midnight)) {
+        // It's after midnight, schedule fetch and reset timer for the next midnight
+        fetchData();
+        _scheduleMidnightFetch();
+        timer.cancel();
       }
     });
   }

@@ -28,15 +28,18 @@ class FirebaseUserAPI {
     return 'Setting PH Level successfull';
   }
 
-  Future<String> addTemp(
-      String email, double lowerTemp, double upperTemp) async {
+  Future<String> addTemp(String email, double lowerTemp, double upperTemp,
+      bool inFahrenheit) async {
     await db
         .collection("users")
         .where("email", isEqualTo: email)
         .get()
         .then((querySnapshot) => {
-              querySnapshot.docs[0].reference
-                  .update({"lowerTemp": lowerTemp, "upperTemp": upperTemp})
+              querySnapshot.docs[0].reference.update({
+                "lowerTemp": lowerTemp,
+                "upperTemp": upperTemp,
+                "inFahrenheit": inFahrenheit
+              })
             });
 
     return 'Setting Temperature successfull';

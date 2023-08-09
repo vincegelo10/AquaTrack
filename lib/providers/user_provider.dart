@@ -23,8 +23,9 @@ class UserProvider with ChangeNotifier {
     await firebaseService.addPH(email, lowerPH, upperPH);
   }
 
-  Future<void> addTemp(String email, double lowerTemp, double upperTemp) async {
-    await firebaseService.addTemp(email, lowerTemp, upperTemp);
+  Future<void> addTemp(String email, double lowerTemp, double upperTemp,
+      bool inFahrenheit) async {
+    await firebaseService.addTemp(email, lowerTemp, upperTemp, inFahrenheit);
   }
 
   Future<void> getLoggedInUserDetails(String email) async {

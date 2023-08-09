@@ -74,11 +74,18 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
     User? user = context.watch<UserProvider>().user;
-    print(formattedDateToday);
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
         ? "Water temperature trends on ${dateController.text}"
         : "Water temperature trends today";
+
+    String lowerTemp = user!.inFahrenheit == false
+        ? user!.lowerTemp.toString()
+        : ((user!.lowerTemp * 9 / 5) + 32).toString();
+
+    String upperTemp = user!.inFahrenheit == false
+        ? user!.upperTemp.toString()
+        : ((user!.upperTemp * 9 / 5) + 32).toString();
 
     // access the list of todos in the provider
     // DateTime current_date = DateTime.now();
@@ -98,14 +105,24 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     //   print("Received data: ${event.snapshot.value}");
     // });
     //}
-    List<SensorData> dataList =
-        context.watch<SensorDataProvider>().dataFromOtherDate != []
-            ? context.watch<SensorDataProvider>().dataFromOtherDate
-            : context.watch<SensorDataProvider>().dataFromSensor;
+    List<SensorData> dataList = dateController.text != formattedDateToday
+        ? context.watch<SensorDataProvider>().dataFromOtherDate
+        : context.watch<SensorDataProvider>().dataFromSensor;
+    print("----------------------");
+    print(dateController.text);
+    print(formattedDateToday);
+    print(dateController.text != formattedDateToday);
+    print("----------------------");
 
-    var phVal = context.watch<SensorDataProvider>().phLevel == ''
+    var waterTempVal = context.watch<SensorDataProvider>().waterTemp == ''
         ? 'NA'
-        : context.watch<SensorDataProvider>().phLevel;
+        : user!.inFahrenheit == false
+            ? context.watch<SensorDataProvider>().waterTemp
+            : ((double.parse(context.watch<SensorDataProvider>().waterTemp) *
+                        9 /
+                        5) +
+                    32)
+                .toString();
 
     void showNoDataDialog(BuildContext context) {
       showDialog(
@@ -191,7 +208,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                               ),
                               SizedBox(height: 25),
                               Text(
-                                "$phVal",
+                                "$waterTempVal",
                                 style: TextStyle(
                                     fontWeight:
                                         FontWeight.bold, // Make the text bold
@@ -231,7 +248,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                             ),
                             SizedBox(height: 30),
                             Text(
-                              "${user!.lowerTemp} - ${user!.upperTemp}",
+                              "$lowerTemp - $upperTemp",
                               style: TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold
