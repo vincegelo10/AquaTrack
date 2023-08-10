@@ -38,11 +38,12 @@ class SensorDataProvider with ChangeNotifier {
           print("Key: $key, Value: $value");
           var pH = value["ph"].toDouble();
           var waterTemperature = value["water_temperature"].toDouble();
+          var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
           var timestamp = int.parse(key); // Parse the timestamp from the key
           var millis = timestamp;
           DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
-          dataFromOtherDates
-              .add(SensorData(waterTemperature, pH, timestamp, dt));
+          dataFromOtherDates.add(SensorData(
+              waterTemperature, pH, timestamp, dt, waterTempInFahrenheit));
         });
         dataFromOtherDates.sort((a, b) => a.timestamp.compareTo(b.timestamp));
         notifyListeners();
@@ -78,11 +79,13 @@ class SensorDataProvider with ChangeNotifier {
             if (value != null) {
               var pH = value["ph"].toDouble();
               var waterTemperature = value["water_temperature"].toDouble();
+              var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
               var timestamp =
                   int.parse(key); // Parse the timestamp from the key
               var millis = timestamp;
               DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
-              dataList.add(SensorData(waterTemperature, pH, timestamp, dt));
+              dataList.add(SensorData(
+                  waterTemperature, pH, timestamp, dt, waterTempInFahrenheit));
             }
           });
           dataList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
@@ -111,6 +114,8 @@ class SensorDataProvider with ChangeNotifier {
 
       if (now.isAfter(midnight)) {
         // It's after midnight, schedule fetch and reset timer for the next midnight
+        print("in schedule midnight fetch");
+        print("fetching data again....");
         fetchData();
         _scheduleMidnightFetch();
         timer.cancel();

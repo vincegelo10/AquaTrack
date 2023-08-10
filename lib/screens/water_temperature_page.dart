@@ -30,42 +30,90 @@ class WaterTemperaturePage extends StatefulWidget {
 class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
   TextEditingController dateController = TextEditingController();
 
-  Widget _currentDateGraphBuilder(List<SensorData> dataList) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Container(
-        child: SfCartesianChart(
-          backgroundColor: Colors.white,
-          primaryXAxis: DateTimeAxis(
-            title: AxisTitle(
-                text: "Water temperature over time",
-                textStyle: TextStyle(
-                    color: Colors.deepOrange,
-                    fontFamily: 'Roboto',
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w300)),
-            majorGridLines: MajorGridLines(width: 0),
-            edgeLabelPlacement: EdgeLabelPlacement.shift,
-            intervalType: DateTimeIntervalType.hours,
-            dateFormat: DateFormat('hh:mm a'), // Use custom time format here
-          ),
-          zoomPanBehavior: ZoomPanBehavior(
-            enablePanning: true, // Enable panning
-            enablePinching: true, // Enable zooming
-            zoomMode: ZoomMode.x, // Zoom in the X-axis direction only
-          ),
-          series: [
-            LineSeries<SensorData, DateTime>(
-              dataSource: dataList,
-              xValueMapper: (SensorData data, _) => data.timeUpload,
-              yValueMapper: (SensorData data, _) => data.waterTemperature,
-              markerSettings: MarkerSettings(isVisible: true),
+  Widget _currentDateGraphBuilder(
+      List<SensorData> dataList, BuildContext context) {
+    User? user = context.watch<UserProvider>().user;
+    // dataList.forEach((element) {
+    //   print("-------------------------");
+    //   print(element.waterTemperature);
+    //   print(element.ph);
+    //   print(element.waterTempInFahrenheit);
+    //   print("-------------------------");
+    // });
+    if (user!.inFahrenheit) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          child: SfCartesianChart(
+            backgroundColor: Colors.white,
+            primaryXAxis: DateTimeAxis(
+              title: AxisTitle(
+                  text: "Water temperature over time",
+                  textStyle: TextStyle(
+                      color: Colors.deepOrange,
+                      fontFamily: 'Roboto',
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w300)),
+              majorGridLines: MajorGridLines(width: 0),
+              edgeLabelPlacement: EdgeLabelPlacement.shift,
+              intervalType: DateTimeIntervalType.hours,
+              dateFormat: DateFormat('hh:mm a'), // Use custom time format here
             ),
-          ],
+            zoomPanBehavior: ZoomPanBehavior(
+              enablePanning: true, // Enable panning
+              enablePinching: true, // Enable zooming
+              zoomMode: ZoomMode.x, // Zoom in the X-axis direction only
+            ),
+            series: [
+              LineSeries<SensorData, DateTime>(
+                dataSource: dataList,
+                xValueMapper: (SensorData data, _) => data.timeUpload,
+                yValueMapper: (SensorData data, _) =>
+                    data.waterTempInFahrenheit,
+                markerSettings: MarkerSettings(isVisible: true),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          child: SfCartesianChart(
+            backgroundColor: Colors.white,
+            primaryXAxis: DateTimeAxis(
+              title: AxisTitle(
+                  text: "Water temperature over time",
+                  textStyle: TextStyle(
+                      color: Colors.deepOrange,
+                      fontFamily: 'Roboto',
+                      fontSize: 16,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w300)),
+              majorGridLines: MajorGridLines(width: 0),
+              edgeLabelPlacement: EdgeLabelPlacement.shift,
+              intervalType: DateTimeIntervalType.hours,
+              dateFormat: DateFormat('hh:mm a'), // Use custom time format here
+            ),
+            zoomPanBehavior: ZoomPanBehavior(
+              enablePanning: true, // Enable panning
+              enablePinching: true, // Enable zooming
+              zoomMode: ZoomMode.x, // Zoom in the X-axis direction only
+            ),
+            series: [
+              LineSeries<SensorData, DateTime>(
+                dataSource: dataList,
+                xValueMapper: (SensorData data, _) => data.timeUpload,
+                yValueMapper: (SensorData data, _) => data.waterTemperature,
+                markerSettings: MarkerSettings(isVisible: true),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -105,15 +153,10 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     //   print("Received data: ${event.snapshot.value}");
     // });
     //}
-    List<SensorData> dataList = dateController.text != formattedDateToday
+    List<SensorData> dataList = (dateController.text != formattedDateToday &&
+            dateController.text.isNotEmpty
         ? context.watch<SensorDataProvider>().dataFromOtherDate
-        : context.watch<SensorDataProvider>().dataFromSensor;
-    print("----------------------");
-    print(dateController.text);
-    print(formattedDateToday);
-    print(dateController.text != formattedDateToday);
-    print("----------------------");
-
+        : context.watch<SensorDataProvider>().dataFromSensor);
     var waterTempVal = context.watch<SensorDataProvider>().waterTemp == ''
         ? 'NA'
         : user!.inFahrenheit == false
@@ -144,15 +187,18 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
       );
     }
 
-    Widget recentTimeUpload() {
-      if (dataList.length == 0) {
+    Widget recentTimeUpload(BuildContext context) {
+      List<SensorData> data =
+          context.watch<SensorDataProvider>().dataFromSensor;
+
+      if (data.length == 0) {
         return Text("Data not available",
             style: TextStyle(
                 fontWeight: FontWeight.bold, // Make the text bold
                 color: Colors.white, // Set the text color to white
                 fontSize: 10));
       } else {
-        DateTime lastUpload = dataList[dataList.length - 1].timeUpload;
+        DateTime lastUpload = data[data.length - 1].timeUpload;
         String formattedTime =
             DateFormat('hh:mm a').format(lastUpload).toString();
         return Text("last uploaded by Arduino at $formattedTime",
@@ -172,6 +218,12 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
             onTap: () {
               context.read<AuthProvider>().signOut();
               context.read<UserProvider>().removeLoggedInUserDetails();
+              Navigator.pushNamed(context, "/");
+            },
+          ),
+          ListTile(
+            title: const Text('Home'),
+            onTap: () {
               Navigator.pushNamed(context, "/");
             },
           ),
@@ -219,7 +271,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                               Expanded(
                                   child: Align(
                                 alignment: Alignment.bottomCenter,
-                                child: recentTimeUpload(),
+                                child: recentTimeUpload(context),
                               )),
                               SizedBox(height: 8),
                             ])),
@@ -273,7 +325,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                       color: Colors.black, // Set the text color to white
                       fontSize: 20),
                 ),
-                Center(child: _currentDateGraphBuilder(dataList)),
+                Center(child: _currentDateGraphBuilder(dataList, context)),
                 TextField(
                     controller:
                         dateController, //editing controller of this TextField

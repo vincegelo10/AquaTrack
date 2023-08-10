@@ -3,6 +3,8 @@ class SensorData {
   final double ph;
   final int timestamp;
   final DateTime timeUpload;
+  final double waterTempInFahrenheit;
 
-  SensorData(this.waterTemperature, this.ph, this.timestamp, this.timeUpload);
+  SensorData(this.waterTemperature, this.ph, this.timestamp, this.timeUpload,
+      this.waterTempInFahrenheit);
 }

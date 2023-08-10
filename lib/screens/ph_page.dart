@@ -74,7 +74,6 @@ class _PHPageState extends State<PH_Page> {
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
     User? user = context.watch<UserProvider>().user;
-    print(formattedDateToday);
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
         ? "PH Level trends on ${dateController.text}"
@@ -106,6 +105,7 @@ class _PHPageState extends State<PH_Page> {
             dateController.text.isNotEmpty
         ? context.watch<SensorDataProvider>().dataFromOtherDate
         : context.watch<SensorDataProvider>().dataFromSensor;
+    print("the date today isi $formattedDateToday");
     print("----------------------");
     print(dateController.text);
     print(formattedDateToday);
@@ -139,15 +139,18 @@ class _PHPageState extends State<PH_Page> {
       );
     }
 
-    Widget recentTimeUpload() {
-      if (dataList.length == 0) {
+    Widget recentTimeUpload(BuildContext context) {
+      List<SensorData> data =
+          context.watch<SensorDataProvider>().dataFromSensor;
+
+      if (data.length == 0) {
         return Text("Data not available",
             style: TextStyle(
                 fontWeight: FontWeight.bold, // Make the text bold
                 color: Colors.white, // Set the text color to white
                 fontSize: 10));
       } else {
-        DateTime lastUpload = dataList[dataList.length - 1].timeUpload;
+        DateTime lastUpload = data[data.length - 1].timeUpload;
         String formattedTime =
             DateFormat('hh:mm a').format(lastUpload).toString();
         return Text("last uploaded by Arduino at $formattedTime",
@@ -167,6 +170,12 @@ class _PHPageState extends State<PH_Page> {
             onTap: () {
               context.read<AuthProvider>().signOut();
               context.read<UserProvider>().removeLoggedInUserDetails();
+              Navigator.pushNamed(context, "/");
+            },
+          ),
+          ListTile(
+            title: const Text('Home'),
+            onTap: () {
               Navigator.pushNamed(context, "/");
             },
           ),
@@ -214,7 +223,7 @@ class _PHPageState extends State<PH_Page> {
                               Expanded(
                                   child: Align(
                                 alignment: Alignment.bottomCenter,
-                                child: recentTimeUpload(),
+                                child: recentTimeUpload(context),
                               )),
                               SizedBox(height: 8),
                             ])),
