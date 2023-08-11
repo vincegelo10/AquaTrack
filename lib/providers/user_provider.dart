@@ -23,6 +23,27 @@ class UserProvider with ChangeNotifier {
     await firebaseService.addPH(email, lowerPH, upperPH);
   }
 
+  void editPH(String email, double lowerPH, double upperPH) async {
+    await firebaseService.addPH(email, lowerPH, upperPH);
+    Map<String, dynamic> user =
+        await firebaseService.getLoggedInUserDetails(email);
+    if (user["success"]) {
+      _loggedInUser = User.fromJson(user);
+      notifyListeners();
+    }
+  }
+
+  void editTemp(String email, double lowerTemp, double upperTemp,
+      bool inFahrenheit) async {
+    await firebaseService.addTemp(email, lowerTemp, upperTemp, inFahrenheit);
+    Map<String, dynamic> user =
+        await firebaseService.getLoggedInUserDetails(email);
+    if (user["success"]) {
+      _loggedInUser = User.fromJson(user);
+      notifyListeners();
+    }
+  }
+
   Future<void> addTemp(String email, double lowerTemp, double upperTemp,
       bool inFahrenheit) async {
     await firebaseService.addTemp(email, lowerTemp, upperTemp, inFahrenheit);

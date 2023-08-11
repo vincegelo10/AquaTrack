@@ -105,7 +105,19 @@ class _TodoPageState extends State<TodoPage> {
             onTap: () {
               context.read<AuthProvider>().signOut();
               context.read<UserProvider>().removeLoggedInUserDetails();
-              Navigator.pop(context);
+              Navigator.pushNamed(context, "/");
+            },
+          ),
+          ListTile(
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pushNamed(context, "/");
+            },
+          ),
+          ListTile(
+            title: const Text('Edit'),
+            onTap: () {
+              Navigator.pushNamed(context, "/editPage");
             },
           ),
         ])),

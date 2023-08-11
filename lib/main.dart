@@ -11,12 +11,15 @@ import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/screens/setPH.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
 import 'package:week7_networking_discussion/screens/todo_page.dart';
+import 'package:week7_networking_discussion/screens/editPH.dart';
 import 'package:week7_networking_discussion/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:week7_networking_discussion/screens/PH_Page.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 import 'package:week7_networking_discussion/screens/water_temperature_page.dart';
+import 'package:week7_networking_discussion/screens/edit_page.dart';
+import 'package:week7_networking_discussion/screens/editTemp.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +55,9 @@ class MyApp extends StatelessWidget {
         '/setTempPage': (context) => const SetTempPage(),
         '/phPage': (context) => const PH_Page(),
         '/tempPage': (context) => const WaterTemperaturePage(),
+        '/editPage': (context) => const EditPage(),
+        '/editPhPage': (context) => const EditPhPage(),
+        '/editTempPage': (context) => const EditTempPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
