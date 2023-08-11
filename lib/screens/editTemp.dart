@@ -21,6 +21,8 @@ class _EditTempPageState extends State<EditTempPage> {
   double? lowerTemp;
   double? upperTemp;
 
+  String dropdownValue = _dropdownOptions[0];
+
   @override
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
@@ -28,15 +30,15 @@ class _EditTempPageState extends State<EditTempPage> {
     upperTempController.text = user!.upperTemp.toString();
 
     final _formKey = GlobalKey<FormState>();
-    String dropdownValue =
-        user!.inFahrenheit == true ? _dropdownOptions[1] : _dropdownOptions[0];
 
     final dropdownTempUnit = DropdownButton<String>(
       value: dropdownValue,
       onChanged: (String? value) {
         // This is called when the user selects an item.
+        print("i am selecting: $value");
         setState(() {
           dropdownValue = value!;
+          print("dropdownValue: $dropdownValue");
         });
       },
       items: _dropdownOptions.map<DropdownMenuItem<String>>(
