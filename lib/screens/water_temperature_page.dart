@@ -168,6 +168,16 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                     32)
                 .toString();
 
+    List<String> tempUnits = ["°C", "°F"];
+    var unitForRealTimeTemp =
+        (user!.inFahrenheit == true && waterTempVal != 'NA')
+            ? tempUnits[1]
+            : (waterTempVal != 'NA')
+                ? tempUnits[0]
+                : "";
+    var unitForThreshold =
+        user!.inFahrenheit == true ? tempUnits[1] : tempUnits[0];
+
     void showNoDataDialog(BuildContext context) {
       showDialog(
         context: context,
@@ -261,7 +271,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                               ),
                               SizedBox(height: 25),
                               Text(
-                                "$waterTempVal",
+                                "$waterTempVal $unitForRealTimeTemp",
                                 style: TextStyle(
                                     fontWeight:
                                         FontWeight.bold, // Make the text bold
@@ -301,7 +311,8 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                             ),
                             SizedBox(height: 30),
                             Text(
-                              "$lowerTemp - $upperTemp",
+                              '''$lowerTemp - $upperTemp $unitForThreshold''',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold

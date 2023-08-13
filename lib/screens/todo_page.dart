@@ -88,6 +88,16 @@ class _TodoPageState extends State<TodoPage> {
   //     });
   //   });
   // }
+  _onItemTapped(int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/');
+        break;
+      case 1:
+        Navigator.pushNamed(context, '/editPage');
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,243 +107,263 @@ class _TodoPageState extends State<TodoPage> {
     // var lastVal = 'none';
     User? user = context.watch<UserProvider>().user;
     return Scaffold(
-        drawer: Drawer(
-            child: ListView(padding: EdgeInsets.zero, children: [
-          SizedBox(height: 100),
-          ListTile(
-            title: const Text('Logout'),
-            onTap: () {
-              context.read<AuthProvider>().signOut();
-              context.read<UserProvider>().removeLoggedInUserDetails();
-              Navigator.pushNamed(context, "/");
-            },
-          ),
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pushNamed(context, "/");
-            },
-          ),
-          ListTile(
-            title: const Text('Edit'),
-            onTap: () {
-              Navigator.pushNamed(context, "/editPage");
-            },
-          ),
-        ])),
-        appBar: AppBar(
-          title: Text("AquaTrack"),
+      drawer: Drawer(
+          child: ListView(padding: EdgeInsets.zero, children: [
+        SizedBox(height: 100),
+        ListTile(
+          title: const Text('Logout'),
+          onTap: () {
+            context.read<AuthProvider>().signOut();
+            context.read<UserProvider>().removeLoggedInUserDetails();
+            Navigator.pushNamed(context, "/");
+          },
         ),
-        body: Center(
-          // Wrap the ListView with a Container and set the width
-          child: Container(
-            width: 250, // Set the desired width for the ListView
-            child: ListView(
-              // Use children property to define the list of widgets
-              children: [
-                SizedBox(height: 40),
-                Align(
-                  alignment:
-                      Alignment.center, // Center the text within the container
-                  child: Text(
-                    "Hello, What do you want to track?",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold, // Make the text bold
-                      color: Colors.black, // Set the text color to white
-                      fontSize: 30,
-                    ),
+        ListTile(
+          title: const Text('Home'),
+          onTap: () {
+            Navigator.pushNamed(context, "/");
+          },
+        ),
+        ListTile(
+          title: const Text('Edit'),
+          onTap: () {
+            Navigator.pushNamed(context, "/editPage");
+          },
+        ),
+      ])),
+      appBar: AppBar(
+        title: Text("AquaTrack"),
+      ),
+      body: Center(
+        // Wrap the ListView with a Container and set the width
+        child: Container(
+          width: 250, // Set the desired width for the ListView
+          child: ListView(
+            // Use children property to define the list of widgets
+            children: [
+              SizedBox(height: 40),
+              Align(
+                alignment:
+                    Alignment.center, // Center the text within the container
+                child: Text(
+                  "Hello, What do you want to track?",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold, // Make the text bold
+                    color: Colors.black, // Set the text color to white
+                    fontSize: 30,
                   ),
                 ),
-                GestureDetector(
-                  onTap: () async {
-                    //sample of writing data to firebase realtime database
+              ),
+              GestureDetector(
+                onTap: () async {
+                  //sample of writing data to firebase realtime database
 
-                    // final firebaseRef = FirebaseDatabase(
-                    //         databaseURL:
-                    //             "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/")
-                    //     .reference()
-                    //     .child("data_sensor/2");
+                  // final firebaseRef = FirebaseDatabase(
+                  //         databaseURL:
+                  //             "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/")
+                  //     .reference()
+                  //     .child("data_sensor/2");
 
-                    // await firebaseRef.set({
-                    //   "pH": 7.5,
-                    //   "water_temperature": 23.5,
-                    // });
+                  // await firebaseRef.set({
+                  //   "pH": 7.5,
+                  //   "water_temperature": 23.5,
+                  // });
 
-                    //reading of data from firebase realtime database - read once with get()
-                    // DateTime current_date = DateTime.now();
-                    // print("current date: $current_date");
-                    // String date_today = current_date.toString().split(' ')[0];
-                    // final ref = FirebaseDatabase(
-                    //     databaseURL:
-                    //         "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
-                    // Stream<DataSnapshot> todosStream = await ref.reference().child('data_sensor/$date_today').get();
-                    // print("2");
-                    // if (snapshot.exists) {
-                    //   print(snapshot.value);
-                    // } else {
-                    //   print('No data available.');
-                    // }
+                  //reading of data from firebase realtime database - read once with get()
+                  // DateTime current_date = DateTime.now();
+                  // print("current date: $current_date");
+                  // String date_today = current_date.toString().split(' ')[0];
+                  // final ref = FirebaseDatabase(
+                  //     databaseURL:
+                  //         "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
+                  // Stream<DataSnapshot> todosStream = await ref.reference().child('data_sensor/$date_today').get();
+                  // print("2");
+                  // if (snapshot.exists) {
+                  //   print(snapshot.value);
+                  // } else {
+                  //   print('No data available.');
+                  // }
 
-                    // DateTime current_date = DateTime.now();
-                    // String date_today = current_date.toString().split(' ')[0];
-                    // // String date_today = "2023-08-03";
-                    // final ref = FirebaseDatabase(
-                    //     databaseURL:
-                    //         "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
-                    // print(date_today);
-                    // StreamSubscription<DatabaseEvent> stream = await ref
-                    //     .reference()
-                    //     .child("data_sensor/$date_today")
-                    //     .onValue
-                    //     .listen((DatabaseEvent event) {
-                    //   Map<Object?, Object?> sensor_data =
-                    //       event.snapshot.value as Map<Object?, Object?>;
-                    //   sensor_data.forEach((key, value) {
-                    //     print("key: $key");
-                    //     print('value: $value');
+                  // DateTime current_date = DateTime.now();
+                  // String date_today = current_date.toString().split(' ')[0];
+                  // // String date_today = "2023-08-03";
+                  // final ref = FirebaseDatabase(
+                  //     databaseURL:
+                  //         "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
+                  // print(date_today);
+                  // StreamSubscription<DatabaseEvent> stream = await ref
+                  //     .reference()
+                  //     .child("data_sensor/$date_today")
+                  //     .onValue
+                  //     .listen((DatabaseEvent event) {
+                  //   Map<Object?, Object?> sensor_data =
+                  //       event.snapshot.value as Map<Object?, Object?>;
+                  //   sensor_data.forEach((key, value) {
+                  //     print("key: $key");
+                  //     print('value: $value');
 
-                    //     // Access the timestamp of the update
-                    //   });
-                    // });
-                    // print(stream);
+                  //     // Access the timestamp of the update
+                  //   });
+                  // });
+                  // print(stream);
 
-                    // StreamSubscription<DatabaseEvent> stream = await ref
-                    //     .reference()
-                    //     .child("data_sensor/$date_today")
-                    //     .onValue
-                    //     .listen((DatabaseEvent event) {
-                    //   Map<dynamic, dynamic> sensorDataMap =
-                    //       event.snapshot.value as Map<dynamic, dynamic>;
-                    //   List<SensorData> dataList = [];
-                    //   print("no problems here");
-                    //   if (sensorDataMap != null) {
-                    //     sensorDataMap.forEach((key, value) {
-                    //       if (value != null) {
-                    //         var waterTemperature =
-                    //             value["water_temperature"].toDouble();
-                    //         var pH = value["pH"].toDouble();
-                    //         var timestamp = int.parse(
-                    //             key); // Parse the timestamp from the key
+                  // StreamSubscription<DatabaseEvent> stream = await ref
+                  //     .reference()
+                  //     .child("data_sensor/$date_today")
+                  //     .onValue
+                  //     .listen((DatabaseEvent event) {
+                  //   Map<dynamic, dynamic> sensorDataMap =
+                  //       event.snapshot.value as Map<dynamic, dynamic>;
+                  //   List<SensorData> dataList = [];
+                  //   print("no problems here");
+                  //   if (sensorDataMap != null) {
+                  //     sensorDataMap.forEach((key, value) {
+                  //       if (value != null) {
+                  //         var waterTemperature =
+                  //             value["water_temperature"].toDouble();
+                  //         var pH = value["pH"].toDouble();
+                  //         var timestamp = int.parse(
+                  //             key); // Parse the timestamp from the key
 
-                    //         dataList.add(
-                    //             SensorData(waterTemperature, pH, timestamp));
-                    //       }
-                    //     });
+                  //         dataList.add(
+                  //             SensorData(waterTemperature, pH, timestamp));
+                  //       }
+                  //     });
 
-                    //     // Sort the dataList based on the timestamp in ascending order
-                    //     dataList
-                    //         .sort((a, b) => a.timestamp.compareTo(b.timestamp));
-                    //   }
+                  //     // Sort the dataList based on the timestamp in ascending order
+                  //     dataList
+                  //         .sort((a, b) => a.timestamp.compareTo(b.timestamp));
+                  //   }
 
-                    // Print the data in ascending order of timestamp
-                    //   if (dataList.isNotEmpty) {
-                    //     print("Data in Ascending Order based on Timestamp:");
-                    //     for (var data in dataList) {
-                    //       print("Timestamp: ${data.timestamp}");
-                    //       print("Water Temperature: ${data.waterTemperature}");
-                    //       print("pH Value: ${data.pH}");
-                    //       print("");
-                    //     }
-                    //     setState(() {
-                    //       lastVal = dataList[dataList.length - 1].pH.toString();
-                    //       print("recent pH value: $lastVal");
-                    //     });
-                    //   } else {
-                    //     print("No data found.");
-                    //   }
-                    // });
+                  // Print the data in ascending order of timestamp
+                  //   if (dataList.isNotEmpty) {
+                  //     print("Data in Ascending Order based on Timestamp:");
+                  //     for (var data in dataList) {
+                  //       print("Timestamp: ${data.timestamp}");
+                  //       print("Water Temperature: ${data.waterTemperature}");
+                  //       print("pH Value: ${data.pH}");
+                  //       print("");
+                  //     }
+                  //     setState(() {
+                  //       lastVal = dataList[dataList.length - 1].pH.toString();
+                  //       print("recent pH value: $lastVal");
+                  //     });
+                  //   } else {
+                  //     print("No data found.");
+                  //   }
+                  // });
 
-                    // Map<Object?, Object?> sensor_data =
-                    //     event.snapshot.value as Map<Object?, Object?>;
-                    // sensor_data.forEach((key, value) {
-                    //   print("key: $key");
-                    //   print('value: $value');
+                  // Map<Object?, Object?> sensor_data =
+                  //     event.snapshot.value as Map<Object?, Object?>;
+                  // sensor_data.forEach((key, value) {
+                  //   print("key: $key");
+                  //   print('value: $value');
 
-                    //   // Access the timestamp of the update
-                    // });
-                    // Stream<Qu
-                    Navigator.pushNamed(context, "/phPage");
+                  //   // Access the timestamp of the update
+                  // });
+                  // Stream<Qu
+                  Navigator.pushNamed(context, "/phPage");
 
-                    // try {
-                    //   await ref
-                    //       .child("path")
-                    //       .set({"pH": 2.3, "water_temperature": 23.2});
-                    // } catch (e) {
-                    //   print("Error: $e");
-                    // }
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Container(
-                      height: 140, // Set the desired height of the square
-                      decoration: BoxDecoration(
-                        color:
-                            Colors.blue, // Set the desired color of the square
-                        borderRadius: BorderRadius.circular(
-                            20), // Adjust the radius to control the roundness
-                      ),
-                      child: Center(
-                          child: Column(children: [
-                        Image(
-                          image: AssetImage('assets/images/PHLevel-nobg.png'),
-                          width: 80,
-                          height: 104,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          "PH Level",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold, // Make the text bold
-                            color: Colors.white, // Set the text color to white
-                          ),
-                        ),
-                      ])),
+                  // try {
+                  //   await ref
+                  //       .child("path")
+                  //       .set({"pH": 2.3, "water_temperature": 23.2});
+                  // } catch (e) {
+                  //   print("Error: $e");
+                  // }
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Container(
+                    height: 140, // Set the desired height of the square
+                    decoration: BoxDecoration(
+                      color: Colors.blue, // Set the desired color of the square
+                      borderRadius: BorderRadius.circular(
+                          20), // Adjust the radius to control the roundness
                     ),
+                    child: Center(
+                        child: Column(children: [
+                      Image(
+                        image: AssetImage('assets/images/PHLevel-nobg.png'),
+                        width: 80,
+                        height: 104,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        "PH Level",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, // Make the text bold
+                          color: Colors.white, // Set the text color to white
+                        ),
+                      ),
+                    ])),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, '/tempPage');
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Container(
-                      height: 140, // Set the desired height of the square
-                      decoration: BoxDecoration(
-                        color:
-                            Colors.blue, // Set the desired color of the square
-                        borderRadius: BorderRadius.circular(
-                            20), // Adjust the radius to control the roundness
-                      ),
-                      child: Center(
-                          child: Column(children: [
-                        Image(
-                          image: AssetImage('assets/images/temp-nobg2.png'),
-                          width: 80,
-                          height: 104,
-                          color: Colors.white,
-                        ),
-                        Text(
-                          "Temperature",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold, // Make the text bold
-                            color: Colors.white, // Set the text color to white
-                          ),
-                        ),
-                      ])),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/tempPage');
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Container(
+                    height: 140, // Set the desired height of the square
+                    decoration: BoxDecoration(
+                      color: Colors.blue, // Set the desired color of the square
+                      borderRadius: BorderRadius.circular(
+                          20), // Adjust the radius to control the roundness
                     ),
+                    child: Center(
+                        child: Column(children: [
+                      Image(
+                        image: AssetImage('assets/images/temp-nobg2.png'),
+                        width: 80,
+                        height: 104,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        "Temperature",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, // Make the text bold
+                          color: Colors.white, // Set the text color to white
+                        ),
+                      ),
+                    ])),
                   ),
-                )
+                ),
+              )
 
-                // Add more items to the ListView as needed...
-              ],
-            ),
+              // Add more items to the ListView as needed...
+            ],
           ),
-        ));
+        ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blue,
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.edit),
+            label: 'Edit',
+          ),
+        ],
+        currentIndex: 0,
+        unselectedItemColor: Colors.white,
+        selectedItemColor: Color.fromARGB(255, 106, 99, 90),
+        selectedLabelStyle:
+            const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+        unselectedLabelStyle:
+            const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+        onTap: _onItemTapped,
+      ),
+    );
   }
 }
 
-// Center(
 //           // Wrap the ListView with a Container and set the width
 //           child: Container(
 //             width: 200, // Set the desired width for the ListView

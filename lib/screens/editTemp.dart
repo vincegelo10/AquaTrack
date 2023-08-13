@@ -21,14 +21,31 @@ class _EditTempPageState extends State<EditTempPage> {
   double? lowerTemp;
   double? upperTemp;
 
-  String dropdownValue = _dropdownOptions[0];
+  String dropdownValue = "";
+
+  @override
+  void initState() {
+    super.initState();
+
+    User? user = context.read<UserProvider>().user;
+    print(user!.email);
+
+    // Initialize dropdownValue based on user preference
+    dropdownValue =
+        user!.inFahrenheit ? _dropdownOptions[1] : _dropdownOptions[0];
+
+    lowerTempController.text = user.inFahrenheit
+        ? ((user.lowerTemp * 9 / 5) + 32).toString()
+        : user.lowerTemp.toString();
+
+    upperTempController.text = user.inFahrenheit
+        ? ((user.upperTemp * 9 / 5) + 32).toString()
+        : user.upperTemp.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
-    User? user = context.watch<UserProvider>().user;
-    lowerTempController.text = user!.lowerTemp.toString();
-    upperTempController.text = user!.upperTemp.toString();
-
+    User? user = context.read<UserProvider>().user;
     final _formKey = GlobalKey<FormState>();
 
     final dropdownTempUnit = DropdownButton<String>(
