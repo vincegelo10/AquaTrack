@@ -20,6 +20,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
+import 'package:week7_networking_discussion/services/local_notification_service.dart';
+
 class PH_Page extends StatefulWidget {
   const PH_Page({super.key});
 
@@ -28,9 +30,17 @@ class PH_Page extends StatefulWidget {
 }
 
 class _PHPageState extends State<PH_Page> {
+  late final NotificationService service;
   TextEditingController dateController = TextEditingController();
 
-  Widget _currentDateGraphBuilder(List<SensorData> dataList) {
+  @override
+  void initState() {
+    service = NotificationService();
+    service.initializePlatformNotifications();
+    super.initState();
+  }
+
+  Widget _graphBuilder(List<SensorData> dataList) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
@@ -73,7 +83,7 @@ class _PHPageState extends State<PH_Page> {
     DateTime currentDate = DateTime.now();
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
-    User? user = context.watch<UserProvider>().user;
+    User user = context.watch<UserProvider>().user as User;
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
         ? "PH Level trends on ${dateController.text}"
@@ -118,6 +128,30 @@ class _PHPageState extends State<PH_Page> {
     var phVal = context.watch<SensorDataProvider>().phLevel == ''
         ? 'NA'
         : context.watch<SensorDataProvider>().phLevel;
+    print("the condition evalutes to: ");
+    print(phVal != 'NA' &&
+        (double.parse(phVal) < user!.lowerPH ||
+            double.parse(phVal) > user!.upperPH));
+    // Future<void> callPHLocalNotification() async {
+    //   await service.showNotification(
+    //       id: 0,
+    //       title: 'PH Level out of range',
+    //       body:
+    //           'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}');
+    //   print("done");
+    // }
+
+    // if (phVal != 'NA' &&
+    //     (double.parse(phVal) < user!.lowerPH ||
+    //         double.parse(phVal) > user!.upperPH)) {
+    //   print("calling local notif");
+    //   callPHLocalNotification();
+    //   // await service.showNotification(
+    //   //     id: 0,
+    //   //     title: 'PH Level out of range',
+    //   //     body:
+    //   //         'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}');
+    // }
 
     void showNoDataDialog(BuildContext context) {
       showDialog(
@@ -133,6 +167,203 @@ class _PHPageState extends State<PH_Page> {
                 },
                 child: Text('OK'),
               ),
+            ],
+          );
+        },
+      );
+    }
+
+    void showPhThresholdDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('PH Level'),
+            content: Text(
+                'The pH level threshold is between ${user!.lowerPH}-${user.upperPH}. Do you want to edit it?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red, // Background color
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("No")),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green, // Background color
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, "/editPhPage");
+                      },
+                      child: Text("Yes")),
+                ]),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    void showPhDialog(BuildContext context) {
+      String status;
+      try {
+        if (double.parse(phVal) > user!.lowerPH &&
+            double.parse(phVal) < user!.upperPH) {
+          status = "which is within the defined PH theshold";
+        } else if (double.parse(phVal) == user!.lowerPH ||
+            double.parse(phVal) == user!.upperPH) {
+          if (double.parse(phVal) == user!.lowerPH) {
+            status = "which is equal to the defined lower PH threshold";
+          } else {
+            status = "which is equal to the defined upper PH threshold";
+          }
+        } else {
+          status = "which is outside the defined PH theshold";
+          ;
+        }
+      } catch (e) {
+        status = "";
+        print(e);
+      }
+
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text('PH Level'),
+      //       content: Column(children: [
+      //         Text(
+      //             'The current pH level is $phVal, $status. Color of this widget changes according to the ff:'),
+      //         SizedBox(height: 25),
+      //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      //           Text("Within the threshold:"),
+      //           SizedBox(width: 10),
+      //           SizedBox(
+      //               width: 20,
+      //               height: 20,
+      //               child: const DecoratedBox(
+      //                   decoration: BoxDecoration(color: Colors.green)))
+      //         ]),
+      //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      //           Text("Equal to one of the threshold's"),
+      //           SizedBox(width: 10),
+      //           SizedBox(
+      //               width: 20,
+      //               height: 20,
+      //               child: const DecoratedBox(
+      //                   decoration: BoxDecoration(color: Colors.orange)))
+      //         ]),
+      //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      //           Text("Outside the threshold"),
+      //           SizedBox(width: 10),
+      //           SizedBox(
+      //               width: 20,
+      //               height: 20,
+      //               child: const DecoratedBox(
+      //                   decoration: BoxDecoration(color: Colors.red)))
+      //         ])
+      //       ]),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           onPressed: () {
+      //             Navigator.of(context).pop(); // Close the dialog
+      //           },
+      //           child:
+      //               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      //             ElevatedButton(
+      //                 style: ElevatedButton.styleFrom(
+      //                   primary: Colors.red, // Background color
+      //                 ),
+      //                 onPressed: () {
+      //                   Navigator.pop(context);
+      //                 },
+      //                 child: Text("No")),
+      //             SizedBox(width: 10),
+      //             ElevatedButton(
+      //                 style: ElevatedButton.styleFrom(
+      //                   primary: Colors.green, // Background color
+      //                 ),
+      //                 onPressed: () {
+      //                   Navigator.pop(context);
+      //                   Navigator.pushNamed(context, "/editPhPage");
+      //                 },
+      //                 child: Text("Yes")),
+      //           ]),
+      //         ),
+      //       ],
+      //     );
+      //   },
+      // );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('PH Level'),
+            content: Container(
+              width: MediaQuery.of(context).size.width *
+                  0.8, // Adjust the width as needed
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  Text(
+                    'The current pH level is $phVal, $status. The color of this widget changes according to the ff:',
+                  ),
+                  SizedBox(height: 25),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Within the threshold:"),
+                      SizedBox(width: 10),
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(color: Colors.green),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Equal to one of the threshold's"),
+                      SizedBox(width: 10),
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(color: Colors.orange),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Outside the threshold"),
+                      SizedBox(width: 10),
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Text("OK")),
             ],
           );
         },
@@ -161,6 +392,60 @@ class _PHPageState extends State<PH_Page> {
       }
     }
 
+    Widget phLevelWidgetBuilder() {
+      var colorOfWidget;
+      print("the ph value is: $phVal");
+      print(phVal);
+      try {
+        if (double.parse(phVal) > user!.lowerPH &&
+            double.parse(phVal) < user!.upperPH) {
+          colorOfWidget = Colors.green;
+        } else if (double.parse(phVal) == user!.lowerPH ||
+            double.parse(phVal) == user!.upperPH) {
+          colorOfWidget = Colors.orange;
+        } else {
+          colorOfWidget = Colors.red;
+        }
+      } catch (e) {
+        colorOfWidget = Colors.black;
+        print(e);
+      }
+
+      return Padding(
+        padding: EdgeInsets.all(5),
+        child: Container(
+            height: 140, // Set the desired height of the square
+            decoration: BoxDecoration(
+              color: colorOfWidget, // Set the desired color of the square
+              borderRadius: BorderRadius.circular(
+                  20), // Adjust the radius to control the roundness
+            ),
+            child: Column(children: [
+              Text(
+                "PH Level",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold, // Make the text bold
+                  color: Colors.white, // Set the text color to white
+                ),
+              ),
+              SizedBox(height: 25),
+              Text(
+                "$phVal",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, // Make the text bold
+                    color: Colors.white, // Set the text color to white
+                    fontSize: 40),
+              ),
+              Expanded(
+                  child: Align(
+                alignment: Alignment.bottomCenter,
+                child: recentTimeUpload(context),
+              )),
+              SizedBox(height: 8),
+            ])),
+      );
+    }
+
     return Scaffold(
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: [
@@ -185,24 +470,35 @@ class _PHPageState extends State<PH_Page> {
         ),
         body: Container(
             padding: const EdgeInsets.all(10.0),
-            child: Column(
+            child: ListView(
               children: [
                 Row(
                   children: [
                     Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Container(
+                        child: GestureDetector(
+                      onTap: () {
+                        showPhDialog(context);
+                      },
+                      child: phLevelWidgetBuilder(),
+                    )),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          showPhThresholdDialog(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(0),
+                          child: Container(
                             height: 140, // Set the desired height of the square
                             decoration: BoxDecoration(
                               color: Colors
-                                  .green, // Set the desired color of the square
+                                  .yellow, // Set the desired color of the square
                               borderRadius: BorderRadius.circular(
                                   20), // Adjust the radius to control the roundness
                             ),
                             child: Column(children: [
                               Text(
-                                "PH Level",
+                                "PH Threshold",
                                 style: TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold
@@ -210,57 +506,18 @@ class _PHPageState extends State<PH_Page> {
                                       .white, // Set the text color to white
                                 ),
                               ),
-                              SizedBox(height: 25),
+                              SizedBox(height: 30),
                               Text(
-                                "$phVal",
+                                "${user!.lowerPH} - ${user!.upperPH}",
                                 style: TextStyle(
                                     fontWeight:
                                         FontWeight.bold, // Make the text bold
                                     color: Colors
                                         .white, // Set the text color to white
-                                    fontSize: 40),
+                                    fontSize: 35),
                               ),
-                              Expanded(
-                                  child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: recentTimeUpload(context),
-                              )),
-                              SizedBox(height: 8),
-                            ])),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.all(0),
-                        child: Container(
-                          height: 140, // Set the desired height of the square
-                          decoration: BoxDecoration(
-                            color: Colors
-                                .yellow, // Set the desired color of the square
-                            borderRadius: BorderRadius.circular(
-                                20), // Adjust the radius to control the roundness
+                            ]),
                           ),
-                          child: Column(children: [
-                            Text(
-                              "PH Threshold",
-                              style: TextStyle(
-                                fontWeight:
-                                    FontWeight.bold, // Make the text bold
-                                color:
-                                    Colors.white, // Set the text color to white
-                              ),
-                            ),
-                            SizedBox(height: 30),
-                            Text(
-                              "${user!.lowerPH} - ${user!.upperPH}",
-                              style: TextStyle(
-                                  fontWeight:
-                                      FontWeight.bold, // Make the text bold
-                                  color: Colors
-                                      .white, // Set the text color to white
-                                  fontSize: 35),
-                            ),
-                          ]),
                         ),
                       ),
                     ),
@@ -270,14 +527,16 @@ class _PHPageState extends State<PH_Page> {
                   ],
                 ),
                 SizedBox(height: 20),
-                Text(
-                  labelData,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, // Make the text bold
-                      color: Colors.black, // Set the text color to white
-                      fontSize: 20),
+                Center(
+                  child: Text(
+                    labelData,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, // Make the text bold
+                        color: Colors.black, // Set the text color to white
+                        fontSize: 20),
+                  ),
                 ),
-                Center(child: _currentDateGraphBuilder(dataList)),
+                Center(child: _graphBuilder(dataList)),
                 TextField(
                     controller:
                         dateController, //editing controller of this TextField
