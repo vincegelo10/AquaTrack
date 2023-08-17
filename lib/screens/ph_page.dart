@@ -229,81 +229,12 @@ class _PHPageState extends State<PH_Page> {
           }
         } else {
           status = "which is outside the defined PH theshold";
-          ;
         }
       } catch (e) {
-        status = "";
+        status = "which means that no data is being uploaded by the Arduino";
         print(e);
       }
 
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //       title: Text('PH Level'),
-      //       content: Column(children: [
-      //         Text(
-      //             'The current pH level is $phVal, $status. Color of this widget changes according to the ff:'),
-      //         SizedBox(height: 25),
-      //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      //           Text("Within the threshold:"),
-      //           SizedBox(width: 10),
-      //           SizedBox(
-      //               width: 20,
-      //               height: 20,
-      //               child: const DecoratedBox(
-      //                   decoration: BoxDecoration(color: Colors.green)))
-      //         ]),
-      //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      //           Text("Equal to one of the threshold's"),
-      //           SizedBox(width: 10),
-      //           SizedBox(
-      //               width: 20,
-      //               height: 20,
-      //               child: const DecoratedBox(
-      //                   decoration: BoxDecoration(color: Colors.orange)))
-      //         ]),
-      //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      //           Text("Outside the threshold"),
-      //           SizedBox(width: 10),
-      //           SizedBox(
-      //               width: 20,
-      //               height: 20,
-      //               child: const DecoratedBox(
-      //                   decoration: BoxDecoration(color: Colors.red)))
-      //         ])
-      //       ]),
-      //       actions: <Widget>[
-      //         TextButton(
-      //           onPressed: () {
-      //             Navigator.of(context).pop(); // Close the dialog
-      //           },
-      //           child:
-      //               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      //             ElevatedButton(
-      //                 style: ElevatedButton.styleFrom(
-      //                   primary: Colors.red, // Background color
-      //                 ),
-      //                 onPressed: () {
-      //                   Navigator.pop(context);
-      //                 },
-      //                 child: Text("No")),
-      //             SizedBox(width: 10),
-      //             ElevatedButton(
-      //                 style: ElevatedButton.styleFrom(
-      //                   primary: Colors.green, // Background color
-      //                 ),
-      //                 onPressed: () {
-      //                   Navigator.pop(context);
-      //                   Navigator.pushNamed(context, "/editPhPage");
-      //                 },
-      //                 child: Text("Yes")),
-      //           ]),
-      //         ),
-      //       ],
-      //     );
-      //   },
-      // );
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -334,7 +265,7 @@ class _PHPageState extends State<PH_Page> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Equal to one of the threshold's"),
+                      Text("Equal to one of the threshold: "),
                       SizedBox(width: 10),
                       Container(
                         width: 20,
@@ -346,12 +277,24 @@ class _PHPageState extends State<PH_Page> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Outside the threshold"),
+                      Text("Outside the threshold: "),
                       SizedBox(width: 10),
                       Container(
                         width: 20,
                         height: 20,
                         decoration: BoxDecoration(color: Colors.red),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Data not available: "),
+                      SizedBox(width: 10),
+                      Container(
+                        width: 20,
+                        height: 20,
+                        decoration: BoxDecoration(color: Colors.black),
                       ),
                     ],
                   ),
@@ -394,8 +337,7 @@ class _PHPageState extends State<PH_Page> {
 
     Widget phLevelWidgetBuilder() {
       var colorOfWidget;
-      print("the ph value is: $phVal");
-      print(phVal);
+
       try {
         if (double.parse(phVal) > user!.lowerPH &&
             double.parse(phVal) < user!.upperPH) {
@@ -446,144 +388,177 @@ class _PHPageState extends State<PH_Page> {
       );
     }
 
+    _onItemTapped(int index) {
+      switch (index) {
+        case 0:
+          Navigator.pushNamed(context, '/');
+          break;
+        case 1:
+          Navigator.pushNamed(context, '/editPage');
+          break;
+      }
+    }
+
     return Scaffold(
-        drawer: Drawer(
-            child: ListView(padding: EdgeInsets.zero, children: [
-          SizedBox(height: 100),
-          ListTile(
-            title: const Text('Logout'),
-            onTap: () {
-              context.read<AuthProvider>().signOut();
-              context.read<UserProvider>().removeLoggedInUserDetails();
-              Navigator.pushNamed(context, "/");
-            },
-          ),
-          ListTile(
-            title: const Text('Home'),
-            onTap: () {
-              Navigator.pushNamed(context, "/");
-            },
-          ),
-        ])),
-        appBar: AppBar(
-          title: Text("PH Level Page"),
+      drawer: Drawer(
+          child: ListView(padding: EdgeInsets.zero, children: [
+        SizedBox(height: 100),
+        ListTile(
+          title: const Text('Logout'),
+          onTap: () {
+            context.read<AuthProvider>().signOut();
+            context.read<UserProvider>().removeLoggedInUserDetails();
+            Navigator.pushNamed(context, "/");
+          },
         ),
-        body: Container(
-            padding: const EdgeInsets.all(10.0),
-            child: ListView(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                        child: GestureDetector(
-                      onTap: () {
-                        showPhDialog(context);
-                      },
-                      child: phLevelWidgetBuilder(),
-                    )),
-                    Expanded(
+        ListTile(
+          title: const Text('Home'),
+          onTap: () {
+            Navigator.pushNamed(context, "/");
+          },
+        ),
+      ])),
+      appBar: AppBar(
+        title: Text("PH Level Page"),
+      ),
+      body: Container(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView(
+            children: [
+              Row(
+                children: [
+                  Expanded(
                       child: GestureDetector(
-                        onTap: () {
-                          showPhThresholdDialog(context);
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.all(0),
-                          child: Container(
-                            height: 140, // Set the desired height of the square
-                            decoration: BoxDecoration(
-                              color: Colors
-                                  .yellow, // Set the desired color of the square
-                              borderRadius: BorderRadius.circular(
-                                  20), // Adjust the radius to control the roundness
+                    onTap: () {
+                      showPhDialog(context);
+                    },
+                    child: phLevelWidgetBuilder(),
+                  )),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        showPhThresholdDialog(context);
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.all(0),
+                        child: Container(
+                          height: 140, // Set the desired height of the square
+                          decoration: BoxDecoration(
+                            color: Colors
+                                .yellow, // Set the desired color of the square
+                            borderRadius: BorderRadius.circular(
+                                20), // Adjust the radius to control the roundness
+                          ),
+                          child: Column(children: [
+                            Text(
+                              "PH Threshold",
+                              style: TextStyle(
+                                fontWeight:
+                                    FontWeight.bold, // Make the text bold
+                                color:
+                                    Colors.white, // Set the text color to white
+                              ),
                             ),
-                            child: Column(children: [
-                              Text(
-                                "PH Threshold",
-                                style: TextStyle(
+                            SizedBox(height: 30),
+                            Text(
+                              "${user!.lowerPH} - ${user!.upperPH}",
+                              style: TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold
                                   color: Colors
                                       .white, // Set the text color to white
-                                ),
-                              ),
-                              SizedBox(height: 30),
-                              Text(
-                                "${user!.lowerPH} - ${user!.upperPH}",
-                                style: TextStyle(
-                                    fontWeight:
-                                        FontWeight.bold, // Make the text bold
-                                    color: Colors
-                                        .white, // Set the text color to white
-                                    fontSize: 35),
-                              ),
-                            ]),
-                          ),
+                                  fontSize: 35),
+                            ),
+                          ]),
                         ),
                       ),
                     ),
-
-                    // Text("PH Level: $phVal"),
-                    // Text("PH Threshold: ${user!.lowerPH}-${user!.upperPH}"),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Center(
-                  child: Text(
-                    labelData,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, // Make the text bold
-                        color: Colors.black, // Set the text color to white
-                        fontSize: 20),
                   ),
+
+                  // Text("PH Level: $phVal"),
+                  // Text("PH Threshold: ${user!.lowerPH}-${user!.upperPH}"),
+                ],
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: Text(
+                  labelData,
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold, // Make the text bold
+                      color: Colors.black, // Set the text color to white
+                      fontSize: 20),
                 ),
-                Center(child: _graphBuilder(dataList)),
-                TextField(
-                    controller:
-                        dateController, //editing controller of this TextField
-                    decoration: const InputDecoration(
-                        icon: Icon(Icons.calendar_today), //icon of text field
-                        labelText:
-                            "Enter a date from which to see PH trends" //label text of field
+              ),
+              Center(child: _graphBuilder(dataList)),
+              TextField(
+                  controller:
+                      dateController, //editing controller of this TextField
+                  decoration: const InputDecoration(
+                      icon: Icon(Icons.calendar_today), //icon of text field
+                      labelText:
+                          "Enter a date from which to see PH trends" //label text of field
 
-                        ),
-                    readOnly: true, // when true user cannot edit text
+                      ),
+                  readOnly: true, // when true user cannot edit text
 
-                    onTap: () async {
-                      //when click we have to show the datepicker
+                  onTap: () async {
+                    //when click we have to show the datepicker
 
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(), //get today's date
-                        firstDate:
-                            DateTime(2000), // Set your desired start date
-                        lastDate: DateTime.now(),
-                      ); // Disable future dates);
+                    DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(), //get today's date
+                      firstDate: DateTime(2000), // Set your desired start date
+                      lastDate: DateTime.now(),
+                    ); // Disable future dates);
 
-                      if (pickedDate != null) {
-                        print(
-                            pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
-                        String formattedDate = DateFormat('yyyy-MM-dd').format(
-                            pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-                        print(
-                            formattedDate); //formatted date output using intl package =>  2022-07-04
-                        //You can format date as per your need
+                    if (pickedDate != null) {
+                      print(
+                          pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
+                      String formattedDate = DateFormat('yyyy-MM-dd').format(
+                          pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                      print(
+                          formattedDate); //formatted date output using intl package =>  2022-07-04
+                      //You can format date as per your need
 
-                        setState(() {
-                          dateController.text =
-                              formattedDate; //set foratted date to TextField value.
-                        });
-                        bool success = await context
-                            .read<SensorDataProvider>()
-                            .fetchDataFromOtherDate(formattedDate);
+                      setState(() {
+                        dateController.text =
+                            formattedDate; //set foratted date to TextField value.
+                      });
+                      bool success = await context
+                          .read<SensorDataProvider>()
+                          .fetchDataFromOtherDate(formattedDate);
 
-                        if (!success) {
-                          showNoDataDialog(context);
-                        }
-                      } else {
-                        print("Date is not selected");
+                      if (!success) {
+                        showNoDataDialog(context);
                       }
-                    })
-              ],
-            )));
+                    } else {
+                      print("Date is not selected");
+                    }
+                  })
+            ],
+          )),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.blue,
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.edit),
+            label: 'Edit',
+          ),
+        ],
+        currentIndex: 0,
+        unselectedItemColor: Colors.white,
+        selectedItemColor: Colors.white,
+        selectedLabelStyle:
+            const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+        unselectedLabelStyle:
+            const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+        onTap: _onItemTapped,
+      ),
+    );
   }
 }

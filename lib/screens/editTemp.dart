@@ -170,7 +170,8 @@ class _EditTempPageState extends State<EditTempPage> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text('Success'),
-                  content: Text('PH Threshold edit has been successful.'),
+                  content: Text(
+                      'Water temperature threshold edit has been successful.'),
                   actions: [
                     TextButton(
                       onPressed: () {
