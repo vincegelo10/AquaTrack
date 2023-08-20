@@ -492,16 +492,47 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                   )),
                 ],
               ),
-              SizedBox(height: 20),
-              Center(
-                  child: Text(
-                labelData,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, // Make the text bold
-                    color: Colors.black, // Set the text color to white
-                    fontSize: 20),
-              )),
-              Center(child: _graphBuilder(dataList, context)),
+              SizedBox(height: 10),
+              GestureDetector(
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors
+                              .blue, // Set the desired color of the square
+                          borderRadius: BorderRadius.circular(
+                              20), // Adjust the radius to control the roundness
+                        ),
+                        child: Column(children: [
+                          SizedBox(height: 10),
+                          Center(
+                            child: Text(
+                              labelData,
+                              style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold, // Make the text bold
+                                  color: Colors
+                                      .white, // Set the text color to white
+                                  fontSize: 20),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Center(child: _graphBuilder(dataList, context)),
+                          SizedBox(height: 10),
+                        ])),
+                  ),
+                  onTap: () {
+                    print("Annotate data here!");
+                  }),
+              // Center(
+              //     child: Text(
+              //   labelData,
+              //   style: TextStyle(
+              //       fontWeight: FontWeight.bold, // Make the text bold
+              //       color: Colors.black, // Set the text color to white
+              //       fontSize: 20),
+              // )),
+              // Center(child: _graphBuilder(dataList, context)),
               TextField(
                   controller:
                       dateController, //editing controller of this TextField

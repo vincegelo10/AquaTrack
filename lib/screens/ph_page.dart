@@ -479,17 +479,39 @@ class _PHPageState extends State<PH_Page> {
                   // Text("PH Threshold: ${user!.lowerPH}-${user!.upperPH}"),
                 ],
               ),
-              SizedBox(height: 20),
-              Center(
-                child: Text(
-                  labelData,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, // Make the text bold
-                      color: Colors.black, // Set the text color to white
-                      fontSize: 20),
-                ),
-              ),
-              Center(child: _graphBuilder(dataList)),
+              SizedBox(height: 10),
+              GestureDetector(
+                  child: Padding(
+                    padding: EdgeInsets.all(5),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors
+                              .blue, // Set the desired color of the square
+                          borderRadius: BorderRadius.circular(
+                              20), // Adjust the radius to control the roundness
+                        ),
+                        child: Column(children: [
+                          SizedBox(height: 10),
+                          Center(
+                            child: Text(
+                              labelData,
+                              style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold, // Make the text bold
+                                  color: Colors
+                                      .white, // Set the text color to white
+                                  fontSize: 20),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Center(child: _graphBuilder(dataList)),
+                          SizedBox(height: 10),
+                        ])),
+                  ),
+                  onTap: () {
+                    print("Annotate data here!");
+                  }),
+
               TextField(
                   controller:
                       dateController, //editing controller of this TextField
@@ -534,7 +556,63 @@ class _PHPageState extends State<PH_Page> {
                     } else {
                       print("Date is not selected");
                     }
-                  })
+                  }),
+
+              // Center(
+              //   child: Text(
+              //     labelData,
+              //     style: TextStyle(
+              //         fontWeight: FontWeight.bold, // Make the text bold
+              //         color: Colors.black, // Set the text color to white
+              //         fontSize: 20),
+              //   ),
+              // ),
+              // Center(child: _graphBuilder(dataList)),
+              // TextField(
+              //     controller:
+              //         dateController, //editing controller of this TextField
+              //     decoration: const InputDecoration(
+              //         icon: Icon(Icons.calendar_today), //icon of text field
+              //         labelText:
+              //             "Enter a date from which to see PH trends" //label text of field
+
+              //         ),
+              //     readOnly: true, // when true user cannot edit text
+
+              //     onTap: () async {
+              //       //when click we have to show the datepicker
+
+              //       DateTime? pickedDate = await showDatePicker(
+              //         context: context,
+              //         initialDate: DateTime.now(), //get today's date
+              //         firstDate: DateTime(2000), // Set your desired start date
+              //         lastDate: DateTime.now(),
+              //       ); // Disable future dates);
+
+              //       if (pickedDate != null) {
+              //         print(
+              //             pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
+              //         String formattedDate = DateFormat('yyyy-MM-dd').format(
+              //             pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+              //         print(
+              //             formattedDate); //formatted date output using intl package =>  2022-07-04
+              //         //You can format date as per your need
+
+              //         setState(() {
+              //           dateController.text =
+              //               formattedDate; //set foratted date to TextField value.
+              //         });
+              //         bool success = await context
+              //             .read<SensorDataProvider>()
+              //             .fetchDataFromOtherDate(formattedDate);
+
+              //         if (!success) {
+              //           showNoDataDialog(context);
+              //         }
+              //       } else {
+              //         print("Date is not selected");
+              //       }
+              //     })
             ],
           )),
       bottomNavigationBar: BottomNavigationBar(
