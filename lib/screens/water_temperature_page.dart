@@ -30,9 +30,11 @@ class WaterTemperaturePage extends StatefulWidget {
 class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
   TextEditingController dateController = TextEditingController();
 
-  Widget _graphBuilder(List<SensorData> dataList, BuildContext context) {
+  Widget _graphBuilder(List<SensorData> dataList, BuildContext context,
+      String lowerTemp, String upperTemp) {
     User? user = context.watch<UserProvider>().user;
-
+    double lTemp = double.parse(lowerTemp);
+    double uTemp = double.parse(upperTemp);
     if (user!.inFahrenheit) {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -60,12 +62,22 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
             ),
             series: [
               LineSeries<SensorData, DateTime>(
-                dataSource: dataList,
-                xValueMapper: (SensorData data, _) => data.timeUpload,
-                yValueMapper: (SensorData data, _) =>
-                    data.waterTempInFahrenheit,
-                markerSettings: MarkerSettings(isVisible: true),
-              ),
+                  dataSource: dataList,
+                  xValueMapper: (SensorData data, _) => data.timeUpload,
+                  yValueMapper: (SensorData data, _) =>
+                      data.waterTempInFahrenheit,
+                  markerSettings: MarkerSettings(isVisible: true),
+                  pointColorMapper: (SensorData data, _) {
+                    if (data.waterTempInFahrenheit < lTemp ||
+                        data.waterTempInFahrenheit > uTemp) {
+                      return Colors.red;
+                    } else if (data.waterTempInFahrenheit == lTemp ||
+                        data.waterTempInFahrenheit == uTemp) {
+                      return Colors.orange;
+                    } else {
+                      return Colors.green;
+                    }
+                  }),
             ],
           ),
         ),
@@ -97,11 +109,21 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
             ),
             series: [
               LineSeries<SensorData, DateTime>(
-                dataSource: dataList,
-                xValueMapper: (SensorData data, _) => data.timeUpload,
-                yValueMapper: (SensorData data, _) => data.waterTemperature,
-                markerSettings: MarkerSettings(isVisible: true),
-              ),
+                  dataSource: dataList,
+                  xValueMapper: (SensorData data, _) => data.timeUpload,
+                  yValueMapper: (SensorData data, _) => data.waterTemperature,
+                  markerSettings: MarkerSettings(isVisible: true),
+                  pointColorMapper: (SensorData data, _) {
+                    if (data.waterTemperature < lTemp ||
+                        data.waterTemperature > uTemp) {
+                      return Colors.red;
+                    } else if (data.waterTemperature == lTemp ||
+                        data.waterTemperature == uTemp) {
+                      return Colors.orange;
+                    } else {
+                      return Colors.green;
+                    }
+                  }),
             ],
           ),
         ),
@@ -196,7 +218,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Water Temperature'),
+            title: Text('Water Temperature Threshold'),
             content: Text(
                 'The water temperature threshold is between $lowerTemp-$upperTemp $unitForThreshold. Do you want to edit it?'),
             actions: <Widget>[
@@ -306,6 +328,47 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
       );
     }
 
+    void showWaterTempAnnotationDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Water Temperature'),
+            content: Text(
+                'Do you want to view and annotate the water temperature data?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red, // Background color
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("No")),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green, // Background color
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, "/editPhPage");
+                      },
+                      child: Text("Yes")),
+                ]),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     void showWaterTempDialog(BuildContext context) {
       String status;
       try {
@@ -332,7 +395,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('PH Level'),
+            title: Text('Water Temperature'),
             content: Container(
               width: MediaQuery.of(context).size.width *
                   0.8, // Adjust the width as needed
@@ -517,12 +580,14 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Center(child: _graphBuilder(dataList, context)),
+                          Center(
+                              child: _graphBuilder(
+                                  dataList, context, lowerTemp, upperTemp)),
                           SizedBox(height: 10),
                         ])),
                   ),
                   onTap: () {
-                    print("Annotate data here!");
+                    showWaterTempAnnotationDialog(context);
                   }),
               // Center(
               //     child: Text(

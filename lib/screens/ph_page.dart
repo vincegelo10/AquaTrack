@@ -40,7 +40,8 @@ class _PHPageState extends State<PH_Page> {
     super.initState();
   }
 
-  Widget _graphBuilder(List<SensorData> dataList) {
+  Widget _graphBuilder(List<SensorData> dataList, user) {
+    //User user = context.watch<UserProvider>().user as User;
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Container(
@@ -67,11 +68,24 @@ class _PHPageState extends State<PH_Page> {
           ),
           series: [
             LineSeries<SensorData, DateTime>(
-              dataSource: dataList,
-              xValueMapper: (SensorData data, _) => data.timeUpload,
-              yValueMapper: (SensorData data, _) => data.ph,
-              markerSettings: MarkerSettings(isVisible: true),
-            ),
+                color: Colors.black,
+                dataSource: dataList,
+                xValueMapper: (SensorData data, _) => data.timeUpload,
+                yValueMapper: (SensorData data, _) => data.ph,
+                markerSettings: MarkerSettings(isVisible: true),
+                pointColorMapper: (SensorData data, _) {
+                  if (data.ph < user.lowerPH || data.ph > user.upperPH) {
+                    print("return red");
+                    return Colors.red;
+                  } else if (data.ph == user.lowerPH ||
+                      data.ph == user.upperPH) {
+                    print("return orange");
+                    return Colors.orange;
+                  } else {
+                    print("return green");
+                    return Colors.green;
+                  }
+                }),
           ],
         ),
       ),
@@ -178,9 +192,50 @@ class _PHPageState extends State<PH_Page> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('PH Level'),
+            title: Text('PH Level Threshold'),
             content: Text(
                 'The pH level threshold is between ${user!.lowerPH}-${user.upperPH}. Do you want to edit it?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                },
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red, // Background color
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("No")),
+                  SizedBox(width: 10),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.green, // Background color
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, "/editPhPage");
+                      },
+                      child: Text("Yes")),
+                ]),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    void showPhAnnotationDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('PH Level'),
+            content:
+                Text('Do you want to view and annotate the PH Level data?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -504,12 +559,13 @@ class _PHPageState extends State<PH_Page> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          Center(child: _graphBuilder(dataList)),
+                          Center(child: _graphBuilder(dataList, user)),
                           SizedBox(height: 10),
                         ])),
                   ),
                   onTap: () {
                     print("Annotate data here!");
+                    showPhAnnotationDialog(context);
                   }),
 
               TextField(
