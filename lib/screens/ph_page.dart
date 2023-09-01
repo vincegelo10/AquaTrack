@@ -10,6 +10,7 @@ import 'package:week7_networking_discussion/models/todo_model.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
+import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
 import 'package:week7_networking_discussion/screens/modal_todo.dart';
 import 'package:week7_networking_discussion/models/sensor_data_model.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
@@ -97,7 +98,7 @@ class _PHPageState extends State<PH_Page> {
     DateTime currentDate = DateTime.now();
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
-    User user = context.watch<UserProvider>().user as User;
+    User? user = context.watch<UserProvider>().user as User;
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
         ? "PH Level trends on ${dateController.text}"
@@ -257,8 +258,14 @@ class _PHPageState extends State<PH_Page> {
                         primary: Colors.green, // Background color
                       ),
                       onPressed: () {
+                        String dateArgument = dateController.text.isEmpty
+                            ? formattedDateToday
+                            : dateController.text;
+
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, "/editPhPage");
+                        Navigator.pushNamed(context, 'PhAnnotationPage',
+                            arguments:
+                                DataSensorArguments(dataList, dateArgument));
                       },
                       child: Text("Yes")),
                 ]),
@@ -564,8 +571,8 @@ class _PHPageState extends State<PH_Page> {
                         ])),
                   ),
                   onTap: () {
-                    print("Annotate data here!");
                     showPhAnnotationDialog(context);
+                    //pass screen arguments here - data from sensor and the date
                   }),
 
               TextField(

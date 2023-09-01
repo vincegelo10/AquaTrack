@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/providers/todo_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
+import 'package:week7_networking_discussion/screens/ph_annotation_page.dart';
 import 'package:week7_networking_discussion/screens/setPH.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
 import 'package:week7_networking_discussion/screens/todo_page.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
         '/editPage': (context) => const EditPage(),
         '/editPhPage': (context) => const EditPhPage(),
         '/editTempPage': (context) => const EditTempPage(),
+        'PhAnnotationPage': (context) => const PhAnnotationPage()
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,
