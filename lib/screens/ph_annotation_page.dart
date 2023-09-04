@@ -151,26 +151,85 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
     );
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-          child: Form(
-        key: _formKey,
-        child: ListView(
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(left: 40.0, right: 40.0),
-          children: <Widget>[
-            const Text(
-              "Set pH Threshold",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 25),
-            ),
-            lowerPHField,
-            upperPHField,
-            saveButton,
-            backButton,
-          ],
-        ),
-      )),
+      backgroundColor: Colors.grey[200],
+      appBar: AppBar(title: Text("PH Level Annotation")),
+      body: Container(
+          padding: const EdgeInsets.all(10.0),
+          child: ListView(
+            children: [
+              Text("$formattedDate",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8),
+                      Text(
+                        "\t Legend:",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.start, // Align to the left
+                        crossAxisAlignment:
+                            CrossAxisAlignment.center, // Vertically centered
+                        children: [
+                          Text("\t \t \t \t \t"),
+                          Container(
+                            width: 40,
+                            height: 15,
+                            decoration: BoxDecoration(color: Colors.green),
+                          ),
+                          Text("\t Within the threshold"),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.start, // Align to the left
+                        crossAxisAlignment:
+                            CrossAxisAlignment.center, // Vertically centered
+                        children: [
+                          Text("\t \t \t \t \t"),
+                          Container(
+                            width: 40,
+                            height: 15,
+                            decoration: BoxDecoration(color: Colors.red),
+                          ),
+                          Text("\t Outside the threshold"),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment:
+                            MainAxisAlignment.start, // Align to the left
+                        crossAxisAlignment:
+                            CrossAxisAlignment.center, // Vertically centered
+                        children: [
+                          Text("\t \t \t \t \t"),
+                          Container(
+                            width: 40,
+                            height: 15,
+                            decoration: BoxDecoration(color: Colors.orange),
+                          ),
+                          Text("\t Equal to one of the thresholds"),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+                    ],
+                  ),
+                ),
+              ),
+              backButton
+            ],
+          )),
     );
   }
 }
