@@ -25,18 +25,19 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
   @override
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
-    lowerPHTextController.text = user!.lowerPH.toString();
-    higherPHTextController.text = user!.upperPH.toString();
+
     final args =
         ModalRoute.of(context)!.settings.arguments as DataSensorArguments;
     print("args.date: ${args.date}");
     DateTime inputDate = DateTime.parse(args.date);
     String formattedDate = DateFormat('EEEE, MMM d, y').format(inputDate);
     print(formattedDate);
+    print("Before the build");
     for (int i = 0; i < args.dataList.length; i++) {
       print(args.dataList[i].ph);
       print(DateFormat("h:mm a").format(args.dataList[i].timeUpload));
     }
+    print("After the build");
     final lowerPHField = TextFormField(
         controller: lowerPHTextController,
 
@@ -169,7 +170,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 8),
+                      SizedBox(height: 10),
                       Text(
                         "\t Legend:",
                         style: TextStyle(
@@ -186,7 +187,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                           Text("\t \t \t \t \t"),
                           Container(
                             width: 40,
-                            height: 15,
+                            height: 16,
                             decoration: BoxDecoration(color: Colors.green),
                           ),
                           Text("\t Within the threshold"),
@@ -201,7 +202,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                           Text("\t \t \t \t \t"),
                           Container(
                             width: 40,
-                            height: 15,
+                            height: 16,
                             decoration: BoxDecoration(color: Colors.red),
                           ),
                           Text("\t Outside the threshold"),
@@ -216,13 +217,131 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                           Text("\t \t \t \t \t"),
                           Container(
                             width: 40,
-                            height: 15,
+                            height: 16,
                             decoration: BoxDecoration(color: Colors.orange),
                           ),
                           Text("\t Equal to one of the thresholds"),
                         ],
                       ),
-                      SizedBox(height: 8),
+                      SizedBox(height: 10),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.all(5),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Column(children: [
+                        Text("Time",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        for (int i = 0; i < args.dataList.length; i++)
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(top: 20),
+                            child: Text(
+                              DateFormat("h:mm a")
+                                  .format(args.dataList[i].timeUpload),
+                              style: TextStyle(fontSize: 21),
+                            ),
+                          )
+                      ])), // time
+                      Expanded(
+                          child: Column(children: [
+                        Text("pH level",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        for (int i = 0; i < args.dataList.length; i++)
+                          Padding(
+                            padding: EdgeInsetsDirectional.only(top: 20),
+                            child: Text(
+                              "${args.dataList[i].ph}",
+                              style: TextStyle(fontSize: 21),
+                            ),
+                          )
+                      ])), // ph
+                      Expanded(
+                          child: Column(children: [
+                        Text("Status",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        for (int i = 0; i < args.dataList.length; i++)
+                          args.dataList[i].ph < user!.lowerPH ||
+                                  args.dataList[i].ph > user!.upperPH
+                              ? Padding(
+                                  padding: EdgeInsetsDirectional.only(top: 20),
+                                  child: Container(
+                                    width: 40,
+                                    height: 25,
+                                    decoration:
+                                        BoxDecoration(color: Colors.red),
+                                  ))
+                              : args.dataList[i].ph == user!.lowerPH ||
+                                      args.dataList[i].ph == user!.upperPH
+                                  ? Padding(
+                                      padding:
+                                          EdgeInsetsDirectional.only(top: 20),
+                                      child: Container(
+                                        width: 40,
+                                        height: 25,
+                                        decoration:
+                                            BoxDecoration(color: Colors.orange),
+                                      ))
+                                  : Padding(
+                                      padding:
+                                          EdgeInsetsDirectional.only(top: 20),
+                                      child: Container(
+                                        width: 40,
+                                        height: 25,
+                                        decoration:
+                                            BoxDecoration(color: Colors.green),
+                                      ))
+                      ])), // status
+                      Expanded(
+                          child: Column(children: [
+                        Text("Annotation",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold)),
+                        for (int i = 0; i < args.dataList.length; i++)
+                          SizedBox(
+                            height: 45,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 10),
+                              child: InkWell(
+                                onTap: () {
+                                  print("clicked!");
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          "${args.dataList[i].timeUpload}",
+                                          style: TextStyle(fontSize: 12),
+                                          overflow: TextOverflow.ellipsis, //
+                                          maxLines: 1, // Add this line
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                      ])), // annotation
                     ],
                   ),
                 ),
