@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/providers/todo_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
+import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
 import 'package:week7_networking_discussion/screens/ph_annotation_page.dart';
 import 'package:week7_networking_discussion/screens/setPH.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
@@ -35,6 +36,8 @@ void main() async {
         ChangeNotifierProvider(create: ((context) => AuthProvider())),
         ChangeNotifierProvider(create: ((context) => UserProvider())),
         ChangeNotifierProvider(create: ((context) => SensorDataProvider())),
+        ChangeNotifierProvider(
+            create: ((context) => WaterParameterAnnotationProvider())),
       ],
       child: MyApp(),
     ),

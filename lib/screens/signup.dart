@@ -140,7 +140,6 @@ class _SignupPageState extends State<SignupPage> {
       child: ElevatedButton(
         onPressed: () async {
           //call the auth provider here
-          print("Hello world!!!!!\n");
           if (_formKey.currentState!.validate()) {
             // Navigator.pushNamed(context, '/setPhPage');
 

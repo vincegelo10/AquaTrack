@@ -27,6 +27,7 @@ class SensorDataProvider with ChangeNotifier {
 
   Future<bool> fetchDataFromOtherDate(String date) async {
     print(date);
+    dataFromOtherDates.clear();
     DataSnapshot snapshot = await ref.reference().child(date).get();
 
     if (snapshot.exists) {

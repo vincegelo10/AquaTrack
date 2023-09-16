@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
+import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 
 import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
@@ -38,108 +39,6 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
       print(DateFormat("h:mm a").format(args.dataList[i].timeUpload));
     }
     print("After the build");
-    final lowerPHField = TextFormField(
-        controller: lowerPHTextController,
-
-        // initialValue: user!.lowerPH.toString(),
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: "Lower PH Threshold",
-          labelText: "Lower PH Threshold",
-          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Lower PH Level is required';
-          }
-          try {
-            double PH = double.parse(value!);
-            if ((PH < 0 || PH > 14)) {
-              return 'PH level should be between 0 and 14 inclusive';
-            }
-            try {
-              double higherPH = double.parse(higherPHTextController.text);
-              if (PH > higherPH) {
-                return 'This value should be less than the higher PH level';
-              }
-            } catch (e) {
-              print("The other field is not a floating point");
-            }
-          } catch (e) {
-            return 'Input must be a floating point';
-          }
-        },
-        onSaved: ((String? value) {
-          lowerPHLevel = double.parse(value!);
-        }));
-
-    final upperPHField = TextFormField(
-        controller: higherPHTextController,
-        // initialValue: user!.upperPH.toString(),
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
-          hintText: "Upper PH Threshold",
-          labelText: "Upper PH Threshold",
-          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Higher PH Level is required';
-          }
-          try {
-            double PH = double.parse(value!);
-            if ((PH < 0 || PH > 14)) {
-              return 'PH level should be between 0 and 14 inclusive';
-            }
-            try {
-              double lowerPH = double.parse(lowerPHTextController.text);
-              if (PH < lowerPH) {
-                return 'This value should be greater than the lower PH level';
-              }
-            } catch (e) {
-              print("The other field is not a floating point");
-            }
-          } catch (e) {
-            return 'Input must be a floating point';
-          }
-        },
-        onSaved: ((String? value) {
-          upperPHLevel = double.parse(value!);
-        }));
-
-    final saveButton = Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ElevatedButton(
-        onPressed: () async {
-          //call the auth provider here
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState?.save();
-            context
-                .read<UserProvider>()
-                .editPH(user!.email, lowerPHLevel!, upperPHLevel!);
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Success'),
-                  content: Text('PH Threshold edit has been successful.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context); // Close the dialog
-                        Navigator.pop(context); // Close the form screen
-                      },
-                      child: Text('OK'),
-                    ),
-                  ],
-                );
-              },
-            );
-          }
-        },
-        child: const Text('Save', style: TextStyle(color: Colors.white)),
-      ),
-    );
 
     final backButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -316,7 +215,55 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                               padding: EdgeInsets.only(top: 10),
                               child: InkWell(
                                 onTap: () {
-                                  print("clicked!");
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('PH level Annotation'),
+                                        actions: <Widget>[
+                                          Expanded(
+                                            child: TextField(
+                                                decoration:
+                                                    const InputDecoration(
+                                                  hintText:
+                                                      'Enter annotation here',
+                                                ),
+                                                maxLines: null),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              print("args.date: ${args.date}");
+                                              print(DateFormat("h:mm a").format(
+                                                  args.dataList[i].timeUpload));
+
+                                              var date = args.date;
+                                              var time = DateFormat("h:mm a")
+                                                  .format(args
+                                                      .dataList[i].timeUpload);
+                                              var water_parameter = "ph";
+                                              var value = "sample";
+
+                                              await context
+                                                  .read<
+                                                      WaterParameterAnnotationProvider>()
+                                                  .addAnnotation(date, time,
+                                                      water_parameter, value);
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Text(
+                                                      'Annotation saved successfully'),
+                                                ),
+                                              );
+                                            },
+                                            child: Text('Save'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
@@ -331,7 +278,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                                         child: Text(
                                           "${args.dataList[i].timeUpload}",
                                           style: TextStyle(fontSize: 12),
-                                          overflow: TextOverflow.ellipsis, //
+                                          overflow: TextOverflow.ellipsis, //r
                                           maxLines: 1, // Add this line
                                         ),
                                       )
