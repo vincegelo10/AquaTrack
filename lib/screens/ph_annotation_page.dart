@@ -8,6 +8,7 @@ import 'package:week7_networking_discussion/providers/user_provider.dart';
 
 import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PhAnnotationPage extends StatefulWidget {
   const PhAnnotationPage({super.key});
@@ -26,9 +27,110 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
   @override
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
-
+    final TextEditingController _annotationController = TextEditingController();
+    QuerySnapshot<Object?>? queryResult =
+        context.watch<WaterParameterAnnotationProvider>().query;
     final args =
         ModalRoute.of(context)!.settings.arguments as DataSensorArguments;
+    List<Widget> annotationWidgets = [];
+    List<TextEditingController> textControllers = [];
+
+    for (int i = 0; i < args.dataList.length; i++) {
+      textControllers.add(TextEditingController());
+    }
+
+    for (int i = 0; i < args.dataList.length; i++) {
+      var text = "None";
+
+      for (var document in queryResult!.docs) {
+        // Access the data within each document
+        String time = DateFormat("h:mm a").format(args.dataList[i].timeUpload);
+        var data = document.data() as Map<String, dynamic>;
+
+        // Access the "value" field
+        var value = data['value'];
+
+        // Print the value and the entire data
+
+        if (data["time"] == time) {
+          text = value;
+          textControllers[i].text = text;
+        }
+      }
+      annotationWidgets.add(SizedBox(
+        height: 45,
+        child: Padding(
+          padding: EdgeInsets.only(top: 10),
+          child: InkWell(
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text('PH level Annotation'),
+                    actions: <Widget>[
+                      Expanded(
+                        child: TextField(
+                            decoration: const InputDecoration(
+                              hintText: 'Enter annotation here',
+                            ),
+                            controller: textControllers[i],
+                            maxLines: null),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          print("args.date: ${args.date}");
+                          print(DateFormat("h:mm a")
+                              .format(args.dataList[i].timeUpload));
+
+                          var date = args.date;
+                          var time = DateFormat("h:mm a")
+                              .format(args.dataList[i].timeUpload);
+                          var water_parameter = "ph";
+                          var value = textControllers[i].text;
+
+                          await context
+                              .read<WaterParameterAnnotationProvider>()
+                              .addAnnotation(
+                                  date, time, water_parameter, value);
+                          Navigator.of(context).pop(); // Close the dialog
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Annotation saved successfully'),
+                            ),
+                          );
+                        },
+                        child: Text('Save'),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      "$text",
+                      style: TextStyle(fontSize: 12),
+                      overflow: TextOverflow.ellipsis, //r
+                      maxLines: 1, // Add this line
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ));
+    }
+
     print("args.date: ${args.date}");
     DateTime inputDate = DateTime.parse(args.date);
     String formattedDate = DateFormat('EEEE, MMM d, y').format(inputDate);
@@ -208,86 +310,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                         Text("Annotation",
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
-                        for (int i = 0; i < args.dataList.length; i++)
-                          SizedBox(
-                            height: 45,
-                            child: Padding(
-                              padding: EdgeInsets.only(top: 10),
-                              child: InkWell(
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text('PH level Annotation'),
-                                        actions: <Widget>[
-                                          Expanded(
-                                            child: TextField(
-                                                decoration:
-                                                    const InputDecoration(
-                                                  hintText:
-                                                      'Enter annotation here',
-                                                ),
-                                                maxLines: null),
-                                          ),
-                                          TextButton(
-                                            onPressed: () async {
-                                              print("args.date: ${args.date}");
-                                              print(DateFormat("h:mm a").format(
-                                                  args.dataList[i].timeUpload));
-
-                                              var date = args.date;
-                                              var time = DateFormat("h:mm a")
-                                                  .format(args
-                                                      .dataList[i].timeUpload);
-                                              var water_parameter = "ph";
-                                              var value = "sample";
-
-                                              await context
-                                                  .read<
-                                                      WaterParameterAnnotationProvider>()
-                                                  .addAnnotation(date, time,
-                                                      water_parameter, value);
-                                              Navigator.of(context)
-                                                  .pop(); // Close the dialog
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      'Annotation saved successfully'),
-                                                ),
-                                              );
-                                            },
-                                            child: Text('Save'),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(8.0),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          "${args.dataList[i].timeUpload}",
-                                          style: TextStyle(fontSize: 12),
-                                          overflow: TextOverflow.ellipsis, //r
-                                          maxLines: 1, // Add this line
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          )
+                        ...annotationWidgets
                       ])), // annotation
                     ],
                   ),

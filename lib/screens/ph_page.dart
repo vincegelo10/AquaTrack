@@ -10,6 +10,7 @@ import 'package:week7_networking_discussion/models/todo_model.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
+import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
 import 'package:week7_networking_discussion/screens/modal_todo.dart';
 import 'package:week7_networking_discussion/models/sensor_data_model.dart';
@@ -261,7 +262,9 @@ class _PHPageState extends State<PH_Page> {
                         String dateArgument = dateController.text.isEmpty
                             ? formattedDateToday
                             : dateController.text;
-
+                        context
+                            .read<WaterParameterAnnotationProvider>()
+                            .fetchAnnotation(dateArgument, "ph");
                         Navigator.pop(context);
                         Navigator.pushNamed(context, 'PhAnnotationPage',
                             arguments:

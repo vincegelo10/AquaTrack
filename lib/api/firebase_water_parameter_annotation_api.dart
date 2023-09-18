@@ -7,19 +7,54 @@ class FirebaseWaterParameterAnnotationAPI {
   Future<void> addAnnotation(
       String date, String time, String water_parameter, String value) async {
     try {
-      await db.collection("annotations").add({
-        "date": date,
-        "time": time,
-        "water_parameter": water_parameter,
-        "value": value
-      });
-      // The annotation was added successfully.
-      // You can add any success handling code here.
+      print("I am here");
+      final query = await db
+          .collection("annotations")
+          .where("date", isEqualTo: date)
+          .where("water_parameter", isEqualTo: water_parameter)
+          .where("time", isEqualTo: time);
+
+      final querySnapshot = await query.get();
+      if (querySnapshot.docs.length == 0) {
+        try {
+          await db.collection("annotations").add({
+            "date": date,
+            "time": time,
+            "water_parameter": water_parameter,
+            "value": value
+          });
+          // The annotation was added successfully.
+          // You can add any success handling code here.
+        } catch (e) {
+          // Handle errors here
+          print("Error adding annotation: $e");
+          // You may want to throw the exception again or handle it differently.
+          // For example, you could show an error message to the user.
+        }
+      } else {
+        for (final docSnapshot in querySnapshot.docs) {
+          final docReference = docSnapshot.reference;
+          await docReference.update({"value": value});
+        }
+      }
     } catch (e) {
-      // Handle errors here
-      print("Error adding annotation: $e");
-      // You may want to throw the exception again or handle it differently.
-      // For example, you could show an error message to the user.
+      print("Error: $e");
+    }
+  }
+
+  Future<QuerySnapshot> fetchAnnotation(
+      String date, String water_parameter) async {
+    try {
+      var querySnapshot = await db
+          .collection("annotations")
+          .where("date", isEqualTo: date)
+          .where("water_parameter", isEqualTo: water_parameter)
+          .get();
+      return querySnapshot;
+    } catch (e) {
+      print("an error occured bro");
+      print("Error: $e");
+      throw e;
     }
   }
 
