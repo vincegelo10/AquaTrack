@@ -264,9 +264,9 @@ class _PHPageState extends State<PH_Page> {
                             : dateController.text;
                         context
                             .read<WaterParameterAnnotationProvider>()
-                            .fetchAnnotation(dateArgument, "ph");
+                            .fetchAnnotation(dateArgument, "ph", user.email);
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, 'PhAnnotationPage',
+                        Navigator.pushNamed(context, '/PhAnnotationPage',
                             arguments:
                                 DataSensorArguments(dataList, dateArgument));
                       },

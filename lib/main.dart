@@ -16,6 +16,7 @@ import 'package:week7_networking_discussion/screens/todo_page.dart';
 import 'package:week7_networking_discussion/screens/editPH.dart';
 import 'package:week7_networking_discussion/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:week7_networking_discussion/screens/water_temperature_annotation_page.dart';
 import 'firebase_options.dart';
 import 'package:week7_networking_discussion/screens/PH_Page.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
@@ -62,7 +63,9 @@ class MyApp extends StatelessWidget {
         '/editPage': (context) => const EditPage(),
         '/editPhPage': (context) => const EditPhPage(),
         '/editTempPage': (context) => const EditTempPage(),
-        'PhAnnotationPage': (context) => const PhAnnotationPage()
+        '/PhAnnotationPage': (context) => const PhAnnotationPage(),
+        '/WaterTemperatureAnnotationPage': (context) =>
+            const WaterTemperatureAnnotationPage(),
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

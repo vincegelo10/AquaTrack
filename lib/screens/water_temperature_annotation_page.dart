@@ -10,14 +10,16 @@ import 'package:week7_networking_discussion/screen_arguments/data_sensor_argumen
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PhAnnotationPage extends StatefulWidget {
-  const PhAnnotationPage({super.key});
+class WaterTemperatureAnnotationPage extends StatefulWidget {
+  const WaterTemperatureAnnotationPage({super.key});
 
   @override
-  _PhAnnotationPageState createState() => _PhAnnotationPageState();
+  _WaterTemperatureAnnotationPageState createState() =>
+      _WaterTemperatureAnnotationPageState();
 }
 
-class _PhAnnotationPageState extends State<PhAnnotationPage> {
+class _WaterTemperatureAnnotationPageState
+    extends State<WaterTemperatureAnnotationPage> {
   double? lowerPHLevel;
   double? upperPHLevel;
   TextEditingController lowerPHTextController = TextEditingController();
@@ -26,7 +28,16 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
 
   @override
   Widget build(BuildContext context) {
-    User? user = context.watch<UserProvider>().user as User;
+    User? user = context.watch<UserProvider>().user;
+
+    var lowerTemp = user!.inFahrenheit == false
+        ? user!.lowerTemp
+        : ((user!.lowerTemp * 9 / 5) + 32);
+
+    var upperTemp = user!.inFahrenheit == false
+        ? user!.upperTemp
+        : ((user!.upperTemp * 9 / 5) + 32);
+
     final TextEditingController _annotationController = TextEditingController();
     QuerySnapshot<Object?>? queryResult =
         context.watch<WaterParameterAnnotationProvider>().query;
@@ -34,6 +45,37 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
         ModalRoute.of(context)!.settings.arguments as DataSensorArguments;
     List<Widget> annotationWidgets = [];
     List<TextEditingController> textControllers = [];
+    Widget _temperatureColumnBuilder() {
+      if (user!.inFahrenheit) {
+        return Expanded(
+            child: Column(children: [
+          Text("Temp",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          for (int i = 0; i < args.dataList.length; i++)
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: 20),
+              child: Text(
+                "${args.dataList[i].waterTempInFahrenheit}",
+                style: TextStyle(fontSize: 21),
+              ),
+            )
+        ]));
+      } else {
+        return Expanded(
+            child: Column(children: [
+          Text("Temp",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          for (int i = 0; i < args.dataList.length; i++)
+            Padding(
+              padding: EdgeInsetsDirectional.only(top: 20),
+              child: Text(
+                "${args.dataList[i].waterTemperature}",
+                style: TextStyle(fontSize: 21),
+              ),
+            )
+        ]));
+      }
+    }
 
     for (int i = 0; i < args.dataList.length; i++) {
       textControllers.add(TextEditingController());
@@ -67,7 +109,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('PH level Annotation'),
+                    title: Text('Water Temperature Annotation'),
                     actions: <Widget>[
                       Expanded(
                         child: TextField(
@@ -86,13 +128,14 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                           var date = args.date;
                           var time = DateFormat("h:mm a")
                               .format(args.dataList[i].timeUpload);
-                          var water_parameter = "ph";
+                          var water_parameter = "water_temperature";
                           var value = textControllers[i].text;
+                          print("water parameter is $water_parameter");
 
                           await context
                               .read<WaterParameterAnnotationProvider>()
-                              .addAnnotation(date, time, water_parameter, value,
-                                  user.email);
+                              .addAnnotation(
+                                  date, time, water_parameter, value, user.email);
                           Navigator.of(context).pop(); // Close the dialog
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -140,7 +183,32 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
       print(args.dataList[i].ph);
       print(DateFormat("h:mm a").format(args.dataList[i].timeUpload));
     }
-    print("After the build");
+    // print("After the build");
+    // for (int i = 0; i < args.dataList.length; i++) {
+    //   print("user in fahrenheit: ${user!.inFahrenheit}");
+    //   (user!.inFahrenheit == true &&
+    //           (args.dataList[i].waterTempInFahrenheit < lowerTemp ||
+    //               args.dataList[i].waterTempInFahrenheit > upperTemp))
+    //       ? print("fahrenheit and red")
+    //       : (user!.inFahrenheit == true &&
+    //               (args.dataList[i].waterTempInFahrenheit == lowerTemp ||
+    //                   args.dataList[i].waterTempInFahrenheit == upperTemp))
+    //           ? print("fahrenheit and orange")
+    //           : (user!.inFahrenheit == true &&
+    //                   (args.dataList[i].waterTempInFahrenheit > lowerTemp &&
+    //                       args.dataList[i].waterTempInFahrenheit < upperTemp))
+    //               ? print("fahrenheit and green")
+    //               : (user!.inFahrenheit == false &&
+    //                       (args.dataList[i].waterTemperature < lowerTemp ||
+    //                           args.dataList[i].waterTemperature > upperTemp))
+    //                   ? print("celsius and red")
+    //                   : (user!.inFahrenheit == false &&
+    //                           (args.dataList[i].waterTemperature == lowerTemp ||
+    //                               args.dataList[i].waterTemperature ==
+    //                                   upperTemp))
+    //                       ? print("celsius and orange")
+    //                       : print("celsisus and green");
+    // }
 
     final backButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -154,7 +222,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(title: Text("PH Level Annotation")),
+      appBar: AppBar(title: Text("Water Temperature Annotation")),
       body: Container(
           padding: const EdgeInsets.all(10.0),
           child: ListView(
@@ -254,28 +322,18 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                             ),
                           )
                       ])), // time
-                      Expanded(
-                          child: Column(children: [
-                        Text("pH level",
-                            style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        for (int i = 0; i < args.dataList.length; i++)
-                          Padding(
-                            padding: EdgeInsetsDirectional.only(top: 20),
-                            child: Text(
-                              "${args.dataList[i].ph}",
-                              style: TextStyle(fontSize: 21),
-                            ),
-                          )
-                      ])), // ph
+                      _temperatureColumnBuilder(),
                       Expanded(
                           child: Column(children: [
                         Text("Status",
                             style: TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
                         for (int i = 0; i < args.dataList.length; i++)
-                          args.dataList[i].ph < user!.lowerPH ||
-                                  args.dataList[i].ph > user!.upperPH
+                          //if fahrenheit,
+                          (user!.inFahrenheit == true &&
+                                  (args.dataList[i].waterTempInFahrenheit < lowerTemp ||
+                                      args.dataList[i].waterTempInFahrenheit >
+                                          upperTemp))
                               ? Padding(
                                   padding: EdgeInsetsDirectional.only(top: 20),
                                   child: Container(
@@ -284,8 +342,10 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                                     decoration:
                                         BoxDecoration(color: Colors.red),
                                   ))
-                              : args.dataList[i].ph == user!.lowerPH ||
-                                      args.dataList[i].ph == user!.upperPH
+                              : (user!.inFahrenheit == true &&
+                                      (args.dataList[i].waterTempInFahrenheit == lowerTemp ||
+                                          args.dataList[i].waterTempInFahrenheit ==
+                                              upperTemp))
                                   ? Padding(
                                       padding:
                                           EdgeInsetsDirectional.only(top: 20),
@@ -295,15 +355,51 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                                         decoration:
                                             BoxDecoration(color: Colors.orange),
                                       ))
-                                  : Padding(
-                                      padding:
-                                          EdgeInsetsDirectional.only(top: 20),
-                                      child: Container(
-                                        width: 40,
-                                        height: 25,
-                                        decoration:
-                                            BoxDecoration(color: Colors.green),
-                                      ))
+                                  : (user!.inFahrenheit == true &&
+                                          (args.dataList[i].waterTempInFahrenheit > lowerTemp &&
+                                              args.dataList[i].waterTempInFahrenheit <
+                                                  upperTemp))
+                                      ? Padding(
+                                          padding: EdgeInsetsDirectional.only(
+                                              top: 20),
+                                          child: Container(
+                                            width: 40,
+                                            height: 25,
+                                            decoration: BoxDecoration(
+                                                color: Colors.green),
+                                          ))
+                                      : (user!.inFahrenheit == false &&
+                                              (args.dataList[i].waterTemperature < lowerTemp ||
+                                                  args.dataList[i].waterTemperature >
+                                                      upperTemp))
+                                          ? Padding(
+                                              padding: EdgeInsetsDirectional.only(
+                                                  top: 20),
+                                              child: Container(
+                                                width: 40,
+                                                height: 25,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red),
+                                              ))
+                                          : (user!.inFahrenheit == false &&
+                                                  (args.dataList[i].waterTemperature == lowerTemp ||
+                                                      args.dataList[i].waterTemperature == upperTemp))
+                                              ? Padding(
+                                                  padding: EdgeInsetsDirectional.only(top: 20),
+                                                  child: Container(
+                                                    width: 40,
+                                                    height: 25,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.orange),
+                                                  ))
+                                              : Padding(
+                                                  padding: EdgeInsetsDirectional.only(top: 20),
+                                                  child: Container(
+                                                    width: 40,
+                                                    height: 25,
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.green),
+                                                  ))
                       ])), // status
                       Expanded(
                           child: Column(children: [

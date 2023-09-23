@@ -20,6 +20,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
+import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
+import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
+
 class WaterTemperaturePage extends StatefulWidget {
   const WaterTemperaturePage({super.key});
 
@@ -35,6 +38,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     User? user = context.watch<UserProvider>().user;
     double lTemp = double.parse(lowerTemp);
     double uTemp = double.parse(upperTemp);
+
     if (user!.inFahrenheit) {
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -136,7 +140,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     DateTime currentDate = DateTime.now();
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
-    User? user = context.watch<UserProvider>().user;
+    User user = context.watch<UserProvider>().user as User;
     print("user in fahrenheit: ${user!.inFahrenheit}");
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
@@ -357,8 +361,18 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                         primary: Colors.green, // Background color
                       ),
                       onPressed: () {
+                        String dateArgument = dateController.text.isEmpty
+                            ? formattedDateToday
+                            : dateController.text;
+                        context
+                            .read<WaterParameterAnnotationProvider>()
+                            .fetchAnnotation(
+                                dateArgument, "water_temperature", user.email);
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, "/editPhPage");
+                        Navigator.pushNamed(
+                            context, '/WaterTemperatureAnnotationPage',
+                            arguments:
+                                DataSensorArguments(dataList, dateArgument));
                       },
                       child: Text("Yes")),
                 ]),

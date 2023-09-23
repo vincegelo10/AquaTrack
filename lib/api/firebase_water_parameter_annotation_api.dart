@@ -4,8 +4,8 @@ import 'package:week7_networking_discussion/models/user_model.dart';
 class FirebaseWaterParameterAnnotationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<void> addAnnotation(
-      String date, String time, String water_parameter, String value) async {
+  Future<void> addAnnotation(String date, String time, String water_parameter,
+      String value, String email) async {
     try {
       print("I am here");
       final query = await db
@@ -21,7 +21,8 @@ class FirebaseWaterParameterAnnotationAPI {
             "date": date,
             "time": time,
             "water_parameter": water_parameter,
-            "value": value
+            "value": value,
+            "author": email
           });
           // The annotation was added successfully.
           // You can add any success handling code here.
@@ -43,16 +44,16 @@ class FirebaseWaterParameterAnnotationAPI {
   }
 
   Future<QuerySnapshot> fetchAnnotation(
-      String date, String water_parameter) async {
+      String date, String water_parameter, String email) async {
     try {
       var querySnapshot = await db
           .collection("annotations")
           .where("date", isEqualTo: date)
           .where("water_parameter", isEqualTo: water_parameter)
+          .where("author", isEqualTo: email)
           .get();
       return querySnapshot;
     } catch (e) {
-      print("an error occured bro");
       print("Error: $e");
       throw e;
     }

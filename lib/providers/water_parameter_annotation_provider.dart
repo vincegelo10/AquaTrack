@@ -21,17 +21,23 @@ class WaterParameterAnnotationProvider with ChangeNotifier {
   QuerySnapshot<Object?>? get query => queryResult;
 
   //add annotation
-  Future<void> addAnnotation(
-      String date, String time, String water_parameter, String value) async {
-    await firebaseService.addAnnotation(date, time, water_parameter, value);
-    queryResult = await firebaseService.fetchAnnotation(date, water_parameter);
+  Future<void> addAnnotation(String date, String time, String water_parameter,
+      String value, String email) async {
+    print("ADD ANNOTATION");
+    print("water parameter: $water_parameter");
+    await firebaseService.addAnnotation(
+        date, time, water_parameter, value, email);
+    queryResult =
+        await firebaseService.fetchAnnotation(date, water_parameter, email);
     notifyListeners();
   }
 
   //fetch a annotation using date and water parameter
-  Future<void> fetchAnnotation(String date, String water_parameter) async {
+  Future<void> fetchAnnotation(
+      String date, String water_parameter, String email) async {
     print("fetching annotation");
-    queryResult = await firebaseService.fetchAnnotation(date, water_parameter);
+    queryResult =
+        await firebaseService.fetchAnnotation(date, water_parameter, email);
     notifyListeners();
 
     //iterate through the documents in the QuerySnapshot
