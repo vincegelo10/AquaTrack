@@ -43,6 +43,21 @@ class FirebaseWaterParameterAnnotationAPI {
     }
   }
 
+  Future<void> deleteAnnotation(
+      String date, String time, String water_parameter, String email) async {
+    QuerySnapshot querySnapshot = await db
+        .collection("annotations")
+        .where("date", isEqualTo: date)
+        .where("time", isEqualTo: time)
+        .where("water_parameter", isEqualTo: water_parameter)
+        .where("author", isEqualTo: email)
+        .get();
+
+    for (QueryDocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      await db.collection("annotations").doc(documentSnapshot.id).delete();
+    }
+  }
+
   Future<QuerySnapshot> fetchAnnotation(
       String date, String water_parameter, String email) async {
     try {

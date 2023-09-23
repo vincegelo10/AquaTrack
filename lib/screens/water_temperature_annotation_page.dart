@@ -119,32 +119,55 @@ class _WaterTemperatureAnnotationPageState
                             controller: textControllers[i],
                             maxLines: null),
                       ),
-                      TextButton(
-                        onPressed: () async {
-                          print("args.date: ${args.date}");
-                          print(DateFormat("h:mm a")
-                              .format(args.dataList[i].timeUpload));
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        TextButton(
+                          onPressed: () async {
+                            var date = args.date;
+                            var time = DateFormat("h:mm a")
+                                .format(args.dataList[i].timeUpload);
+                            var water_parameter = "water_temperature";
 
-                          var date = args.date;
-                          var time = DateFormat("h:mm a")
-                              .format(args.dataList[i].timeUpload);
-                          var water_parameter = "water_temperature";
-                          var value = textControllers[i].text;
-                          print("water parameter is $water_parameter");
+                            await context
+                                .read<WaterParameterAnnotationProvider>()
+                                .deleteAnnotation(
+                                    date, time, water_parameter, user.email);
+                            Navigator.of(context).pop(); // Close the dialog
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content:
+                                    Text('Annotation deleted successfully'),
+                              ),
+                            );
+                          },
+                          child: Text('Delete'),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            print("args.date: ${args.date}");
+                            print(DateFormat("h:mm a")
+                                .format(args.dataList[i].timeUpload));
 
-                          await context
-                              .read<WaterParameterAnnotationProvider>()
-                              .addAnnotation(
-                                  date, time, water_parameter, value, user.email);
-                          Navigator.of(context).pop(); // Close the dialog
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Annotation saved successfully'),
-                            ),
-                          );
-                        },
-                        child: Text('Save'),
-                      ),
+                            var date = args.date;
+                            var time = DateFormat("h:mm a")
+                                .format(args.dataList[i].timeUpload);
+                            var water_parameter = "water_temperature";
+                            var value = textControllers[i].text;
+                            print("water parameter is $water_parameter");
+
+                            await context
+                                .read<WaterParameterAnnotationProvider>()
+                                .addAnnotation(date, time, water_parameter,
+                                    value, user.email);
+                            Navigator.of(context).pop(); // Close the dialog
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Annotation saved successfully'),
+                              ),
+                            );
+                          },
+                          child: Text('Save'),
+                        ),
+                      ])
                     ],
                   );
                 },

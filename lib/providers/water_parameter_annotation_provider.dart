@@ -39,20 +39,13 @@ class WaterParameterAnnotationProvider with ChangeNotifier {
     queryResult =
         await firebaseService.fetchAnnotation(date, water_parameter, email);
     notifyListeners();
-
-    //iterate through the documents in the QuerySnapshot
-    // for (var document in queryResult!.docs) {
-    //   // Access the data within each document
-    //   var data = document.data() as Map<String, dynamic>;
-
-    //   // Access the "value" field
-    //   var value = data['value'];
-
-    //   // Print the value and the entire data
-    //   print("Value: $value");
-    //   print(data);
-    // }
   }
 
-  void deleteAnnotation() async {}
+  Future<void> deleteAnnotation(
+      String date, String time, String water_parameter, String email) async {
+    await firebaseService.deleteAnnotation(date, time, water_parameter, email);
+    queryResult =
+        await firebaseService.fetchAnnotation(date, water_parameter, email);
+    notifyListeners();
+  }
 }
