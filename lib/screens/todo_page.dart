@@ -353,7 +353,8 @@ class _TodoPageState extends State<TodoPage> {
         ],
         currentIndex: 0,
         unselectedItemColor: Colors.white,
-        selectedItemColor: Color.fromARGB(255, 106, 99, 90),
+        // selectedItemColor: Color.fromARGB(255, 106, 99, 90),
+        selectedItemColor: Colors.white,
         selectedLabelStyle:
             const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
         unselectedLabelStyle:

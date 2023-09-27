@@ -96,10 +96,10 @@ class _PHPageState extends State<PH_Page> {
 
   @override
   Widget build(BuildContext context) {
+    User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
-    User? user = context.watch<UserProvider>().user as User;
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
         ? "PH Level trends on ${dateController.text}"

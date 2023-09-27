@@ -58,7 +58,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
         }
       }
       annotationWidgets.add(SizedBox(
-        height: 45,
+        height: 47,
         child: Padding(
           padding: EdgeInsets.only(top: 10),
           child: InkWell(
@@ -264,14 +264,16 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                     children: [
                       Expanded(
                           child: Column(children: [
+                        SizedBox(height: 10),
                         Text("Time",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                         for (int i = 0; i < args.dataList.length; i++)
                           Padding(
                             padding: EdgeInsetsDirectional.only(top: 20),
                             child: Text(
-                              DateFormat("h:mm a")
+                              //DateFormat("h:mm a")
+                              DateFormat("HH:mm")
                                   .format(args.dataList[i].timeUpload),
                               style: TextStyle(fontSize: 21),
                             ),
@@ -279,9 +281,10 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                       ])), // time
                       Expanded(
                           child: Column(children: [
+                        SizedBox(height: 10),
                         Text("pH level",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                         for (int i = 0; i < args.dataList.length; i++)
                           Padding(
                             padding: EdgeInsetsDirectional.only(top: 20),
@@ -293,9 +296,10 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                       ])), // ph
                       Expanded(
                           child: Column(children: [
+                        SizedBox(height: 10),
                         Text("Status",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                         for (int i = 0; i < args.dataList.length; i++)
                           args.dataList[i].ph < user!.lowerPH ||
                                   args.dataList[i].ph > user!.upperPH
@@ -303,7 +307,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                                   padding: EdgeInsetsDirectional.only(top: 20),
                                   child: Container(
                                     width: 40,
-                                    height: 25,
+                                    height: 27,
                                     decoration:
                                         BoxDecoration(color: Colors.red),
                                   ))
@@ -314,7 +318,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                                           EdgeInsetsDirectional.only(top: 20),
                                       child: Container(
                                         width: 40,
-                                        height: 25,
+                                        height: 27,
                                         decoration:
                                             BoxDecoration(color: Colors.orange),
                                       ))
@@ -323,17 +327,19 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
                                           EdgeInsetsDirectional.only(top: 20),
                                       child: Container(
                                         width: 40,
-                                        height: 25,
+                                        height: 27,
                                         decoration:
                                             BoxDecoration(color: Colors.green),
                                       ))
                       ])), // status
                       Expanded(
                           child: Column(children: [
+                        SizedBox(height: 10),
                         Text("Annotation",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        ...annotationWidgets
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        ...annotationWidgets,
+                        SizedBox(height: 10)
                       ])), // annotation
                     ],
                   ),

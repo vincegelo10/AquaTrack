@@ -49,8 +49,9 @@ class _WaterTemperatureAnnotationPageState
       if (user!.inFahrenheit) {
         return Expanded(
             child: Column(children: [
+          SizedBox(height: 10),
           Text("Temp",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           for (int i = 0; i < args.dataList.length; i++)
             Padding(
               padding: EdgeInsetsDirectional.only(top: 20),
@@ -63,8 +64,9 @@ class _WaterTemperatureAnnotationPageState
       } else {
         return Expanded(
             child: Column(children: [
+          SizedBox(height: 10),
           Text("Temp",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           for (int i = 0; i < args.dataList.length; i++)
             Padding(
               padding: EdgeInsetsDirectional.only(top: 20),
@@ -100,7 +102,7 @@ class _WaterTemperatureAnnotationPageState
         }
       }
       annotationWidgets.add(SizedBox(
-        height: 45,
+        height: 47,
         child: Padding(
           padding: EdgeInsets.only(top: 10),
           child: InkWell(
@@ -332,14 +334,15 @@ class _WaterTemperatureAnnotationPageState
                     children: [
                       Expanded(
                           child: Column(children: [
+                        SizedBox(height: 10),
                         Text("Time",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                         for (int i = 0; i < args.dataList.length; i++)
                           Padding(
                             padding: EdgeInsetsDirectional.only(top: 20),
                             child: Text(
-                              DateFormat("h:mm a")
+                              DateFormat("HH:mm")
                                   .format(args.dataList[i].timeUpload),
                               style: TextStyle(fontSize: 21),
                             ),
@@ -348,9 +351,10 @@ class _WaterTemperatureAnnotationPageState
                       _temperatureColumnBuilder(),
                       Expanded(
                           child: Column(children: [
+                        SizedBox(height: 10),
                         Text("Status",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
+                                fontSize: 16, fontWeight: FontWeight.bold)),
                         for (int i = 0; i < args.dataList.length; i++)
                           //if fahrenheit,
                           (user!.inFahrenheit == true &&
@@ -361,7 +365,7 @@ class _WaterTemperatureAnnotationPageState
                                   padding: EdgeInsetsDirectional.only(top: 20),
                                   child: Container(
                                     width: 40,
-                                    height: 25,
+                                    height: 27,
                                     decoration:
                                         BoxDecoration(color: Colors.red),
                                   ))
@@ -374,7 +378,7 @@ class _WaterTemperatureAnnotationPageState
                                           EdgeInsetsDirectional.only(top: 20),
                                       child: Container(
                                         width: 40,
-                                        height: 25,
+                                        height: 27,
                                         decoration:
                                             BoxDecoration(color: Colors.orange),
                                       ))
@@ -387,7 +391,7 @@ class _WaterTemperatureAnnotationPageState
                                               top: 20),
                                           child: Container(
                                             width: 40,
-                                            height: 25,
+                                            height: 27,
                                             decoration: BoxDecoration(
                                                 color: Colors.green),
                                           ))
@@ -400,7 +404,7 @@ class _WaterTemperatureAnnotationPageState
                                                   top: 20),
                                               child: Container(
                                                 width: 40,
-                                                height: 25,
+                                                height: 27,
                                                 decoration: BoxDecoration(
                                                     color: Colors.red),
                                               ))
@@ -411,7 +415,7 @@ class _WaterTemperatureAnnotationPageState
                                                   padding: EdgeInsetsDirectional.only(top: 20),
                                                   child: Container(
                                                     width: 40,
-                                                    height: 25,
+                                                    height: 27,
                                                     decoration: BoxDecoration(
                                                         color: Colors.orange),
                                                   ))
@@ -419,17 +423,19 @@ class _WaterTemperatureAnnotationPageState
                                                   padding: EdgeInsetsDirectional.only(top: 20),
                                                   child: Container(
                                                     width: 40,
-                                                    height: 25,
+                                                    height: 27,
                                                     decoration: BoxDecoration(
                                                         color: Colors.green),
                                                   ))
                       ])), // status
                       Expanded(
                           child: Column(children: [
+                        SizedBox(height: 10),
                         Text("Annotation",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        ...annotationWidgets
+                                fontSize: 16, fontWeight: FontWeight.bold)),
+                        ...annotationWidgets,
+                        SizedBox(height: 10)
                       ])), // annotation
                     ],
                   ),
