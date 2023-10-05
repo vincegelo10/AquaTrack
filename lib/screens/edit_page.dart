@@ -155,9 +155,42 @@ class _EditPageState extends State<EditPage> {
                     ])),
                   ),
                 ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/editDissolvedOxygenPage',
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(15),
+                  child: Container(
+                    height: 140, // Set the desired height of the square
+                    decoration: BoxDecoration(
+                      color: Colors.blue, // Set the desired color of the square
+                      borderRadius: BorderRadius.circular(
+                          20), // Adjust the radius to control the roundness
+                    ),
+                    child: Center(
+                        child: Column(children: [
+                      Image(
+                        image: AssetImage('assets/images/do-nobg.png'),
+                        width: 80,
+                        height: 104,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        "Dissolved Oxygen",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, // Make the text bold
+                          color: Colors.white, // Set the text color to white
+                        ),
+                      ),
+                    ])),
+                  ),
+                ),
               )
-
-              // Add more items to the ListView as needed...
             ],
           ),
         ),

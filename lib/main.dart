@@ -9,7 +9,9 @@ import 'package:week7_networking_discussion/providers/todo_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
+import 'package:week7_networking_discussion/screens/editDO.dart';
 import 'package:week7_networking_discussion/screens/ph_annotation_page.dart';
+import 'package:week7_networking_discussion/screens/setDO.dart';
 import 'package:week7_networking_discussion/screens/setPH.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
 import 'package:week7_networking_discussion/screens/todo_page.dart';
@@ -58,11 +60,14 @@ class MyApp extends StatelessWidget {
         '/': (context) => const AuthWrapper(),
         '/setPhPage': (context) => const SetPhPage(),
         '/setTempPage': (context) => const SetTempPage(),
+        '/setDissolvedOxygenPage': (context) => const SetDissolvedOxygenPage(),
         '/phPage': (context) => const PH_Page(),
         '/tempPage': (context) => const WaterTemperaturePage(),
         '/editPage': (context) => const EditPage(),
         '/editPhPage': (context) => const EditPhPage(),
         '/editTempPage': (context) => const EditTempPage(),
+        '/editDissolvedOxygenPage': (context) =>
+            const EditDissolvedOxygenPage(),
         '/PhAnnotationPage': (context) => const PhAnnotationPage(),
         '/WaterTemperatureAnnotationPage': (context) =>
             const WaterTemperatureAnnotationPage(),

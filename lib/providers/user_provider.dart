@@ -33,6 +33,16 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  void editDO(String email, double lowerDO, double upperDO) async {
+    await firebaseService.addDissolvedOxygen(email, lowerDO, upperDO);
+    Map<String, dynamic> user =
+        await firebaseService.getLoggedInUserDetails(email);
+    if (user["success"]) {
+      _loggedInUser = User.fromJson(user);
+      notifyListeners();
+    }
+  }
+
   void editTemp(String email, double lowerTemp, double upperTemp,
       bool inFahrenheit) async {
     await firebaseService.addTemp(email, lowerTemp, upperTemp, inFahrenheit);
@@ -47,6 +57,11 @@ class UserProvider with ChangeNotifier {
   Future<void> addTemp(String email, double lowerTemp, double upperTemp,
       bool inFahrenheit) async {
     await firebaseService.addTemp(email, lowerTemp, upperTemp, inFahrenheit);
+  }
+
+  Future<void> addDissolvedOxygen(
+      String email, double lowerDO, double upperDO) async {
+    await firebaseService.addDissolvedOxygen(email, lowerDO, upperDO);
   }
 
   Future<void> getLoggedInUserDetails(String email) async {

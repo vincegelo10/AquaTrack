@@ -210,7 +210,7 @@ class _EditTempPageState extends State<EditTempPage> {
           padding: const EdgeInsets.only(left: 30.0, right: 30.0),
           children: <Widget>[
             const Text(
-              "Set Temperature Threshold",
+              "Edit Temperature Threshold",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 25),
             ),
@@ -220,8 +220,8 @@ class _EditTempPageState extends State<EditTempPage> {
             ]),
             lowerTempField,
             upperTempField,
-            backButton,
-            saveButton
+            saveButton,
+            backButton
           ],
         ),
       )),

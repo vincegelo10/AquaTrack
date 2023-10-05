@@ -15,6 +15,9 @@ class User {
 
   late bool inFahrenheit;
 
+  late double lowerDO;
+  late double upperDO;
+
   User(
       {required this.email,
       required this.firstName,
@@ -25,7 +28,9 @@ class User {
       required this.upperPH,
       required this.lowerTemp,
       required this.upperTemp,
-      required this.inFahrenheit});
+      required this.inFahrenheit,
+      required this.lowerDO,
+      required this.upperDO});
 
   // Factory constructor to instantiate object from json format
   factory User.fromJson(Map<String, dynamic> json) {
@@ -39,43 +44,8 @@ class User {
         upperPH: json['upperPH'],
         lowerTemp: json['lowerTemp'],
         upperTemp: json['upperTemp'],
-        inFahrenheit: json['inFahrenheit']);
+        inFahrenheit: json['inFahrenheit'],
+        lowerDO: json['lowerDO'],
+        upperDO: json['upperDO']);
   }
-  // User.setupPHThreshold(
-  //     {required String email,
-  //     required String firstName,
-  //     required String lastName,
-  //     required String dateCreated,
-  //     required double? lowerPH,
-  //     required double? upperPH,
-  //     required String password}) {
-  //   this.email = email;
-  //   this.firstName = firstName;
-  //   this.lastName = lastName;
-  //   this.dateCreated = dateCreated;
-  //   this.lowerPH = lowerPH;
-  //   this.upperPH = upperPH;
-  //   this.password = password;
-  // }
-
-  // User.setupTempThreshold(
-  //     {required String email,
-  //     required String firstName,
-  //     required String lastName,
-  //     required String dateCreated,
-  //     required double? lowerPH,
-  //     required double? upperPH,
-  //     required double? lowerTemp,
-  //     required double? upperTemp,
-  //     required String password}) {
-  //   this.email = email;
-  //   this.firstName = firstName;
-  //   this.lastName = lastName;
-  //   this.dateCreated = dateCreated;
-  //   this.lowerPH = lowerPH;
-  //   this.upperPH = upperPH;
-  //   this.lowerTemp = lowerTemp;
-  //   this.upperTemp = upperTemp;
-  //   this.password = password;
-  // }
 }

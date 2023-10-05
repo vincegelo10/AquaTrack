@@ -140,7 +140,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     DateTime currentDate = DateTime.now();
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
-    User user = context.watch<UserProvider>().user as User;
+    User user = context.watch<UserProvider>().user!;
     print("user in fahrenheit: ${user!.inFahrenheit}");
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty

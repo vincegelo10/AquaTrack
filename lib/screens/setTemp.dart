@@ -113,7 +113,7 @@ class _SetTempPageState extends State<SetTempPage> {
           upperTemp = double.parse(value!)!;
         }));
 
-    final SignUpButton = Padding(
+    final nextButton = Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         onPressed: () async {
@@ -139,9 +139,9 @@ class _SetTempPageState extends State<SetTempPage> {
 
               await context.read<UserProvider>().addTemp(
                   args.email, lowerTempCelsius, upperTempCelsius, true);
-              await context
-                  .read<UserProvider>()
-                  .getLoggedInUserDetails(args.email);
+              // await context
+              //     .read<UserProvider>()
+              //     .getLoggedInUserDetails(args.email);
               // User user = User.setupTempThreshold(
               //     email: widget.user.email,
               //     firstName: widget.user.firstName,
@@ -166,9 +166,9 @@ class _SetTempPageState extends State<SetTempPage> {
               await context
                   .read<UserProvider>()
                   .addTemp(args.email, lowerTemp!, upperTemp!, false);
-              await context
-                  .read<UserProvider>()
-                  .getLoggedInUserDetails(args.email);
+              // await context
+              //     .read<UserProvider>()
+              //     .getLoggedInUserDetails(args.email);
               // User user = User.setupTempThreshold(
               //     email: widget.user.email,
               //     firstName: widget.user.firstName,
@@ -200,7 +200,8 @@ class _SetTempPageState extends State<SetTempPage> {
               //     user.upperTemp!);
             }
             context.read<UserProvider>().getLoggedInUserDetails(args.email);
-            Navigator.pushNamed(context, '/');
+            Navigator.pushNamed(context, '/setDissolvedOxygenPage',
+                arguments: UserScreenArguments(args.email));
 
             // bool success = await context
             //     .read<AuthProvider>()
@@ -256,7 +257,7 @@ class _SetTempPageState extends State<SetTempPage> {
             ]),
             lowerTempField,
             upperTempField,
-            SignUpButton,
+            nextButton,
             // backButton
           ],
         ),

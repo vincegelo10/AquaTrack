@@ -5,49 +5,48 @@ import 'package:week7_networking_discussion/models/user_model.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 
-class EditPhPage extends StatefulWidget {
-  const EditPhPage({super.key});
+class EditDissolvedOxygenPage extends StatefulWidget {
+  const EditDissolvedOxygenPage({super.key});
 
   @override
-  _EditPhPageState createState() => _EditPhPageState();
+  _EditDissolvedOxygenPageState createState() =>
+      _EditDissolvedOxygenPageState();
 }
 
-class _EditPhPageState extends State<EditPhPage> {
-  double? lowerPHLevel;
-  double? upperPHLevel;
-  TextEditingController lowerPHTextController = TextEditingController();
-  TextEditingController higherPHTextController = TextEditingController();
+class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
+  double? lowerDO;
+  double? upperDO;
+
+  TextEditingController lowerDOTextController = TextEditingController();
+  TextEditingController upperDOTextController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
-    lowerPHTextController.text = user!.lowerPH.toString();
-    higherPHTextController.text = user!.upperPH.toString();
+    lowerDOTextController.text = user!.lowerDO.toString();
+    upperDOTextController.text = user!.upperDO.toString();
 
-    final lowerPHField = TextFormField(
-        controller: lowerPHTextController,
+    final lowerDOField = TextFormField(
+        controller: lowerDOTextController,
 
         // initialValue: user!.lowerPH.toString(),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          hintText: "Lower PH Threshold",
-          labelText: "Lower PH Threshold",
+          hintText: "Lower DO Threshold",
+          labelText: "Lower DO Threshold",
           contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
-            return 'Lower PH Level is required';
+            return 'Lower DO is required';
           }
           try {
-            double PH = double.parse(value!);
-            if ((PH < 0 || PH > 14)) {
-              return 'PH level should be between 0 and 14 inclusive';
-            }
+            double DO = double.parse(value!);
             try {
-              double higherPH = double.parse(higherPHTextController.text);
-              if (PH > higherPH) {
-                return 'This value should be less than the higher PH level';
+              double upperDO = double.parse(upperDOTextController.text);
+              if (DO > upperDO) {
+                return 'This value should be less than the higher DO';
               }
             } catch (e) {
               print("The other field is not a floating point");
@@ -57,16 +56,16 @@ class _EditPhPageState extends State<EditPhPage> {
           }
         },
         onSaved: ((String? value) {
-          lowerPHLevel = double.parse(value!);
+          lowerDO = double.parse(value!);
         }));
 
-    final upperPHField = TextFormField(
-        controller: higherPHTextController,
+    final upperDOField = TextFormField(
+        controller: upperDOTextController,
         // initialValue: user!.upperPH.toString(),
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
-          hintText: "Upper PH Threshold",
-          labelText: "Upper PH Threshold",
+          hintText: "Upper DO Threshold",
+          labelText: "Upper DO Threshold",
           contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
@@ -74,14 +73,12 @@ class _EditPhPageState extends State<EditPhPage> {
             return 'Higher PH Level is required';
           }
           try {
-            double PH = double.parse(value!);
-            if ((PH < 0 || PH > 14)) {
-              return 'PH level should be between 0 and 14 inclusive';
-            }
+            double DO = double.parse(value!);
+
             try {
-              double lowerPH = double.parse(lowerPHTextController.text);
-              if (PH < lowerPH) {
-                return 'This value should be greater than the lower PH level';
+              double lowerDO = double.parse(lowerDOTextController.text);
+              if (DO < lowerDO) {
+                return 'This value should be greater than the lower DO';
               }
             } catch (e) {
               print("The other field is not a floating point");
@@ -91,7 +88,7 @@ class _EditPhPageState extends State<EditPhPage> {
           }
         },
         onSaved: ((String? value) {
-          upperPHLevel = double.parse(value!);
+          upperDO = double.parse(value!);
         }));
 
     final saveButton = Padding(
@@ -103,7 +100,7 @@ class _EditPhPageState extends State<EditPhPage> {
             _formKey.currentState?.save();
             context
                 .read<UserProvider>()
-                .editPH(user!.email, lowerPHLevel!, upperPHLevel!);
+                .editDO(user!.email, lowerDO!, upperDO!);
             showDialog(
               context: context,
               builder: (BuildContext context) {
@@ -148,12 +145,12 @@ class _EditPhPageState extends State<EditPhPage> {
           padding: const EdgeInsets.only(left: 40.0, right: 40.0),
           children: <Widget>[
             const Text(
-              "Edit pH Threshold",
+              "Edit Dissolved Oxygen Threshold",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 25),
             ),
-            lowerPHField,
-            upperPHField,
+            lowerDOField,
+            upperDOField,
             saveButton,
             backButton,
           ],

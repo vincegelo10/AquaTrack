@@ -45,6 +45,20 @@ class FirebaseUserAPI {
     return 'Setting Temperature successfull';
   }
 
+  Future<String> addDissolvedOxygen(
+      String email, double lowerDO, double upperDO) async {
+    await db
+        .collection("users")
+        .where("email", isEqualTo: email)
+        .get()
+        .then((querySnapshot) => {
+              querySnapshot.docs[0].reference
+                  .update({"lowerDO": lowerDO, "upperDO": upperDO})
+            });
+
+    return 'Setting Dissolved Oxygen successfull';
+  }
+
   Future<Map<String, dynamic>> getLoggedInUserDetails(String email) async {
     Map<String, dynamic> user;
     try {
