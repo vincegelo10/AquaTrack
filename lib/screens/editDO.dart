@@ -106,7 +106,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
               builder: (BuildContext context) {
                 return AlertDialog(
                   title: Text('Success'),
-                  content: Text('PH Threshold edit has been successful.'),
+                  content: Text('DO Threshold edit has been successful.'),
                   actions: [
                     TextButton(
                       onPressed: () {

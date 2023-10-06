@@ -334,7 +334,7 @@ class _TodoPageState extends State<TodoPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/tempPage');
+                  Navigator.pushNamed(context, '/doPage');
                 },
                 child: Padding(
                   padding: EdgeInsets.all(15),

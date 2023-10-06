@@ -8,6 +8,7 @@ class SensorDataProvider with ChangeNotifier {
   List<SensorData> dataFromOtherDates = [];
   var recentPH = '';
   var recentWaterTemp = '';
+  var recentDO = '';
 
   final ref = FirebaseDatabase(
       databaseURL:
@@ -22,6 +23,8 @@ class SensorDataProvider with ChangeNotifier {
 
   String get phLevel => recentPH;
   String get waterTemp => recentWaterTemp;
+  String get dissolvedOxygen => recentDO;
+
   List<SensorData> get dataFromSensor => dataList;
   List<SensorData> get dataFromOtherDate => dataFromOtherDates;
 
@@ -40,11 +43,12 @@ class SensorDataProvider with ChangeNotifier {
           var pH = value["ph"].toDouble();
           var waterTemperature = value["water_temperature"].toDouble();
           var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
+          var dissolvedOxygen = value["do"].toDouble();
           var timestamp = int.parse(key); // Parse the timestamp from the key
           var millis = timestamp;
           DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
-          dataFromOtherDates.add(SensorData(
-              waterTemperature, pH, timestamp, dt, waterTempInFahrenheit));
+          dataFromOtherDates.add(SensorData(waterTemperature, pH, timestamp, dt,
+              waterTempInFahrenheit, dissolvedOxygen));
         });
         dataFromOtherDates.sort((a, b) => a.timestamp.compareTo(b.timestamp));
         notifyListeners();
@@ -81,12 +85,13 @@ class SensorDataProvider with ChangeNotifier {
               var pH = value["ph"].toDouble();
               var waterTemperature = value["water_temperature"].toDouble();
               var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
+              var dissolvedOxygen = value["do"].toDouble();
               var timestamp =
                   int.parse(key); // Parse the timestamp from the key
               var millis = timestamp;
               DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
-              dataList.add(SensorData(
-                  waterTemperature, pH, timestamp, dt, waterTempInFahrenheit));
+              dataList.add(SensorData(waterTemperature, pH, timestamp, dt,
+                  waterTempInFahrenheit, dissolvedOxygen));
             }
           });
           dataList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
@@ -98,10 +103,12 @@ class SensorDataProvider with ChangeNotifier {
           recentPH = dataList[dataList.length - 1].ph.toString();
           recentWaterTemp =
               dataList[dataList.length - 1].waterTemperature.toString();
+          recentDO = dataList[dataList.length - 1].dissolvedOxygen.toString();
           notifyListeners();
         } else {
           recentPH = 'No data found.';
           recentWaterTemp = 'No data found.';
+          recentDO = 'No data found.';
           notifyListeners();
         }
       }
