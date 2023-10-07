@@ -9,6 +9,7 @@ import 'package:week7_networking_discussion/providers/todo_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
+import 'package:week7_networking_discussion/screens/do_annotation_page.dart';
 import 'package:week7_networking_discussion/screens/do_page.dart';
 import 'package:week7_networking_discussion/screens/editDO.dart';
 import 'package:week7_networking_discussion/screens/ph_annotation_page.dart';
@@ -73,6 +74,7 @@ class MyApp extends StatelessWidget {
         '/PhAnnotationPage': (context) => const PhAnnotationPage(),
         '/WaterTemperatureAnnotationPage': (context) =>
             const WaterTemperatureAnnotationPage(),
+        '/DissolvedOxygenAnnotationPage': (context) => const DoAnnotationPage()
       },
       theme: ThemeData(
         primarySwatch: Colors.blue,

@@ -97,7 +97,7 @@ class _DOPageState extends State<DO_Page> {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.watch<UserProvider>().user!;
+    User user = context.watch<UserProvider>().user as User;
     DateTime currentDate = DateTime.now();
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
@@ -189,7 +189,7 @@ class _DOPageState extends State<DO_Page> {
           return AlertDialog(
             title: Text('DO Threshold'),
             content: Text(
-                'The Dissolved Oxygen threshold is between ${user!.lowerDO}-${user.upperDO}. Do you want to edit it?'),
+                'The Dissolved Oxygen threshold is between ${user.lowerDO}-${user.upperDO}. Do you want to edit it?'),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
@@ -257,14 +257,15 @@ class _DOPageState extends State<DO_Page> {
                             ? formattedDateToday
                             : dateController.text;
                         //DO ME
-                        // context
-                        //     .read<WaterParameterAnnotationProvider>()
-                        //     .fetchAnnotation(dateArgument, "do", user.email);
+                        context
+                            .read<WaterParameterAnnotationProvider>()
+                            .fetchAnnotation(dateArgument, "do", user.email);
                         Navigator.pop(context);
                         //DO ME
-                        // Navigator.pushNamed(context, '/PhAnnotationPage',
-                        //     arguments:
-                        //         DataSensorArguments(dataList, dateArgument));
+                        Navigator.pushNamed(
+                            context, '/DissolvedOxygenAnnotationPage',
+                            arguments:
+                                DataSensorArguments(dataList, dateArgument));
                       },
                       child: Text("Yes")),
                 ]),
@@ -278,12 +279,12 @@ class _DOPageState extends State<DO_Page> {
     void showDODialog(BuildContext context) {
       String status;
       try {
-        if (double.parse(doVal) > user!.lowerDO &&
-            double.parse(doVal) < user!.upperDO) {
+        if (double.parse(doVal) > user.lowerDO &&
+            double.parse(doVal) < user.upperDO) {
           status = "which is within the defined DO theshold";
-        } else if (double.parse(doVal) == user!.lowerPH ||
-            double.parse(doVal) == user!.upperPH) {
-          if (double.parse(doVal) == user!.lowerPH) {
+        } else if (double.parse(doVal) == user.lowerPH ||
+            double.parse(doVal) == user.upperPH) {
+          if (double.parse(doVal) == user.lowerPH) {
             status = "which is equal to the defined lower PH threshold";
           } else {
             status = "which is equal to the defined upper PH threshold";
@@ -400,11 +401,11 @@ class _DOPageState extends State<DO_Page> {
       var colorOfWidget;
 
       try {
-        if (double.parse(doVal) > user!.lowerDO &&
-            double.parse(doVal) < user!.upperDO) {
+        if (double.parse(doVal) > user.lowerDO &&
+            double.parse(doVal) < user.upperDO) {
           colorOfWidget = Colors.green;
-        } else if (double.parse(doVal) == user!.lowerDO ||
-            double.parse(doVal) == user!.upperDO) {
+        } else if (double.parse(doVal) == user.lowerDO ||
+            double.parse(doVal) == user.upperDO) {
           colorOfWidget = Colors.orange;
         } else {
           colorOfWidget = Colors.red;
@@ -522,7 +523,7 @@ class _DOPageState extends State<DO_Page> {
                             ),
                             SizedBox(height: 30),
                             Text(
-                              "${user!.lowerDO} - ${user!.upperDO}",
+                              "${user.lowerDO} - ${user.upperDO}",
                               style: TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold

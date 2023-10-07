@@ -35,6 +35,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
           border: OutlineInputBorder(),
           hintText: "Lower DO Threshold",
           labelText: "Lower DO Threshold",
+          suffixText: "mg/L",
           contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
@@ -66,6 +67,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
           border: OutlineInputBorder(),
           hintText: "Upper DO Threshold",
           labelText: "Upper DO Threshold",
+          suffixText: "mg/L",
           contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
