@@ -18,6 +18,8 @@ class User {
   late double lowerDO;
   late double upperDO;
 
+  late bool isLoggedIn;
+
   User(
       {required this.email,
       required this.firstName,
@@ -30,7 +32,8 @@ class User {
       required this.upperTemp,
       required this.inFahrenheit,
       required this.lowerDO,
-      required this.upperDO});
+      required this.upperDO,
+      required this.isLoggedIn});
 
   // Factory constructor to instantiate object from json format
   factory User.fromJson(Map<String, dynamic> json) {
@@ -46,6 +49,7 @@ class User {
         upperTemp: json['upperTemp'],
         inFahrenheit: json['inFahrenheit'],
         lowerDO: json['lowerDO'],
-        upperDO: json['upperDO']);
+        upperDO: json['upperDO'],
+        isLoggedIn: json['isLoggedIn']);
   }
 }

@@ -9,6 +9,7 @@ class SensorDataProvider with ChangeNotifier {
   var recentPH = '';
   var recentWaterTemp = '';
   var recentDO = '';
+  SensorData? recentData;
 
   final ref = FirebaseDatabase(
       databaseURL:
@@ -24,13 +25,14 @@ class SensorDataProvider with ChangeNotifier {
   String get phLevel => recentPH;
   String get waterTemp => recentWaterTemp;
   String get dissolvedOxygen => recentDO;
+  SensorData? get updatedSensorData => recentData;
 
   List<SensorData> get dataFromSensor => dataList;
   List<SensorData> get dataFromOtherDate => dataFromOtherDates;
 
   Future<bool> fetchDataFromOtherDate(String date) async {
-    print(date);
     dataFromOtherDates.clear();
+
     DataSnapshot snapshot = await ref.reference().child(date).get();
 
     if (snapshot.exists) {
@@ -65,6 +67,7 @@ class SensorDataProvider with ChangeNotifier {
   }
 
   void fetchData() async {
+    dataList.clear();
     DateTime current_date = DateTime.now();
     String date_today = current_date.toString().split(' ')[0];
 
@@ -90,6 +93,7 @@ class SensorDataProvider with ChangeNotifier {
                   int.parse(key); // Parse the timestamp from the key
               var millis = timestamp;
               DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
+              print(timestamp);
               dataList.add(SensorData(waterTemperature, pH, timestamp, dt,
                   waterTempInFahrenheit, dissolvedOxygen));
             }
@@ -104,11 +108,13 @@ class SensorDataProvider with ChangeNotifier {
           recentWaterTemp =
               dataList[dataList.length - 1].waterTemperature.toString();
           recentDO = dataList[dataList.length - 1].dissolvedOxygen.toString();
+          recentData = dataList[dataList.length - 1];
           notifyListeners();
         } else {
           recentPH = 'No data found.';
           recentWaterTemp = 'No data found.';
           recentDO = 'No data found.';
+          recentData = null;
           notifyListeners();
         }
       }

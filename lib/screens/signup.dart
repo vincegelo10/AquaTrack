@@ -160,7 +160,8 @@ class _SignupPageState extends State<SignupPage> {
                 upperTemp: 0,
                 inFahrenheit: false,
                 lowerDO: 0,
-                upperDO: 0);
+                upperDO: 0,
+                isLoggedIn: false);
             print("The details of the user\n");
             print("User email: ${user.email}\n");
             print("User firstName: ${user.firstName}\n");

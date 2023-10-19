@@ -78,4 +78,46 @@ class FirebaseUserAPI {
     }
     return user;
   }
+
+  Future<void> changeIsLoggedInToTrue(String email) async {
+    await db
+        .collection("users")
+        .where('email', isEqualTo: email)
+        .get()
+        .then((querySnapshot) => {
+              querySnapshot.docs[0].reference.update({"isLoggedIn": true})
+            });
+  }
+
+  Future<void> changeIsLoggedInToFalse(String email) async {
+    await db
+        .collection("users")
+        .where('email', isEqualTo: email)
+        .get()
+        .then((querySnapshot) => {
+              querySnapshot.docs[0].reference.update({"isLoggedIn": false})
+            });
+  }
+
+  Future<Map<String, dynamic>> findLoggedInUser() async {
+    Map<String, dynamic> user;
+    try {
+      var querySnapshot = await db
+          .collection("users")
+          .where('isLoggedIn', isEqualTo: true)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        user = querySnapshot.docs.first.data();
+        user["success"] = true;
+      } else {
+        // Handle the case when no user is found with the given email
+        user = {"success": false};
+      }
+    } catch (e) {
+      print("Error: $e");
+      user = {"success": false};
+    }
+    return user;
+  }
 }

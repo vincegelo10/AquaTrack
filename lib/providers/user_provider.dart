@@ -2,21 +2,39 @@ import 'package:flutter/material.dart';
 import 'package:week7_networking_discussion/api/firebase_user_api.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:week7_networking_discussion/api/firebase_auth_api.dart';
 
-class UserProvider with ChangeNotifier {
+class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   late FirebaseUserAPI firebaseService;
+
   String _signUpStatus = '';
   User? _loggedInUser;
 
   UserProvider() {
     firebaseService = FirebaseUserAPI();
+    initializeFromFirestore();
   }
 
   String get signUpStatus => _signUpStatus;
   User? get user => _loggedInUser;
+
   checkForExistingEmail(String email) async {
     _signUpStatus = await firebaseService.checkForExistingEmail(email);
     notifyListeners();
+  }
+
+  Future<void> initializeFromFirestore() async {
+    print("initializing data from firestore");
+    try {
+      Map<String, dynamic> user = await firebaseService.findLoggedInUser();
+
+      if (user["success"]) {
+        _loggedInUser = User.fromJson(user);
+        notifyListeners();
+      }
+    } catch (e) {
+      print("Error initializing from Firestore: $e");
+    }
   }
 
   void addPH(String email, double lowerPH, double upperPH) async {
@@ -69,14 +87,57 @@ class UserProvider with ChangeNotifier {
         await firebaseService.getLoggedInUserDetails(email);
     if (user["success"]) {
       _loggedInUser = User.fromJson(user);
+      changeIsLoggedInToTrue();
       notifyListeners();
     } else {
       print("the credentials are invalid");
     }
   }
 
+  Future<void> changeIsLoggedInToTrue() async {
+    print("in change logged in provider");
+    print(_loggedInUser!.email);
+
+    await firebaseService.changeIsLoggedInToTrue(_loggedInUser!.email);
+  }
+
+  Future<void> changeIsLoggedInToFalse() async {
+    await firebaseService.changeIsLoggedInToFalse(_loggedInUser!.email);
+  }
+
   void removeLoggedInUserDetails() {
+    changeIsLoggedInToFalse();
     _loggedInUser = null;
     notifyListeners();
   }
 }
+//  DateTime currentDate = DateTime.now();
+//       DateTime now = DateTime.now();
+//       int timestampInSeconds = now.millisecondsSinceEpoch ~/ 1000;
+//       var updatedData = context.watch<SensorDataProvider>().updatedSensorData;
+//  var phVal = context.watch<SensorDataProvider>().phLevel == ''
+//           ? 'NA'
+//           : context.watch<SensorDataProvider>().phLevel;
+//       print("------------------");
+//       print(updatedData);
+//       print(updatedData?.timestamp);
+//       print("timestamp now: $timestampInSeconds");
+//       print("------------------");
+
+//       if (updatedData?.timestamp != null) {
+//         print("HELLO??");
+//         if (phVal != 'NA' &&
+//             (double.parse(phVal) < user!.lowerPH ||
+//                 double.parse(phVal) > user!.upperPH) &&
+//             timestampInSeconds + 2 <= updatedData!.timestamp) {
+//           print("hello ulet mga lods");
+//           print("calling local notif");
+
+//           service.showNotification(
+//             id: 1,
+//             title: 'PH Level out of range',
+//             body:
+//                 'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+//           );
+//         }
+//       }

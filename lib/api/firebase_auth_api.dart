@@ -114,6 +114,7 @@ class FirebaseAuthAPI {
         "firstName": firstName,
         "lastName": lastName,
         "dateCreated": dateCreated,
+        "isLoggedIn": false
       });
     } on FirebaseException catch (e) {
       print(e.message);

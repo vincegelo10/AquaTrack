@@ -27,12 +27,18 @@ import 'package:week7_networking_discussion/providers/sensor_data_provider.dart'
 import 'package:week7_networking_discussion/screens/water_temperature_page.dart';
 import 'package:week7_networking_discussion/screens/edit_page.dart';
 import 'package:week7_networking_discussion/screens/editTemp.dart';
+import 'package:week7_networking_discussion/api/firebase_messaging_api.dart';
 
+import 'package:week7_networking_discussion/api/firebase_auth_api.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseMessagingAPI().initNotifications();
 
   runApp(
     MultiProvider(
@@ -58,8 +64,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'SimpleTodo',
       initialRoute: '/',
+      navigatorKey: navigatorKey,
       routes: {
-        '/': (context) => const AuthWrapper(),
+        '/': (context) => FutureBuilder<void>(
+              // Initialize providers from Firestore when the app is opened
+              future: context.read<UserProvider>().initializeFromFirestore(),
+              builder: (context, snapshot) {
+                return AuthWrapper();
+              },
+            ),
         '/setPhPage': (context) => const SetPhPage(),
         '/setTempPage': (context) => const SetTempPage(),
         '/setDissolvedOxygenPage': (context) => const SetDissolvedOxygenPage(),

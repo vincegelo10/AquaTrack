@@ -33,13 +33,50 @@ class PH_Page extends StatefulWidget {
 
 class _PHPageState extends State<PH_Page> {
   late final NotificationService service;
+  //added code for notification
   TextEditingController dateController = TextEditingController();
 
   @override
   void initState() {
+    print("INIT STATE FOR PH PAGE");
     service = NotificationService();
     service.initializePlatformNotifications();
+
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Move the logic that depends on context to didChangeDependencies
+    checkAndShowNotification();
+  }
+
+  void checkAndShowNotification() {
+    User user = context.watch<UserProvider>().user!;
+    DateTime currentDate = DateTime.now();
+    var phVal = context.watch<SensorDataProvider>().phLevel == ''
+        ? 'NA'
+        : context.watch<SensorDataProvider>().phLevel;
+
+    if (phVal != 'NA' &&
+        (double.parse(phVal) < user!.lowerPH ||
+            double.parse(phVal) > user!.upperPH)) {
+      print("calling local notif");
+      // service.showNotification(
+      //     id: 0,
+      //     title: 'PH Level out of range',
+      //     body:
+      //         'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}');
+      service.showNotification(
+        id: 1,
+        title: 'PH Level out of range',
+        body:
+            'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+      );
+    }
+
+    print("done");
   }
 
   Widget _graphBuilder(List<SensorData> dataList, user) {
@@ -105,68 +142,24 @@ class _PHPageState extends State<PH_Page> {
         ? "PH Level trends on ${dateController.text}"
         : "PH Level trends today";
 
-    // access the list of todos in the provider
-    // DateTime current_date = DateTime.now();
-    // String date_today = current_date.toString();
-    // final ref = FirebaseDatabase(
-    //   databaseURL:
-    //       "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
-    // var stream = await ref.reference().child("data_sensor/$date_today").onValue.listen((DatabaseEvent event){
-    //   print("Received data: ${event.snapshot.value}");
-    // });
-
-    // Stream<QuerySnapshot> todosStream = await ref.reference().child('data_sensor/$date_today').get();
-
-    // StreamSubscription<Event> _databaseSubscription = await ref.reference().child(date_today).onValue.listen((Event event) {
-    //   // Handle data updates here
-    //   // The most recent data will be available in 'event.snapshot.value'
-    //   print("Received data: ${event.snapshot.value}");
-    // });
-    //}
-    // List<SensorData> dataList =
-    //     context.watch<SensorDataProvider>().dataFromOtherDate.isNotEmpty
-    //         ? context.watch<SensorDataProvider>().dataFromOtherDate
-    //         : context.watch<SensorDataProvider>().dataFromSensor;
     List<SensorData> dataList = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
         ? context.watch<SensorDataProvider>().dataFromOtherDate
         : context.watch<SensorDataProvider>().dataFromSensor;
-    print("the date today isi $formattedDateToday");
-    print("----------------------");
-    print(dateController.text);
-    print(formattedDateToday);
-    print(dateController.text != formattedDateToday);
-    print("----------------------");
-    // print(context.watch<SensorDataProvider>().dataFromOtherDate);
-    // print(context.watch<SensorDataProvider>().dataFromOtherDate.isEmpty);
-    // print(context.watch<SensorDataProvider>().dataFromSensor);
-    // print(context.watch<SensorDataProvider>().dataFromOtherDate == []);
+
     var phVal = context.watch<SensorDataProvider>().phLevel == ''
         ? 'NA'
         : context.watch<SensorDataProvider>().phLevel;
-    print("the condition evalutes to: ");
-    print(phVal != 'NA' &&
-        (double.parse(phVal) < user!.lowerPH ||
-            double.parse(phVal) > user!.upperPH));
-    // Future<void> callPHLocalNotification() async {
-    //   await service.showNotification(
-    //       id: 0,
-    //       title: 'PH Level out of range',
-    //       body:
-    //           'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}');
-    //   print("done");
-    // }
 
     // if (phVal != 'NA' &&
     //     (double.parse(phVal) < user!.lowerPH ||
     //         double.parse(phVal) > user!.upperPH)) {
     //   print("calling local notif");
-    //   callPHLocalNotification();
-    //   // await service.showNotification(
-    //   //     id: 0,
-    //   //     title: 'PH Level out of range',
-    //   //     body:
-    //   //         'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}');
+    //   service.showNotification(
+    //       id: 0,
+    //       title: 'PH Level out of range',
+    //       body:
+    //           'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}');
     // }
 
     void showNoDataDialog(BuildContext context) {
