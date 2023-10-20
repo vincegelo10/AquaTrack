@@ -27,13 +27,6 @@ class _EditTempPageState extends State<EditTempPage> {
 
   late final NotificationService service;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -131,7 +124,7 @@ class _EditTempPageState extends State<EditTempPage> {
   Widget build(BuildContext context) {
     User? user = context.read<UserProvider>().user;
     final _formKey = GlobalKey<FormState>();
-
+    checkAndShowNotification();
     final dropdownTempUnit = DropdownButton<String>(
       value: dropdownValue,
       onChanged: (String? value) {

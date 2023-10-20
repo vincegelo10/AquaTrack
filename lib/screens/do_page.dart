@@ -42,13 +42,6 @@ class _DOPageState extends State<DO_Page> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -194,7 +187,7 @@ class _DOPageState extends State<DO_Page> {
     var doVal = context.watch<SensorDataProvider>().dissolvedOxygen == ''
         ? 'NA'
         : context.watch<SensorDataProvider>().dissolvedOxygen;
-
+    checkAndShowNotification();
     void showNoDataDialog(BuildContext context) {
       showDialog(
         context: context,
@@ -514,7 +507,12 @@ class _DOPageState extends State<DO_Page> {
         ),
       ])),
       appBar: AppBar(
-        title: Text("Dissolved Oxygen Page"),
+        title: Text(
+          "Dissolved Oxygen Page",
+          style: TextStyle(
+            color: Colors.white, // Set the text color here
+          ),
+        ),
       ),
       body: Container(
           padding: const EdgeInsets.all(10.0),
@@ -581,7 +579,7 @@ class _DOPageState extends State<DO_Page> {
                     child: Container(
                         decoration: BoxDecoration(
                           color: Colors
-                              .blue, // Set the desired color of the square
+                              .cyan, // Set the desired color of the square
                           borderRadius: BorderRadius.circular(
                               20), // Adjust the radius to control the roundness
                         ),
@@ -712,7 +710,7 @@ class _DOPageState extends State<DO_Page> {
             ],
           )),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.cyan,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

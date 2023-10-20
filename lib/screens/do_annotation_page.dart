@@ -29,13 +29,6 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -119,7 +112,7 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
         ModalRoute.of(context)!.settings.arguments as DataSensorArguments;
     List<Widget> annotationWidgets = [];
     List<TextEditingController> textControllers = [];
-
+    checkAndShowNotification();
     for (int i = 0; i < args.dataList.length; i++) {
       textControllers.add(TextEditingController());
     }
@@ -152,7 +145,9 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Dissolved Oxygen Annotation'),
+                    title: Text(
+                      'Dissolved Oxygen Annotation',
+                    ),
                     actions: <Widget>[
                       Expanded(
                         child: TextField(
@@ -262,7 +257,13 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(title: Text("Dissolved Oxygen Annotation")),
+      appBar: AppBar(
+          title: Text(
+        "Dissolved Oxygen Annotation",
+        style: TextStyle(
+          color: Colors.white, // Set the text color here
+        ),
+      )),
       body: Container(
           padding: const EdgeInsets.all(10.0),
           child: ListView(

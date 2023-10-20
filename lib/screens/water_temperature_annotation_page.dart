@@ -37,13 +37,6 @@ class _WaterTemperatureAnnotationPageState
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -120,7 +113,7 @@ class _WaterTemperatureAnnotationPageState
   @override
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
-
+    checkAndShowNotification();
     var lowerTemp = user!.inFahrenheit == false
         ? user!.lowerTemp
         : ((user!.lowerTemp * 9 / 5) + 32);
@@ -202,7 +195,9 @@ class _WaterTemperatureAnnotationPageState
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text('Water Temperature Annotation'),
+                    title: Text(
+                      'Water Temperature Annotation',
+                    ),
                     actions: <Widget>[
                       Expanded(
                         child: TextField(
@@ -338,7 +333,13 @@ class _WaterTemperatureAnnotationPageState
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(title: Text("Water Temperature Annotation")),
+      appBar: AppBar(
+          title: Text(
+        "Water Temperature Annotation",
+        style: TextStyle(
+          color: Colors.white, // Set the text color here
+        ),
+      )),
       body: Container(
           padding: const EdgeInsets.all(10.0),
           child: ListView(

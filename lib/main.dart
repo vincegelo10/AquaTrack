@@ -89,9 +89,7 @@ class MyApp extends StatelessWidget {
             const WaterTemperatureAnnotationPage(),
         '/DissolvedOxygenAnnotationPage': (context) => const DoAnnotationPage()
       },
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.cyan),
     );
   }
 }

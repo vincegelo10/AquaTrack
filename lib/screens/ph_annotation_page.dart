@@ -34,13 +34,6 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -125,6 +118,7 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
     List<Widget> annotationWidgets = [];
     List<TextEditingController> textControllers = [];
 
+    checkAndShowNotification();
     for (int i = 0; i < args.dataList.length; i++) {
       textControllers.add(TextEditingController());
     }
@@ -267,7 +261,13 @@ class _PhAnnotationPageState extends State<PhAnnotationPage> {
 
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(title: Text("PH Level Annotation")),
+      appBar: AppBar(
+          title: Text(
+        "PH Level Annotation",
+        style: TextStyle(
+          color: Colors.white, // Set the text color here
+        ),
+      )),
       body: Container(
           padding: const EdgeInsets.all(10.0),
           child: ListView(

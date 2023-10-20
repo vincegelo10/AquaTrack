@@ -43,13 +43,6 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -231,6 +224,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
     User user = context.watch<UserProvider>().user!;
+    checkAndShowNotification();
     String labelData = dateController.text != formattedDateToday &&
             dateController.text.isNotEmpty
         ? "Water temperature trends on ${dateController.text}"
@@ -585,7 +579,12 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
         ),
       ])),
       appBar: AppBar(
-        title: Text("Water Temperature Page"),
+        title: Text(
+          "Water Temperature Page",
+          style: TextStyle(
+            color: Colors.white, // Set the text color here
+          ),
+        ),
       ),
       body: Container(
           padding: const EdgeInsets.all(10.0),
@@ -647,7 +646,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                     child: Container(
                         decoration: BoxDecoration(
                           color: Colors
-                              .blue, // Set the desired color of the square
+                              .cyan, // Set the desired color of the square
                           borderRadius: BorderRadius.circular(
                               20), // Adjust the radius to control the roundness
                         ),
@@ -731,7 +730,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
             ],
           )),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.cyan,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

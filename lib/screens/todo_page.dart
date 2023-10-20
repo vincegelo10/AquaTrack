@@ -42,13 +42,6 @@ class _TodoPageState extends State<TodoPage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -137,6 +130,7 @@ class _TodoPageState extends State<TodoPage> {
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
     if (user != null) {
+      checkAndShowNotification();
       return Scaffold(
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: [
@@ -163,7 +157,12 @@ class _TodoPageState extends State<TodoPage> {
           ),
         ])),
         appBar: AppBar(
-          title: Text("AquaTrack"),
+          title: Text(
+            "AquaTrack",
+            style: TextStyle(
+              color: Colors.white, // Set the text color here
+            ),
+          ),
         ),
         body: Center(
           // Wrap the ListView with a Container and set the width
@@ -195,7 +194,7 @@ class _TodoPageState extends State<TodoPage> {
                       height: 140, // Set the desired height of the square
                       decoration: BoxDecoration(
                         color:
-                            Colors.blue, // Set the desired color of the square
+                            Colors.cyan, // Set the desired color of the square
                         borderRadius: BorderRadius.circular(
                             20), // Adjust the radius to control the roundness
                       ),
@@ -228,7 +227,7 @@ class _TodoPageState extends State<TodoPage> {
                       height: 140, // Set the desired height of the square
                       decoration: BoxDecoration(
                         color:
-                            Colors.blue, // Set the desired color of the square
+                            Colors.cyan, // Set the desired color of the square
                         borderRadius: BorderRadius.circular(
                             20), // Adjust the radius to control the roundness
                       ),
@@ -261,7 +260,7 @@ class _TodoPageState extends State<TodoPage> {
                       height: 140, // Set the desired height of the square
                       decoration: BoxDecoration(
                         color:
-                            Colors.blue, // Set the desired color of the square
+                            Colors.cyan, // Set the desired color of the square
                         borderRadius: BorderRadius.circular(
                             20), // Adjust the radius to control the roundness
                       ),
@@ -291,7 +290,7 @@ class _TodoPageState extends State<TodoPage> {
           ),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.cyan,
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -341,11 +340,13 @@ class _TodoPageState extends State<TodoPage> {
           ),
         ])),
         appBar: AppBar(
-          title: Text("AquaTrack"),
+          title: Text(
+            "AquaTrack",
+          ),
         ),
         body: Center(child: CircularProgressIndicator()),
         bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.blue,
+          backgroundColor: Colors.cyan,
           type: BottomNavigationBarType.fixed,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(

@@ -225,6 +225,21 @@ class _SignupPageState extends State<SignupPage> {
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 40.0, right: 40.0),
           children: <Widget>[
+            Image(
+              image: AssetImage('assets/images/aquatrack-logo-nobg.png'),
+              width: 80,
+              height: 104,
+              // color: Colors.white,
+            ),
+            const Text(
+              "AquaTrack",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 60),
             const Text(
               "Sign Up",
               textAlign: TextAlign.center,

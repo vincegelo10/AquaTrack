@@ -28,13 +28,6 @@ class _EditPhPageState extends State<EditPhPage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -113,7 +106,7 @@ class _EditPhPageState extends State<EditPhPage> {
     User? user = context.watch<UserProvider>().user;
     lowerPHTextController.text = user!.lowerPH.toString();
     higherPHTextController.text = user!.upperPH.toString();
-
+    checkAndShowNotification();
     final lowerPHField = TextFormField(
         controller: lowerPHTextController,
 

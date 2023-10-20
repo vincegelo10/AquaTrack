@@ -38,13 +38,6 @@ class _EditPageState extends State<EditPage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -131,6 +124,7 @@ class _EditPageState extends State<EditPage> {
 
   @override
   Widget build(BuildContext context) {
+    checkAndShowNotification();
     return Scaffold(
       drawer: Drawer(
           child: ListView(padding: EdgeInsets.zero, children: [
@@ -157,7 +151,12 @@ class _EditPageState extends State<EditPage> {
         ),
       ])),
       appBar: AppBar(
-        title: Text("AquaTrack"),
+        title: Text(
+          "AquaTrack",
+          style: TextStyle(
+            color: Colors.white, // Set the text color here
+          ),
+        ),
       ),
       body: Center(
         // Wrap the ListView with a Container and set the width
@@ -188,7 +187,7 @@ class _EditPageState extends State<EditPage> {
                   child: Container(
                     height: 140, // Set the desired height of the square
                     decoration: BoxDecoration(
-                      color: Colors.blue, // Set the desired color of the square
+                      color: Colors.cyan, // Set the desired color of the square
                       borderRadius: BorderRadius.circular(
                           20), // Adjust the radius to control the roundness
                     ),
@@ -223,7 +222,7 @@ class _EditPageState extends State<EditPage> {
                   child: Container(
                     height: 140, // Set the desired height of the square
                     decoration: BoxDecoration(
-                      color: Colors.blue, // Set the desired color of the square
+                      color: Colors.cyan, // Set the desired color of the square
                       borderRadius: BorderRadius.circular(
                           20), // Adjust the radius to control the roundness
                     ),
@@ -258,7 +257,7 @@ class _EditPageState extends State<EditPage> {
                   child: Container(
                     height: 140, // Set the desired height of the square
                     decoration: BoxDecoration(
-                      color: Colors.blue, // Set the desired color of the square
+                      color: Colors.cyan, // Set the desired color of the square
                       borderRadius: BorderRadius.circular(
                           20), // Adjust the radius to control the roundness
                     ),
@@ -286,7 +285,7 @@ class _EditPageState extends State<EditPage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.cyan,
         type: BottomNavigationBarType.fixed,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(

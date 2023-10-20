@@ -26,13 +26,6 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Move the logic that depends on context to didChangeDependencies
-    checkAndShowNotification();
-  }
-
   void checkAndShowNotification() {
     User user = context.watch<UserProvider>().user!;
     DateTime currentDate = DateTime.now();
@@ -115,7 +108,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
     User? user = context.watch<UserProvider>().user;
     lowerDOTextController.text = user!.lowerDO.toString();
     upperDOTextController.text = user!.upperDO.toString();
-
+    checkAndShowNotification();
     final lowerDOField = TextFormField(
         controller: lowerDOTextController,
 
