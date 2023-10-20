@@ -4,6 +4,8 @@ import 'package:week7_networking_discussion/screen_arguments/user_screen_argumen
 import 'package:week7_networking_discussion/models/user_model.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
+import 'package:week7_networking_discussion/services/local_notification_service.dart';
+import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 
 class EditDissolvedOxygenPage extends StatefulWidget {
   const EditDissolvedOxygenPage({super.key});
@@ -16,6 +18,93 @@ class EditDissolvedOxygenPage extends StatefulWidget {
 class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
   double? lowerDO;
   double? upperDO;
+  late final NotificationService service;
+  @override
+  void initState() {
+    service = NotificationService();
+    service.initializePlatformNotifications();
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Move the logic that depends on context to didChangeDependencies
+    checkAndShowNotification();
+  }
+
+  void checkAndShowNotification() {
+    User user = context.watch<UserProvider>().user!;
+    DateTime currentDate = DateTime.now();
+    DateTime now = DateTime.now();
+    int timestampInSeconds = now.millisecondsSinceEpoch ~/ 1000;
+    var updatedData = context.watch<SensorDataProvider>().updatedSensorData;
+    String phVal = context.watch<SensorDataProvider>().phLevel == ''
+        ? 'NA'
+        : context.watch<SensorDataProvider>().phLevel;
+    String doVal = context.watch<SensorDataProvider>().dissolvedOxygen == ''
+        ? 'NA'
+        : context.watch<SensorDataProvider>().dissolvedOxygen;
+    String tempVal = context.watch<SensorDataProvider>().waterTemp == ''
+        ? 'NA'
+        : user!.inFahrenheit == false
+            ? context.watch<SensorDataProvider>().recentWaterTemp
+            : ((double.parse(context
+                            .watch<SensorDataProvider>()
+                            .recentWaterTemp) *
+                        9 /
+                        5) +
+                    32)
+                .toString();
+    double lowerTemp = user!.inFahrenheit == false
+        ? user!.lowerTemp
+        : ((user!.lowerTemp * 9 / 5) + 32);
+
+    double upperTemp = user!.inFahrenheit == false
+        ? user!.upperTemp
+        : ((user!.upperTemp * 9 / 5) + 32);
+
+    if (updatedData?.timestamp != null) {
+      //notification for PH outside of threshold
+      if (phVal != 'NA' &&
+          (double.parse(phVal) < user!.lowerPH ||
+              double.parse(phVal) > user!.upperPH) &&
+          timestampInSeconds - updatedData!.timestamp <= 5) {
+        print("Showing notification for ph");
+        service.showNotification(
+          id: 1,
+          title: 'PH Level out of range!',
+          body:
+              'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+        );
+      }
+      //notification for temperature outside of threshold
+      if (tempVal != 'NA' &&
+          (double.parse(tempVal) < lowerTemp ||
+              double.parse(tempVal) > upperTemp) &&
+          timestampInSeconds - updatedData!.timestamp <= 5) {
+        service.showNotification(
+          id: 2,
+          title: 'Water Temperature out of range!',
+          body:
+              'Current Water Temperature: $tempVal is not within the set threshold of $lowerTemp-$upperTemp',
+        );
+      }
+
+      //notification for DO outside of threshold
+      if (doVal != 'NA' &&
+          (double.parse(doVal) < user!.lowerDO ||
+              double.parse(doVal) > user!.upperDO) &&
+          timestampInSeconds - updatedData!.timestamp <= 5) {
+        service.showNotification(
+          id: 3,
+          title: 'Dissolved Oxygen out of range!',
+          body:
+              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user!.lowerDO}-${user!.upperDO}',
+        );
+      }
+    }
+  }
 
   TextEditingController lowerDOTextController = TextEditingController();
   TextEditingController upperDOTextController = TextEditingController();

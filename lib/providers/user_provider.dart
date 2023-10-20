@@ -111,33 +111,3 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
     notifyListeners();
   }
 }
-//  DateTime currentDate = DateTime.now();
-//       DateTime now = DateTime.now();
-//       int timestampInSeconds = now.millisecondsSinceEpoch ~/ 1000;
-//       var updatedData = context.watch<SensorDataProvider>().updatedSensorData;
-//  var phVal = context.watch<SensorDataProvider>().phLevel == ''
-//           ? 'NA'
-//           : context.watch<SensorDataProvider>().phLevel;
-//       print("------------------");
-//       print(updatedData);
-//       print(updatedData?.timestamp);
-//       print("timestamp now: $timestampInSeconds");
-//       print("------------------");
-
-//       if (updatedData?.timestamp != null) {
-//         print("HELLO??");
-//         if (phVal != 'NA' &&
-//             (double.parse(phVal) < user!.lowerPH ||
-//                 double.parse(phVal) > user!.upperPH) &&
-//             timestampInSeconds + 2 <= updatedData!.timestamp) {
-//           print("hello ulet mga lods");
-//           print("calling local notif");
-
-//           service.showNotification(
-//             id: 1,
-//             title: 'PH Level out of range',
-//             body:
-//                 'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
-//           );
-//         }
-//       }
