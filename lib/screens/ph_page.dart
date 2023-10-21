@@ -45,7 +45,10 @@ class _PHPageState extends State<PH_Page> {
   }
 
   void checkAndShowNotification() {
-    User user = context.watch<UserProvider>().user!;
+    User? user = context.watch<UserProvider>().user;
+    if (user == null) {
+      return;
+    }
     DateTime currentDate = DateTime.now();
     DateTime now = DateTime.now();
     int timestampInSeconds = now.millisecondsSinceEpoch ~/ 1000;
@@ -171,7 +174,7 @@ class _PHPageState extends State<PH_Page> {
 
   @override
   Widget build(BuildContext context) {
-    User user = context.watch<UserProvider>().user!;
+    User? user = context.watch<UserProvider>().user;
     DateTime currentDate = DateTime.now();
     String formattedDateToday = currentDate.toString().split(' ')[0];
 
@@ -285,7 +288,7 @@ class _PHPageState extends State<PH_Page> {
                             : dateController.text;
                         context
                             .read<WaterParameterAnnotationProvider>()
-                            .fetchAnnotation(dateArgument, "ph", user.email);
+                            .fetchAnnotation(dateArgument, "ph", user!.email);
                         Navigator.pop(context);
                         Navigator.pushNamed(context, '/PhAnnotationPage',
                             arguments:
@@ -485,250 +488,254 @@ class _PHPageState extends State<PH_Page> {
       }
     }
 
-    return Scaffold(
-      drawer: Drawer(
-          child: ListView(padding: EdgeInsets.zero, children: [
-        SizedBox(height: 100),
-        ListTile(
-          title: const Text('Logout'),
-          onTap: () {
-            context.read<AuthProvider>().signOut();
-            context.read<UserProvider>().removeLoggedInUserDetails();
-            Navigator.pushNamed(context, "/");
-          },
-        ),
-        ListTile(
-          title: const Text('Home'),
-          onTap: () {
-            Navigator.pushNamed(context, "/");
-          },
-        ),
-      ])),
-      appBar: AppBar(
-        title: Text(
-          "PH Level Page",
-          style: TextStyle(
-            color: Colors.white, // Set the text color here
+    if (user != null) {
+      return Scaffold(
+        drawer: Drawer(
+            child: ListView(padding: EdgeInsets.zero, children: [
+          SizedBox(height: 100),
+          ListTile(
+            title: const Text('Logout'),
+            onTap: () {
+              context.read<AuthProvider>().signOut();
+              context.read<UserProvider>().removeLoggedInUserDetails();
+              Navigator.pushNamed(context, "/");
+            },
+          ),
+          ListTile(
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pushNamed(context, "/");
+            },
+          ),
+        ])),
+        appBar: AppBar(
+          title: Text(
+            "PH Level Page",
+            style: TextStyle(
+              color: Colors.white, // Set the text color here
+            ),
           ),
         ),
-      ),
-      body: Container(
-          padding: const EdgeInsets.all(10.0),
-          child: ListView(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      showPhDialog(context);
-                    },
-                    child: phLevelWidgetBuilder(),
-                  )),
-                  Expanded(
-                    child: GestureDetector(
+        body: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: ListView(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                        child: GestureDetector(
                       onTap: () {
-                        showPhThresholdDialog(context);
+                        showPhDialog(context);
                       },
-                      child: Padding(
-                        padding: EdgeInsets.all(0),
-                        child: Container(
-                          height: 140, // Set the desired height of the square
+                      child: phLevelWidgetBuilder(),
+                    )),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          showPhThresholdDialog(context);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(0),
+                          child: Container(
+                            height: 140, // Set the desired height of the square
+                            decoration: BoxDecoration(
+                              color: Colors
+                                  .yellow, // Set the desired color of the square
+                              borderRadius: BorderRadius.circular(
+                                  20), // Adjust the radius to control the roundness
+                            ),
+                            child: Column(children: [
+                              Text(
+                                "PH Threshold",
+                                style: TextStyle(
+                                  fontWeight:
+                                      FontWeight.bold, // Make the text bold
+                                  color: Colors
+                                      .white, // Set the text color to white
+                                ),
+                              ),
+                              SizedBox(height: 30),
+                              Text(
+                                "${user!.lowerPH} - ${user!.upperPH}",
+                                style: TextStyle(
+                                    fontWeight:
+                                        FontWeight.bold, // Make the text bold
+                                    color: Colors
+                                        .white, // Set the text color to white
+                                    fontSize: 35),
+                              ),
+                            ]),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Text("PH Level: $phVal"),
+                    // Text("PH Threshold: ${user!.lowerPH}-${user!.upperPH}"),
+                  ],
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                    child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Container(
                           decoration: BoxDecoration(
                             color: Colors
-                                .yellow, // Set the desired color of the square
+                                .cyan, // Set the desired color of the square
                             borderRadius: BorderRadius.circular(
                                 20), // Adjust the radius to control the roundness
                           ),
                           child: Column(children: [
-                            Text(
-                              "PH Threshold",
-                              style: TextStyle(
-                                fontWeight:
-                                    FontWeight.bold, // Make the text bold
-                                color:
-                                    Colors.white, // Set the text color to white
+                            SizedBox(height: 10),
+                            Center(
+                              child: Text(
+                                labelData,
+                                style: TextStyle(
+                                    fontWeight:
+                                        FontWeight.bold, // Make the text bold
+                                    color: Colors
+                                        .white, // Set the text color to white
+                                    fontSize: 20),
                               ),
                             ),
-                            SizedBox(height: 30),
-                            Text(
-                              "${user!.lowerPH} - ${user!.upperPH}",
-                              style: TextStyle(
-                                  fontWeight:
-                                      FontWeight.bold, // Make the text bold
-                                  color: Colors
-                                      .white, // Set the text color to white
-                                  fontSize: 35),
-                            ),
-                          ]),
-                        ),
-                      ),
+                            SizedBox(height: 10),
+                            Center(child: _graphBuilder(dataList, user)),
+                            SizedBox(height: 10),
+                          ])),
                     ),
-                  ),
+                    onTap: () {
+                      showPhAnnotationDialog(context);
+                      //pass screen arguments here - data from sensor and the date
+                    }),
+                TextField(
+                    controller:
+                        dateController, //editing controller of this TextField
+                    decoration: const InputDecoration(
+                        icon: Icon(Icons.calendar_today), //icon of text field
+                        labelText:
+                            "Enter a date from which to see PH trends" //label text of field
 
-                  // Text("PH Level: $phVal"),
-                  // Text("PH Threshold: ${user!.lowerPH}-${user!.upperPH}"),
-                ],
-              ),
-              SizedBox(height: 10),
-              GestureDetector(
-                  child: Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors
-                              .cyan, // Set the desired color of the square
-                          borderRadius: BorderRadius.circular(
-                              20), // Adjust the radius to control the roundness
                         ),
-                        child: Column(children: [
-                          SizedBox(height: 10),
-                          Center(
-                            child: Text(
-                              labelData,
-                              style: TextStyle(
-                                  fontWeight:
-                                      FontWeight.bold, // Make the text bold
-                                  color: Colors
-                                      .white, // Set the text color to white
-                                  fontSize: 20),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Center(child: _graphBuilder(dataList, user)),
-                          SizedBox(height: 10),
-                        ])),
-                  ),
-                  onTap: () {
-                    showPhAnnotationDialog(context);
-                    //pass screen arguments here - data from sensor and the date
-                  }),
+                    readOnly: true, // when true user cannot edit text
 
-              TextField(
-                  controller:
-                      dateController, //editing controller of this TextField
-                  decoration: const InputDecoration(
-                      icon: Icon(Icons.calendar_today), //icon of text field
-                      labelText:
-                          "Enter a date from which to see PH trends" //label text of field
+                    onTap: () async {
+                      //when click we have to show the datepicker
 
-                      ),
-                  readOnly: true, // when true user cannot edit text
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(), //get today's date
+                        firstDate:
+                            DateTime(2000), // Set your desired start date
+                        lastDate: DateTime.now(),
+                      ); // Disable future dates);
 
-                  onTap: () async {
-                    //when click we have to show the datepicker
+                      if (pickedDate != null) {
+                        print(
+                            pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
+                        String formattedDate = DateFormat('yyyy-MM-dd').format(
+                            pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
+                        print(
+                            formattedDate); //formatted date output using intl package =>  2022-07-04
+                        //You can format date as per your need
 
-                    DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(), //get today's date
-                      firstDate: DateTime(2000), // Set your desired start date
-                      lastDate: DateTime.now(),
-                    ); // Disable future dates);
+                        setState(() {
+                          dateController.text =
+                              formattedDate; //set foratted date to TextField value.
+                        });
+                        bool success = await context
+                            .read<SensorDataProvider>()
+                            .fetchDataFromOtherDate(formattedDate);
 
-                    if (pickedDate != null) {
-                      print(
-                          pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
-                      String formattedDate = DateFormat('yyyy-MM-dd').format(
-                          pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-                      print(
-                          formattedDate); //formatted date output using intl package =>  2022-07-04
-                      //You can format date as per your need
-
-                      setState(() {
-                        dateController.text =
-                            formattedDate; //set foratted date to TextField value.
-                      });
-                      bool success = await context
-                          .read<SensorDataProvider>()
-                          .fetchDataFromOtherDate(formattedDate);
-
-                      if (!success) {
-                        showNoDataDialog(context);
+                        if (!success) {
+                          showNoDataDialog(context);
+                        }
+                      } else {
+                        print("Date is not selected");
                       }
-                    } else {
-                      print("Date is not selected");
-                    }
-                  }),
-
-              // Center(
-              //   child: Text(
-              //     labelData,
-              //     style: TextStyle(
-              //         fontWeight: FontWeight.bold, // Make the text bold
-              //         color: Colors.black, // Set the text color to white
-              //         fontSize: 20),
-              //   ),
-              // ),
-              // Center(child: _graphBuilder(dataList)),
-              // TextField(
-              //     controller:
-              //         dateController, //editing controller of this TextField
-              //     decoration: const InputDecoration(
-              //         icon: Icon(Icons.calendar_today), //icon of text field
-              //         labelText:
-              //             "Enter a date from which to see PH trends" //label text of field
-
-              //         ),
-              //     readOnly: true, // when true user cannot edit text
-
-              //     onTap: () async {
-              //       //when click we have to show the datepicker
-
-              //       DateTime? pickedDate = await showDatePicker(
-              //         context: context,
-              //         initialDate: DateTime.now(), //get today's date
-              //         firstDate: DateTime(2000), // Set your desired start date
-              //         lastDate: DateTime.now(),
-              //       ); // Disable future dates);
-
-              //       if (pickedDate != null) {
-              //         print(
-              //             pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
-              //         String formattedDate = DateFormat('yyyy-MM-dd').format(
-              //             pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-              //         print(
-              //             formattedDate); //formatted date output using intl package =>  2022-07-04
-              //         //You can format date as per your need
-
-              //         setState(() {
-              //           dateController.text =
-              //               formattedDate; //set foratted date to TextField value.
-              //         });
-              //         bool success = await context
-              //             .read<SensorDataProvider>()
-              //             .fetchDataFromOtherDate(formattedDate);
-
-              //         if (!success) {
-              //           showNoDataDialog(context);
-              //         }
-              //       } else {
-              //         print("Date is not selected");
-              //       }
-              //     })
-            ],
-          )),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.cyan,
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+                    }),
+              ],
+            )),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.cyan,
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.edit),
+              label: 'Edit',
+            ),
+          ],
+          currentIndex: 0,
+          unselectedItemColor: Colors.white,
+          selectedItemColor: Colors.white,
+          selectedLabelStyle:
+              const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+          unselectedLabelStyle:
+              const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+          onTap: _onItemTapped,
+        ),
+      );
+    } else {
+      return Scaffold(
+        drawer: Drawer(
+            child: ListView(padding: EdgeInsets.zero, children: [
+          SizedBox(height: 100),
+          ListTile(
+            title: const Text('Logout'),
+            onTap: () {
+              context.read<AuthProvider>().signOut();
+              context.read<UserProvider>().removeLoggedInUserDetails();
+              Navigator.pushNamed(context, "/");
+            },
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.edit),
-            label: 'Edit',
+          ListTile(
+            title: const Text('Home'),
+            onTap: () {
+              Navigator.pushNamed(context, "/");
+            },
           ),
-        ],
-        currentIndex: 0,
-        unselectedItemColor: Colors.white,
-        selectedItemColor: Colors.white,
-        selectedLabelStyle:
-            const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
-        unselectedLabelStyle:
-            const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
-        onTap: _onItemTapped,
-      ),
-    );
+        ])),
+        appBar: AppBar(
+          title: Text(
+            "PH Level Page",
+            style: TextStyle(
+              color: Colors.white, // Set the text color here
+            ),
+          ),
+        ),
+        body: Container(
+            padding: const EdgeInsets.all(10.0),
+            child: ListView(
+              children: [
+                CircularProgressIndicator(),
+              ],
+            )),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.cyan,
+          type: BottomNavigationBarType.fixed,
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.edit),
+              label: 'Edit',
+            ),
+          ],
+          currentIndex: 0,
+          unselectedItemColor: Colors.white,
+          selectedItemColor: Colors.white,
+          selectedLabelStyle:
+              const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+          unselectedLabelStyle:
+              const TextStyle(overflow: TextOverflow.visible, fontSize: 10),
+          onTap: _onItemTapped,
+        ),
+      );
+    }
   }
 }

@@ -39,7 +39,10 @@ class _EditPageState extends State<EditPage> {
   }
 
   void checkAndShowNotification() {
-    User user = context.watch<UserProvider>().user!;
+    User? user = context.watch<UserProvider>().user;
+    if (user == null) {
+      return;
+    }
     DateTime currentDate = DateTime.now();
     DateTime now = DateTime.now();
     int timestampInSeconds = now.millisecondsSinceEpoch ~/ 1000;
