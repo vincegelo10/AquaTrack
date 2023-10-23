@@ -1,36 +1,27 @@
 {
   "project_info": {
-    "project_number": "520016374347",
-    "project_id": "sp2-firebase",
-    "storage_bucket": "sp2-firebase.appspot.com"
+    "project_number": "428980843945",
+    "firebase_url": "https://sp2-2-5df1c-default-rtdb.firebaseio.com",
+    "project_id": "sp2-2-5df1c",
+    "storage_bucket": "sp2-2-5df1c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:520016374347:android:a3de5884ce3438d9bebbce",
+        "mobilesdk_app_id": "1:428980843945:android:e6efaca212740f672640b8",
         "android_client_info": {
           "package_name": "com.example.week7_networking_discussion"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "520016374347-e79go333q8st0fuduv503p85iaanu0dj.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDOq3Y2Kpd1X-5oAXNAv3RlPOGWZAY5j3c"
+          "current_key": "AIzaSyAJ6esdOee-T-baRbqMZeGUgS5zwpDyCn4"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "520016374347-e79go333q8st0fuduv503p85iaanu0dj.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

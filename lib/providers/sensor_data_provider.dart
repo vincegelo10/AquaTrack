@@ -12,8 +12,7 @@ class SensorDataProvider with ChangeNotifier {
   SensorData? recentData;
 
   final ref = FirebaseDatabase(
-      databaseURL:
-          "https://sp2-firebase-default-rtdb.asia-southeast1.firebasedatabase.app/");
+      databaseURL: "https://sp2-2-5df1c-default-rtdb.firebaseio.com/");
 
   SensorDataProvider() {
     //initial fetch- this is the data being fetched right after the user logs in
@@ -31,21 +30,24 @@ class SensorDataProvider with ChangeNotifier {
   List<SensorData> get dataFromOtherDate => dataFromOtherDates;
 
   Future<bool> fetchDataFromOtherDate(String date) async {
-    dataFromOtherDates.clear();
-
-    DataSnapshot snapshot = await ref.reference().child(date).get();
+    DataSnapshot snapshot = await ref.reference().child("ATLAS/$date").get();
 
     if (snapshot.exists) {
       Map<dynamic, dynamic> data = snapshot.value
           as Map<dynamic, dynamic>; // Assuming the snapshot value is a Map
 
       if (data != null) {
+        dataFromOtherDates.clear();
         data.forEach((key, value) {
           print("Key: $key, Value: $value");
-          var pH = value["ph"].toDouble();
-          var waterTemperature = value["water_temperature"].toDouble();
+          var pH =
+              double.parse(value["ph"].replaceAll(',', '').replaceAll('"', ''));
+          var waterTemperature = double.parse(value["water_temperature"]
+              .replaceAll(',', '')
+              .replaceAll('"', ''));
           var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
-          var dissolvedOxygen = value["do"].toDouble();
+          var dissolvedOxygen =
+              double.parse(value["do"].replaceAll(',', '').replaceAll('"', ''));
           var timestamp = int.parse(key); // Parse the timestamp from the key
           var millis = timestamp;
           DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
@@ -70,10 +72,10 @@ class SensorDataProvider with ChangeNotifier {
     dataList.clear();
     DateTime current_date = DateTime.now();
     String date_today = current_date.toString().split(' ')[0];
-
+    print("fetching data...");
     void streamSubscription = await ref
         .reference()
-        .child("$date_today")
+        .child("ATLAS/$date_today")
         .onValue
         .listen((DatabaseEvent event) {
       if (event.snapshot.value == null) {
@@ -85,10 +87,14 @@ class SensorDataProvider with ChangeNotifier {
         if (sensorDataMap != null) {
           sensorDataMap.forEach((key, value) {
             if (value != null) {
-              var pH = value["ph"].toDouble();
-              var waterTemperature = value["water_temperature"].toDouble();
+              var pH = double.parse(
+                  value["ph"].replaceAll(',', '').replaceAll('"', ''));
+              var waterTemperature = double.parse(value["water_temperature"]
+                  .replaceAll(',', '')
+                  .replaceAll('"', ''));
               var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
-              var dissolvedOxygen = value["do"].toDouble();
+              var dissolvedOxygen = double.parse(
+                  value["do"].replaceAll(',', '').replaceAll('"', ''));
               var timestamp =
                   int.parse(key); // Parse the timestamp from the key
               var millis = timestamp;
