@@ -69,7 +69,6 @@ class SensorDataProvider with ChangeNotifier {
   }
 
   void fetchData() async {
-    dataList.clear();
     DateTime current_date = DateTime.now();
     String date_today = current_date.toString().split(' ')[0];
     print("fetching data...");
@@ -85,6 +84,9 @@ class SensorDataProvider with ChangeNotifier {
         Map<dynamic, dynamic> sensorDataMap =
             event.snapshot.value as Map<dynamic, dynamic>;
         if (sensorDataMap != null) {
+          dataList.clear();
+          print("HERE IS THE DATALIST BEFORE");
+          print(dataList);
           sensorDataMap.forEach((key, value) {
             if (value != null) {
               var pH = double.parse(
@@ -105,6 +107,8 @@ class SensorDataProvider with ChangeNotifier {
             }
           });
           dataList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+          print("HERE IS THE SORTED DATALIST");
+          print(dataList);
           notifyListeners();
         }
 

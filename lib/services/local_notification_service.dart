@@ -10,10 +10,10 @@ class NotificationService {
   final BehaviorSubject<String?> onNotificationClick = BehaviorSubject();
 
   Future<void> initializePlatformNotifications() async {
+    print("setting up notifications");
     tz.initializeTimeZones();
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-
+        AndroidInitializationSettings('drawable/aquatrack_logo_nobg');
     const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
@@ -37,11 +37,8 @@ class NotificationService {
   Future<void> showNotification(
       {required int id, required String title, required String body}) async {
     final details = await _notificationDetails();
-    print("IN LOCAL NOTIFICATION SERVICE.DART");
-    print(title);
-    print(body);
+
     await _localNotifications.show(id, title, body, details);
-    print("DONE NA PLS");
   }
 
   Future<void> showScheduledNotification(

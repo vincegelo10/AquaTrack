@@ -31,6 +31,8 @@ import 'package:week7_networking_discussion/api/firebase_messaging_api.dart';
 
 import 'package:week7_networking_discussion/api/firebase_auth_api.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
@@ -38,7 +40,6 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await FirebaseMessagingAPI().initNotifications();
 
   runApp(
     MultiProvider(
@@ -99,6 +100,7 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseMessagingAPI().initNotifications(context);
     if (context.watch<AuthProvider>().isAuthenticated) {
       return const TodoPage();
     } else {

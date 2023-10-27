@@ -4,9 +4,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
    <application
-        android:label="week7_networking_discussion"
+        android:label="AquaTrack"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/aquatrack_logo_nobg">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -24,7 +24,7 @@
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
-              />
+            />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

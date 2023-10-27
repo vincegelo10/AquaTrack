@@ -45,6 +45,7 @@ class _PHPageState extends State<PH_Page> {
   }
 
   void checkAndShowNotification() {
+    print("IN CHECK AND SHOW NOTIFICATION");
     User? user = context.watch<UserProvider>().user;
     if (user == null) {
       return;
@@ -80,6 +81,10 @@ class _PHPageState extends State<PH_Page> {
 
     if (updatedData?.timestamp != null) {
       //notification for PH outside of threshold
+      print("not null");
+      print("ph val: phVal");
+      print("lower ph: ${user!.lowerPH}");
+      print("upper ph: ${user!.upperPH}");
       if (phVal != 'NA' &&
           (double.parse(phVal) < user!.lowerPH ||
               double.parse(phVal) > user!.upperPH) &&
