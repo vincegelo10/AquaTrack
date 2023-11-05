@@ -141,7 +141,7 @@ class _WaterTemperatureAnnotationPageState
             Padding(
               padding: EdgeInsetsDirectional.only(top: 20),
               child: Text(
-                "${args.dataList[i].waterTempInFahrenheit}",
+                "${args.dataList[i].waterTempInFahrenheit.toStringAsFixed(2)}",
                 style: TextStyle(fontSize: 21),
               ),
             )

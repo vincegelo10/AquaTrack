@@ -193,7 +193,6 @@ class FirebaseMessagingAPI {
   }
 
   void configureLocalNotifications() {
-    print('mipmap/ic_notification');
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('drawable/aquatrack_logo_nobg');
     final InitializationSettings initializationSettings =
@@ -210,7 +209,7 @@ class FirebaseMessagingAPI {
     print("SHOWING NOTIFICATION");
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-      'your_channel_id',
+      'channel_id',
       'your_channel_name',
       channelDescription: 'your_channel_description',
       icon: 'drawable/aquatrack_logo_nobg', // Specify your app icon here
@@ -218,7 +217,7 @@ class FirebaseMessagingAPI {
       priority: Priority.high,
       playSound: true,
       sound: RawResourceAndroidNotificationSound(
-          'notification_sound'), // Add a custom notification sound
+          'notif_sound'), // Add a custom notification sound
     );
 
     final NotificationDetails platformChannelSpecifics =
