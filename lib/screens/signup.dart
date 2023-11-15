@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:week7_networking_discussion/providers/user_provider.dart';
-import 'package:week7_networking_discussion/screens/setPH.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:intl/intl.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
 
@@ -146,7 +143,6 @@ class _SignupPageState extends State<SignupPage> {
             _formKey.currentState?.save();
 
             DateTime current_date = DateTime.now();
-            print("current date: $current_date");
             String dateCreated = current_date.toString().split(' ')[0];
             User user = User(
                 email: emailValue!,
@@ -162,11 +158,6 @@ class _SignupPageState extends State<SignupPage> {
                 lowerDO: 0,
                 upperDO: 0,
                 isLoggedIn: false);
-            print("The details of the user\n");
-            print("User email: ${user.email}\n");
-            print("User firstName: ${user.firstName}\n");
-            print("User lastName: ${user.lastName}\n");
-            print("User date created: ${user.dateCreated}");
             bool success = await context.read<AuthProvider>().signUp(
                 emailValue!,
                 passwordValue!,
@@ -175,31 +166,12 @@ class _SignupPageState extends State<SignupPage> {
                 dateCreated);
 
             if (success) {
-              print("data saved successfully!");
-              print("email: $emailValue");
-              print("first name: $firstNameValue");
-              print("last name: $lastNameValue");
-              print("dateCreated: $dateCreated");
               Navigator.pushNamed(context, '/setPhPage',
                   arguments: UserScreenArguments(emailValue!));
             } else {
-              print("FAIILED BRUUUH");
+              print("Failed signup");
             }
-            // Navigator.pushNamed(context, '/setPhPage',,
-
-            //     arguments: UserScreenArguments(user));
           }
-
-          // bool success = await context
-          //     .read<AuthProvider>()
-          //     .signUp(emailValue!, passwordValue!);
-          // if (success) {
-          //   print("data saved successfully!");
-          //   print("email: $emailValue");
-          //   print("first name: $firstNameValue");
-          //   print("last name: $lastNameValue");
-          //   print("dateCreated: $dateCreated");
-          // }
         },
         child: const Text('Next', style: TextStyle(color: Colors.white)),
       ),

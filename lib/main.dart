@@ -16,7 +16,7 @@ import 'package:week7_networking_discussion/screens/ph_annotation_page.dart';
 import 'package:week7_networking_discussion/screens/setDO.dart';
 import 'package:week7_networking_discussion/screens/setPH.dart';
 import 'package:week7_networking_discussion/screens/setTemp.dart';
-import 'package:week7_networking_discussion/screens/todo_page.dart';
+import 'package:week7_networking_discussion/screens/home_page.dart';
 import 'package:week7_networking_discussion/screens/editPH.dart';
 import 'package:week7_networking_discussion/screens/login.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -102,7 +102,7 @@ class AuthWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseMessagingAPI().initNotifications(context);
     if (context.watch<AuthProvider>().isAuthenticated) {
-      return const TodoPage();
+      return const HomePage();
     } else {
       return const LoginPage();
     }

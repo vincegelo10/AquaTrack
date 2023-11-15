@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:week7_networking_discussion/providers/auth_provider.dart';
-import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/services/local_notification_service.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
@@ -64,7 +62,6 @@ class _EditTempPageState extends State<EditTempPage> {
           (double.parse(phVal) < user!.lowerPH ||
               double.parse(phVal) > user!.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
-        print("Showing notification for ph");
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
@@ -129,10 +126,8 @@ class _EditTempPageState extends State<EditTempPage> {
       value: dropdownValue,
       onChanged: (String? value) {
         // This is called when the user selects an item.
-        print("i am selecting: $value");
         setState(() {
           dropdownValue = value!;
-          print("dropdownValue: $dropdownValue");
         });
       },
       items: _dropdownOptions.map<DropdownMenuItem<String>>(
@@ -215,28 +210,14 @@ class _EditTempPageState extends State<EditTempPage> {
         onPressed: () async {
           //call the auth provider here
           if (_formKey.currentState!.validate()) {
-            //if temperature is in fahrenheit, convert to celsius
-            // if (dropdownValue == _dropdownOptions[1]) {
-            //   print('the temperature is in fahrenheit');
-            //   print(lowerTempController.text);
-            //   print(upperTempController.text);
-            // }
-            // DateTime current_date = DateTime.now();
-            // String dateCreated = current_date.toString().split(' ')[0];
             _formKey.currentState?.save();
             if (dropdownValue == _dropdownOptions[1]) {
-              print("lower temp (fahrenheit): $lowerTemp");
-              print("upper temp (fahrenheit): $upperTemp");
-              print("converting to celsius...");
               double lowerTempCelsius = (lowerTemp! - 32) * (5 / 9);
               double upperTempCelsius = (upperTemp! - 32) * (5 / 9);
-              print("lower temp (celsius): $lowerTempCelsius");
-              print("upper temp (celsius): $upperTempCelsius");
 
               context.read<UserProvider>().editTemp(
                   user!.email, lowerTempCelsius, upperTempCelsius, true);
             } else {
-              print("unit is in celsius");
               context
                   .read<UserProvider>()
                   .editTemp(user!.email, lowerTemp!, upperTemp!, false);

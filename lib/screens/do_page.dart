@@ -1,27 +1,14 @@
-/*
-  Created by: Claizel Coubeili Cepe
-  Date: 27 October 2022
-  Description: Sample todo app with networking
-*/
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week7_networking_discussion/models/todo_model.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
-import 'package:week7_networking_discussion/screens/modal_todo.dart';
 import 'package:week7_networking_discussion/models/sensor_data_model.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:firebase_database/firebase_database.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
-
 import 'package:week7_networking_discussion/services/local_notification_service.dart';
 
 class DO_Page extends StatefulWidget {
@@ -82,7 +69,6 @@ class _DOPageState extends State<DO_Page> {
           (double.parse(phVal) < user!.lowerPH ||
               double.parse(phVal) > user!.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
-        print("Showing notification for ph");
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
@@ -154,14 +140,11 @@ class _DOPageState extends State<DO_Page> {
                 pointColorMapper: (SensorData data, _) {
                   if (data.dissolvedOxygen < user.lowerDO ||
                       data.dissolvedOxygen > user.upperDO) {
-                    print("return red");
                     return Colors.red;
                   } else if (data.dissolvedOxygen == user.lowerDO ||
                       data.dissolvedOxygen == user.upperDO) {
-                    print("return orange");
                     return Colors.orange;
                   } else {
-                    print("return green");
                     return Colors.green;
                   }
                 }),
@@ -361,7 +344,7 @@ class _DOPageState extends State<DO_Page> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Within the threshold:"),
-                        SizedBox(width: 10),
+                        SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
@@ -373,7 +356,7 @@ class _DOPageState extends State<DO_Page> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Equal to one of the threshold: "),
-                        SizedBox(width: 10),
+                        SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
@@ -385,7 +368,7 @@ class _DOPageState extends State<DO_Page> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Outside the threshold: "),
-                        SizedBox(width: 10),
+                        SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
@@ -397,7 +380,7 @@ class _DOPageState extends State<DO_Page> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Data not available: "),
-                        SizedBox(width: 10),
+                        SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
@@ -511,6 +494,12 @@ class _DOPageState extends State<DO_Page> {
             title: const Text('Home'),
             onTap: () {
               Navigator.pushNamed(context, "/");
+            },
+          ),
+          ListTile(
+            title: const Text('Edit'),
+            onTap: () {
+              Navigator.pushNamed(context, "/editPage");
             },
           ),
         ])),

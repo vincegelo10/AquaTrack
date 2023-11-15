@@ -83,7 +83,6 @@ class _LoginPageState extends State<LoginPage> {
           if (_formKey.currentState!.validate()) {
             _formKey.currentState?.save();
           }
-          print("i am here");
           await context
               .read<AuthProvider>()
               .signIn(emailValue!, passwordValue!);

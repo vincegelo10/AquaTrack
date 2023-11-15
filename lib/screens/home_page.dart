@@ -1,15 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:week7_networking_discussion/models/todo_model.dart';
-import 'package:week7_networking_discussion/providers/todo_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
-import 'package:week7_networking_discussion/screens/modal_todo.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 //for firebase real time database
-import 'package:firebase_database/firebase_database.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 
@@ -17,22 +10,14 @@ import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/services/local_notification_service.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 
-class SensorData {
-  final double waterTemperature;
-  final double pH;
-  final int timestamp;
-
-  SensorData(this.waterTemperature, this.pH, this.timestamp);
-}
-
-class TodoPage extends StatefulWidget {
-  const TodoPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<TodoPage> createState() => _TodoPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _TodoPageState extends State<TodoPage> {
+class _HomePageState extends State<HomePage> {
   late final NotificationService service;
 
   @override
@@ -79,7 +64,6 @@ class _TodoPageState extends State<TodoPage> {
           (double.parse(phVal) < user!.lowerPH ||
               double.parse(phVal) > user!.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
-        print("Showing notification for ph");
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',

@@ -1,22 +1,8 @@
-/*
-  Created by: Claizel Coubeili Cepe
-  Date: 27 October 2022
-  Description: Sample todo app with networking
-*/
-
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
-import 'package:week7_networking_discussion/models/todo_model.dart';
-import 'package:week7_networking_discussion/providers/todo_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
-import 'package:week7_networking_discussion/screens/modal_todo.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
 
 //for firebase real time database
-import 'package:firebase_database/firebase_database.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/services/local_notification_service.dart';
@@ -78,7 +64,6 @@ class _EditPageState extends State<EditPage> {
           (double.parse(phVal) < user!.lowerPH ||
               double.parse(phVal) > user!.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
-        print("Showing notification for ph");
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',

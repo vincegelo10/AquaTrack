@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 
@@ -23,8 +21,6 @@ class _SetTempPageState extends State<SetTempPage> {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as UserScreenArguments;
-    print("the email is: ");
-    print(args.email);
 
     TextEditingController lowerTempController = TextEditingController();
     TextEditingController upperTempController = TextEditingController();
@@ -119,100 +115,20 @@ class _SetTempPageState extends State<SetTempPage> {
         onPressed: () async {
           //call the auth provider here
           if (_formKey.currentState!.validate()) {
-            //if temperature is in fahrenheit, convert to celsius
-            // if (dropdownValue == _dropdownOptions[1]) {
-            //   print('the temperature is in fahrenheit');
-            //   print(lowerTempController.text);
-            //   print(upperTempController.text);
-            // }
-            // DateTime current_date = DateTime.now();
-            // String dateCreated = current_date.toString().split(' ')[0];
             _formKey.currentState?.save();
             if (dropdownValue == _dropdownOptions[1]) {
-              print("lower temp (fahrenheit): $lowerTemp");
-              print("upper temp (fahrenheit): $upperTemp");
-              print("converting to celsius...");
               double lowerTempCelsius = (lowerTemp! - 32) * (5 / 9);
               double upperTempCelsius = (upperTemp! - 32) * (5 / 9);
-              print("lower temp (celsius): $lowerTempCelsius");
-              print("upper temp (celsius): $upperTempCelsius");
-
               await context.read<UserProvider>().addTemp(
                   args.email, lowerTempCelsius, upperTempCelsius, true);
-              // await context
-              //     .read<UserProvider>()
-              //     .getLoggedInUserDetails(args.email);
-              // User user = User.setupTempThreshold(
-              //     email: widget.user.email,
-              //     firstName: widget.user.firstName,
-              //     lastName: widget.user.lastName,
-              //     dateCreated: widget.user.dateCreated,
-              //     lowerPH: widget.user.lowerPH,
-              //     upperPH: widget.user.upperPH,
-              //     lowerTemp: lowerTempCelsius,
-              //     upperTemp: upperTempCelsius,
-              //     password: widget.user.password);
-              // print("The details of the user\n");
-              // print("User email: ${user.email}\n");
-              // print("User firstName: ${user.firstName}\n");
-              // print("User lastName: ${user.lastName}\n");
-              // print("User date created: ${user.dateCreated}");
-              // print("User lower PH: ${user.lowerPH}");
-              // print("User upper PH: ${user.upperPH}");
-              // print("User lower temp: ${user.lowerTemp}");
-              // print("User upper temp: ${user.upperTemp}");
             } else {
-              print("unit is in celsius");
               await context
                   .read<UserProvider>()
                   .addTemp(args.email, lowerTemp!, upperTemp!, false);
-              // await context
-              //     .read<UserProvider>()
-              //     .getLoggedInUserDetails(args.email);
-              // User user = User.setupTempThreshold(
-              //     email: widget.user.email,
-              //     firstName: widget.user.firstName,
-              //     lastName: widget.user.lastName,
-              //     dateCreated: widget.user.dateCreated,
-              //     lowerPH: widget.user.lowerPH,
-              //     upperPH: widget.user.upperPH,
-              //     lowerTemp: lowerTemp,
-              //     upperTemp: upperTemp,
-              //     password: widget.user.password);
-              // print("The details of the user\n");
-              // print("User email: ${user.email}\n");
-              // print("User firstName: ${user.firstName}\n");
-              // print("User lastName: ${user.lastName}\n");
-              // print("User date created: ${user.dateCreated}");
-              // print("User lower PH: ${user.lowerPH}");
-              // print("User upper PH: ${user.upperPH}");
-              // print("User lower temp: ${user.lowerTemp}");
-              // print("User upper temp: ${user.upperTemp}");
-              // await context.read<AuthProvider>().signUp(
-              //     user.email,
-              //     user.password,
-              //     user.firstName,
-              //     user.lastName,
-              //     user.dateCreated,
-              //     user.lowerPH!,
-              //     user.upperPH!,
-              //     user.lowerTemp!,
-              //     user.upperTemp!);
             }
             context.read<UserProvider>().getLoggedInUserDetails(args.email);
             Navigator.pushNamed(context, '/setDissolvedOxygenPage',
                 arguments: UserScreenArguments(args.email));
-
-            // bool success = await context
-            //     .read<AuthProvider>()
-            //     .signUp(emailValue!, passwordValue!);
-            // if (success) {
-            //   print("data saved successfully!");
-            //   print("email: $emailValue");
-            //   print("first name: $firstNameValue");
-            //   print("last name: $lastNameValue");
-            //   print("dateCreated: $dateCreated");
-            // }
           }
         },
         child: const Text('Next', style: TextStyle(color: Colors.white)),

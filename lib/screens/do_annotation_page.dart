@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:week7_networking_discussion/screens/setTemp.dart';
 import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
-
 import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -66,7 +63,6 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
           (double.parse(phVal) < user!.lowerPH ||
               double.parse(phVal) > user!.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
-        print("Showing notification for ph");
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
@@ -213,10 +209,6 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                               ),
                               TextButton(
                                 onPressed: () async {
-                                  print("args.date: ${args.date}");
-                                  print(DateFormat("h:mm a")
-                                      .format(args.dataList[i].timeUpload));
-
                                   var date = args.date;
                                   var time = DateFormat("h:mm a")
                                       .format(args.dataList[i].timeUpload);

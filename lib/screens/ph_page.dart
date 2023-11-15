@@ -1,24 +1,12 @@
-/*
-  Created by: Claizel Coubeili Cepe
-  Date: 27 October 2022
-  Description: Sample todo app with networking
-*/
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week7_networking_discussion/models/todo_model.dart';
 import 'package:week7_networking_discussion/providers/sensor_data_provider.dart';
 import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 import 'package:week7_networking_discussion/providers/water_parameter_annotation_provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/data_sensor_arguments.dart';
-import 'package:week7_networking_discussion/screens/modal_todo.dart';
 import 'package:week7_networking_discussion/models/sensor_data_model.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
-import 'package:firebase_database/firebase_database.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
@@ -81,15 +69,10 @@ class _PHPageState extends State<PH_Page> {
 
     if (updatedData?.timestamp != null) {
       //notification for PH outside of threshold
-      print("not null");
-      print("ph val: phVal");
-      print("lower ph: ${user!.lowerPH}");
-      print("upper ph: ${user!.upperPH}");
       if (phVal != 'NA' &&
           (double.parse(phVal) < user!.lowerPH ||
               double.parse(phVal) > user!.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
-        print("Showing notification for ph");
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
@@ -348,7 +331,7 @@ class _PHPageState extends State<PH_Page> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Within the threshold:"),
-                      SizedBox(width: 10),
+                      SizedBox(width: 5),
                       Container(
                         width: 20,
                         height: 20,
@@ -360,7 +343,7 @@ class _PHPageState extends State<PH_Page> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Equal to one of the threshold: "),
-                      SizedBox(width: 10),
+                      SizedBox(width: 5),
                       Container(
                         width: 20,
                         height: 20,
@@ -372,7 +355,7 @@ class _PHPageState extends State<PH_Page> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Outside the threshold: "),
-                      SizedBox(width: 10),
+                      SizedBox(width: 5),
                       Container(
                         width: 20,
                         height: 20,
@@ -384,7 +367,7 @@ class _PHPageState extends State<PH_Page> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Data not available: "),
-                      SizedBox(width: 10),
+                      SizedBox(width: 5),
                       Container(
                         width: 20,
                         height: 20,
@@ -512,6 +495,12 @@ class _PHPageState extends State<PH_Page> {
               Navigator.pushNamed(context, "/");
             },
           ),
+          ListTile(
+            title: const Text('Edit'),
+            onTap: () {
+              Navigator.pushNamed(context, "/editPage");
+            },
+          ),
         ])),
         appBar: AppBar(
           title: Text(
@@ -635,13 +624,8 @@ class _PHPageState extends State<PH_Page> {
                       ); // Disable future dates);
 
                       if (pickedDate != null) {
-                        print(
-                            pickedDate); //get the picked date in the format => 2022-07-04 00:00:00.000
                         String formattedDate = DateFormat('yyyy-MM-dd').format(
                             pickedDate); // format date in required form here we use yyyy-MM-dd that means time is removed
-                        print(
-                            formattedDate); //formatted date output using intl package =>  2022-07-04
-                        //You can format date as per your need
 
                         setState(() {
                           dateController.text =

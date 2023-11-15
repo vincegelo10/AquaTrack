@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
-import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:week7_networking_discussion/screens/setTemp.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
-// import 'package:week7_networking_discussion/providers/auth_provider.dart';
 
 class SetPhPage extends StatefulWidget {
   const SetPhPage({super.key});
@@ -24,8 +21,6 @@ class _SetPhPageState extends State<SetPhPage> {
   Widget build(BuildContext context) {
     final args =
         ModalRoute.of(context)!.settings.arguments as UserScreenArguments;
-    print("the email is: ");
-    print(args.email);
 
     final lowerPHField = TextFormField(
         controller: lowerPHTextController,
@@ -98,54 +93,13 @@ class _SetPhPageState extends State<SetPhPage> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         onPressed: () async {
-          //call the auth provider here
           if (_formKey.currentState!.validate()) {
-            // DateTime current_date = DateTime.now();
-            // String dateCreated = current_date.toString().split(' ')[0];
             _formKey.currentState?.save();
             context
                 .read<UserProvider>()
                 .addPH(args.email, lowerPHLevel!, upperPHLevel!);
             Navigator.pushNamed(context, '/setTempPage',
                 arguments: UserScreenArguments(args.email));
-            // User user = User.setupPHThreshold(
-            //     email: widget.user.email,
-            //     firstName: widget.user.firstName,
-            //     lastName: widget.user.lastName,
-            //     dateCreated: widget.user.dateCreated,
-            //     lowerPH: lowerPHLevel,
-            //     upperPH: upperPHLevel,
-            //     password: widget.user.password);
-            // print("The details of the user\n");
-            // print("User email: ${user.email}\n");
-            // print("User firstName: ${user.firstName}\n");
-            // print("User lastName: ${user.lastName}\n");
-            // print("User date created: ${user.dateCreated}");
-            // print("User lower PH: ${user.lowerPH}");
-            // print("User upper PH: ${user.upperPH}");
-            // Navigator.push(
-            //     context,
-            //     new MaterialPageRoute(
-            //         builder: (context) => new SetTempPage(
-            //             user: User.setupPHThreshold(
-            //                 email: widget.user.email,
-            //                 firstName: widget.user.firstName,
-            //                 lastName: widget.user.lastName,
-            //                 dateCreated: widget.user.dateCreated,
-            //                 lowerPH: lowerPHLevel,
-            //                 upperPH: upperPHLevel,
-            //                 password: widget.user.password))));
-            // bool success = await context
-            //     .read<AuthProvider>()
-            //     .signUp(emailValue!, passwordValue!);
-            // if (success) {
-            //   print("data saved successfully!");
-            //   print("email: $emailValue");
-            //   print("first name: $firstNameValue");
-            //   print("last name: $lastNameValue");
-            //   print("dateCreated: $dateCreated");
-            // }
-            // Navigator.pushNamed(context, '/setTempPage');
           }
         },
         child: const Text('Next', style: TextStyle(color: Colors.white)),
