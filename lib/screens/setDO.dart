@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:week7_networking_discussion/providers/auth_provider.dart';
 import 'package:week7_networking_discussion/screen_arguments/user_screen_arguments.dart';
 import 'package:week7_networking_discussion/providers/user_provider.dart';
 
