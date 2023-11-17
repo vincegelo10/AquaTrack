@@ -195,7 +195,7 @@ class FirebaseMessagingAPI {
   void configureLocalNotifications() {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('drawable/aquatrack_logo_nobg');
-    final InitializationSettings initializationSettings =
+    const InitializationSettings initializationSettings =
         InitializationSettings(
       android: initializationSettingsAndroid,
     );
@@ -220,7 +220,7 @@ class FirebaseMessagingAPI {
           'notif_sound'), // Add a custom notification sound
     );
 
-    final NotificationDetails platformChannelSpecifics =
+    const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(

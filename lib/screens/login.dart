@@ -13,7 +13,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   Widget invalidCredentialsMessage(BuildContext context) {
     return Text(context.watch<AuthProvider>().loginStatus,
-        style: TextStyle(color: Colors.red));
+        style: const TextStyle(color: Colors.red));
   }
 
   @override
@@ -21,7 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     TextEditingController emailController = TextEditingController();
     TextEditingController passwordController = TextEditingController();
 
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     String? emailValue;
     String? passwordValue;
 
@@ -44,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
           if (value == null || value.isEmpty) {
             return 'Email is Required!';
           }
+          return null;
         },
         onSaved: ((String? value) {
           emailValue = value!;
@@ -70,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
           if (value == null || value.isEmpty) {
             return 'Password is Required!';
           }
+          return null;
         },
         onSaved: ((String? value) {
           passwordValue = value!;
@@ -80,8 +82,8 @@ class _LoginPageState extends State<LoginPage> {
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: ElevatedButton(
         onPressed: () async {
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState?.save();
+          if (formKey.currentState!.validate()) {
+            formKey.currentState?.save();
           }
           await context
               .read<AuthProvider>()
@@ -113,12 +115,12 @@ class _LoginPageState extends State<LoginPage> {
       backgroundColor: Colors.white,
       body: Center(
           child: Form(
-        key: _formKey,
+        key: formKey,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 40.0, right: 40.0),
           children: <Widget>[
-            Image(
+            const Image(
               image: AssetImage('assets/images/aquatrack-logo-nobg.png'),
               width: 80,
               height: 104,
@@ -132,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 90),
+            const SizedBox(height: 90),
             const Text(
               "Login",
               textAlign: TextAlign.center,

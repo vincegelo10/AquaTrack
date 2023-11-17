@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:week7_networking_discussion/api/firebase_user_api.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:week7_networking_discussion/api/firebase_auth_api.dart';
 
 class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   late FirebaseUserAPI firebaseService;

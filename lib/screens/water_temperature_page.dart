@@ -45,7 +45,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
         : context.watch<SensorDataProvider>().dissolvedOxygen;
     String tempVal = context.watch<SensorDataProvider>().waterTemp == ''
         ? 'NA'
-        : user!.inFahrenheit == false
+        : user.inFahrenheit == false
             ? context.watch<SensorDataProvider>().recentWaterTemp
             : ((double.parse(context
                             .watch<SensorDataProvider>()
@@ -54,25 +54,25 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                         5) +
                     32)
                 .toString();
-    double lowerTemp = user!.inFahrenheit == false
-        ? user!.lowerTemp
-        : ((user!.lowerTemp * 9 / 5) + 32);
+    double lowerTemp = user.inFahrenheit == false
+        ? user.lowerTemp
+        : ((user.lowerTemp * 9 / 5) + 32);
 
-    double upperTemp = user!.inFahrenheit == false
-        ? user!.upperTemp
-        : ((user!.upperTemp * 9 / 5) + 32);
+    double upperTemp = user.inFahrenheit == false
+        ? user.upperTemp
+        : ((user.upperTemp * 9 / 5) + 32);
 
     if (updatedData?.timestamp != null) {
       //notification for PH outside of threshold
       if (phVal != 'NA' &&
-          (double.parse(phVal) < user!.lowerPH ||
-              double.parse(phVal) > user!.upperPH) &&
+          (double.parse(phVal) < user.lowerPH ||
+              double.parse(phVal) > user.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
           body:
-              'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+              'Current PH Level: $phVal is not within the set threshold of ${user.lowerPH}-${user.upperPH}',
         );
       }
       //notification for temperature outside of threshold
@@ -90,14 +90,14 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
 
       //notification for DO outside of threshold
       if (doVal != 'NA' &&
-          (double.parse(doVal) < user!.lowerDO ||
-              double.parse(doVal) > user!.upperDO) &&
+          (double.parse(doVal) < user.lowerDO ||
+              double.parse(doVal) > user.upperDO) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 3,
           title: 'Dissolved Oxygen out of range!',
           body:
-              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user!.lowerDO}-${user!.upperDO}',
+              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user.lowerDO}-${user.upperDO}',
         );
       }
     }
@@ -118,13 +118,13 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
             primaryXAxis: DateTimeAxis(
               title: AxisTitle(
                   text: "Water temperature over time",
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                       color: Colors.deepOrange,
                       fontFamily: 'Roboto',
                       fontSize: 16,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w300)),
-              majorGridLines: MajorGridLines(width: 0),
+              majorGridLines: const MajorGridLines(width: 0),
               edgeLabelPlacement: EdgeLabelPlacement.shift,
               intervalType: DateTimeIntervalType.hours,
               dateFormat: DateFormat('hh:mm a'), // Use custom time format here
@@ -140,7 +140,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                   xValueMapper: (SensorData data, _) => data.timeUpload,
                   yValueMapper: (SensorData data, _) =>
                       data.waterTempInFahrenheit,
-                  markerSettings: MarkerSettings(isVisible: true),
+                  markerSettings: const MarkerSettings(isVisible: true),
                   pointColorMapper: (SensorData data, _) {
                     if (data.waterTempInFahrenheit < lTemp ||
                         data.waterTempInFahrenheit > uTemp) {
@@ -165,13 +165,13 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
             primaryXAxis: DateTimeAxis(
               title: AxisTitle(
                   text: "Water temperature over time",
-                  textStyle: TextStyle(
+                  textStyle: const TextStyle(
                       color: Colors.deepOrange,
                       fontFamily: 'Roboto',
                       fontSize: 16,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.w300)),
-              majorGridLines: MajorGridLines(width: 0),
+              majorGridLines: const MajorGridLines(width: 0),
               edgeLabelPlacement: EdgeLabelPlacement.shift,
               intervalType: DateTimeIntervalType.hours,
               dateFormat: DateFormat('hh:mm a'), // Use custom time format here
@@ -186,7 +186,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                   dataSource: dataList,
                   xValueMapper: (SensorData data, _) => data.timeUpload,
                   yValueMapper: (SensorData data, _) => data.waterTemperature,
-                  markerSettings: MarkerSettings(isVisible: true),
+                  markerSettings: const MarkerSettings(isVisible: true),
                   pointColorMapper: (SensorData data, _) {
                     if (data.waterTemperature < lTemp ||
                         data.waterTemperature > uTemp) {
@@ -230,13 +230,13 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
           ? "Water temperature trends on ${dateController.text}"
           : "Water temperature trends today";
 
-      String lowerTemp = user!.inFahrenheit == false
-          ? user!.lowerTemp.toString()
-          : ((user!.lowerTemp * 9 / 5) + 32).toString();
+      String lowerTemp = user.inFahrenheit == false
+          ? user.lowerTemp.toString()
+          : ((user.lowerTemp * 9 / 5) + 32).toString();
 
-      String upperTemp = user!.inFahrenheit == false
-          ? user!.upperTemp.toString()
-          : ((user!.upperTemp * 9 / 5) + 32).toString();
+      String upperTemp = user.inFahrenheit == false
+          ? user.upperTemp.toString()
+          : ((user.upperTemp * 9 / 5) + 32).toString();
 
       List<SensorData> dataList = (dateController.text != formattedDateToday &&
               dateController.text.isNotEmpty
@@ -244,7 +244,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
           : context.watch<SensorDataProvider>().dataFromSensor);
       var waterTempVal = context.watch<SensorDataProvider>().waterTemp == ''
           ? 'NA'
-          : user!.inFahrenheit == false
+          : user.inFahrenheit == false
               ? context.watch<SensorDataProvider>().waterTemp
               : ((double.parse(context.watch<SensorDataProvider>().waterTemp) *
                           9 /
@@ -254,27 +254,27 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
 
       List<String> tempUnits = ["°C", "°F"];
       var unitForRealTimeTemp =
-          (user!.inFahrenheit == true && waterTempVal != 'NA')
+          (user.inFahrenheit == true && waterTempVal != 'NA')
               ? tempUnits[1]
               : (waterTempVal != 'NA')
                   ? tempUnits[0]
                   : "";
       var unitForThreshold =
-          user!.inFahrenheit == true ? tempUnits[1] : tempUnits[0];
+          user.inFahrenheit == true ? tempUnits[1] : tempUnits[0];
 
       void showNoDataDialog(BuildContext context) {
         showDialog(
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('No Data Available'),
-              content: Text('Sorry, no data is available.'),
+              title: const Text('No Data Available'),
+              content: const Text('Sorry, no data is available.'),
               actions: <Widget>[
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -287,7 +287,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Water Temperature Threshold'),
+              title: const Text('Water Temperature Threshold'),
               content: Text(
                   'The water temperature threshold is between $lowerTemp-$upperTemp $unitForThreshold. Do you want to edit it?'),
               actions: <Widget>[
@@ -300,22 +300,22 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                       children: [
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.red, // Background color
+                              backgroundColor: Colors.red, // Background color
                             ),
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text("No")),
-                        SizedBox(width: 10),
+                            child: const Text("No")),
+                        const SizedBox(width: 10),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.green, // Background color
+                              backgroundColor: Colors.green, // Background color
                             ),
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.pushNamed(context, "/editTempPage");
                             },
-                            child: Text("Yes")),
+                            child: const Text("Yes")),
                       ]),
                 ),
               ],
@@ -328,8 +328,8 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
         List<SensorData> data =
             context.watch<SensorDataProvider>().dataFromSensor;
 
-        if (data.length == 0) {
-          return Text("Data not available",
+        if (data.isEmpty) {
+          return const Text("Data not available",
               style: TextStyle(
                   fontWeight: FontWeight.bold, // Make the text bold
                   color: Colors.white, // Set the text color to white
@@ -339,7 +339,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
           String formattedTime =
               DateFormat('hh:mm a').format(lastUpload).toString();
           return Text("last uploaded by Arduino at $formattedTime",
-              style: TextStyle(
+              style: const TextStyle(
                   fontWeight: FontWeight.bold, // Make the text bold
                   color: Colors.white, // Set the text color to white
                   fontSize: 10));
@@ -347,7 +347,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
       }
 
       Widget waterTemperatureWidgetBuilder() {
-        var colorOfWidget;
+        Color colorOfWidget;
         try {
           if (double.parse(waterTempVal) > double.parse(lowerTemp) &&
               double.parse(waterTempVal) < double.parse(upperTemp)) {
@@ -364,7 +364,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
         }
 
         return Padding(
-          padding: EdgeInsets.all(5),
+          padding: const EdgeInsets.all(5),
           child: Container(
               height: 140, // Set the desired height of the square
               decoration: BoxDecoration(
@@ -373,17 +373,17 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                     20), // Adjust the radius to control the roundness
               ),
               child: Column(children: [
-                Text(
+                const Text(
                   "Water Temperature",
                   style: TextStyle(
                     fontWeight: FontWeight.bold, // Make the text bold
                     color: Colors.white, // Set the text color to white
                   ),
                 ),
-                SizedBox(height: 25),
+                const SizedBox(height: 25),
                 Text(
                   "$waterTempVal $unitForRealTimeTemp",
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.bold, // Make the text bold
                       color: Colors.white, // Set the text color to white
                       fontSize: 40),
@@ -393,7 +393,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                   alignment: Alignment.bottomCenter,
                   child: recentTimeUpload(context),
                 )),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
               ])),
         );
       }
@@ -403,8 +403,8 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Water Temperature'),
-              content: Text(
+              title: const Text('Water Temperature'),
+              content: const Text(
                   'Do you want to view and annotate the water temperature data?'),
               actions: <Widget>[
                 TextButton(
@@ -416,16 +416,16 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                       children: [
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.red, // Background color
+                              backgroundColor: Colors.red, // Background color
                             ),
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text("No")),
-                        SizedBox(width: 10),
+                            child: const Text("No")),
+                        const SizedBox(width: 10),
                         ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.green, // Background color
+                              backgroundColor: Colors.green, // Background color
                             ),
                             onPressed: () {
                               String dateArgument = dateController.text.isEmpty
@@ -441,7 +441,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                                   arguments: DataSensorArguments(
                                       dataList, dateArgument));
                             },
-                            child: Text("Yes")),
+                            child: const Text("Yes")),
                       ]),
                 ),
               ],
@@ -476,8 +476,8 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Water Temperature'),
-              content: Container(
+              title: const Text('Water Temperature'),
+              content: SizedBox(
                 width: MediaQuery.of(context).size.width *
                     0.8, // Adjust the width as needed
                 child: ListView(
@@ -486,52 +486,52 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                     Text(
                       'The current water temperature is $waterTempVal $unitForRealTimeTemp, $status. The color of this widget changes according to the ff:',
                     ),
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Within the threshold:"),
-                        SizedBox(width: 5),
+                        const Text("Within the threshold:"),
+                        const SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
-                          decoration: BoxDecoration(color: Colors.green),
+                          decoration: const BoxDecoration(color: Colors.green),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Equal to one of the threshold: "),
-                        SizedBox(width: 5),
+                        const Text("Equal to one of the threshold: "),
+                        const SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
-                          decoration: BoxDecoration(color: Colors.orange),
+                          decoration: const BoxDecoration(color: Colors.orange),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Outside the threshold: "),
-                        SizedBox(width: 5),
+                        const Text("Outside the threshold: "),
+                        const SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
-                          decoration: BoxDecoration(color: Colors.red),
+                          decoration: const BoxDecoration(color: Colors.red),
                         ),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Data not available: "),
-                        SizedBox(width: 5),
+                        const Text("Data not available: "),
+                        const SizedBox(width: 5),
                         Container(
                           width: 20,
                           height: 20,
-                          decoration: BoxDecoration(color: Colors.black),
+                          decoration: const BoxDecoration(color: Colors.black),
                         ),
                       ],
                     ),
@@ -543,7 +543,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                     onPressed: () {
                       Navigator.of(context).pop(); // Close the dialog
                     },
-                    child: Text("OK")),
+                    child: const Text("OK")),
               ],
             );
           },
@@ -553,7 +553,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
       return Scaffold(
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: [
-          SizedBox(height: 100),
+          const SizedBox(height: 100),
           ListTile(
             title: const Text('Logout'),
             onTap: () {
@@ -576,7 +576,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
           ),
         ])),
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             "Water Temperature Page",
             style: TextStyle(
               color: Colors.white, // Set the text color here
@@ -601,7 +601,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                         showWaterTempThresholdDialog(context);
                       },
                       child: Padding(
-                        padding: EdgeInsets.all(0),
+                        padding: const EdgeInsets.all(0),
                         child: Container(
                           height: 140, // Set the desired height of the square
                           decoration: BoxDecoration(
@@ -611,7 +611,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                                 20), // Adjust the radius to control the roundness
                           ),
                           child: Column(children: [
-                            Text(
+                            const Text(
                               "Temperature Threshold",
                               style: TextStyle(
                                 fontWeight:
@@ -620,11 +620,11 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                                     Colors.white, // Set the text color to white
                               ),
                             ),
-                            SizedBox(height: 30),
+                            const SizedBox(height: 30),
                             Text(
                               '''$lowerTemp - $upperTemp $unitForThreshold''',
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontWeight:
                                       FontWeight.bold, // Make the text bold
                                   color: Colors
@@ -637,10 +637,10 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                     )),
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 GestureDetector(
                     child: Padding(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       child: Container(
                           decoration: BoxDecoration(
                             color: Colors
@@ -649,11 +649,11 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                                 20), // Adjust the radius to control the roundness
                           ),
                           child: Column(children: [
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Center(
                               child: Text(
                                 labelData,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight:
                                         FontWeight.bold, // Make the text bold
                                     color: Colors
@@ -661,11 +661,11 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
                                     fontSize: 20),
                               ),
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Center(
                                 child: _graphBuilder(
                                     dataList, context, lowerTemp, upperTemp)),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                           ])),
                     ),
                     onTap: () {
@@ -742,7 +742,7 @@ class _WaterTemperaturePageState extends State<WaterTemperaturePage> {
         drawer: Drawer(
             child: ListView(
           padding: EdgeInsets.zero,
-          children: [CircularProgressIndicator()],
+          children: const [CircularProgressIndicator()],
         )),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.cyan,

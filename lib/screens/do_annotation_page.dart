@@ -40,7 +40,7 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
         : context.watch<SensorDataProvider>().dissolvedOxygen;
     String tempVal = context.watch<SensorDataProvider>().waterTemp == ''
         ? 'NA'
-        : user!.inFahrenheit == false
+        : user.inFahrenheit == false
             ? context.watch<SensorDataProvider>().recentWaterTemp
             : ((double.parse(context
                             .watch<SensorDataProvider>()
@@ -49,25 +49,25 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                         5) +
                     32)
                 .toString();
-    double lowerTemp = user!.inFahrenheit == false
-        ? user!.lowerTemp
-        : ((user!.lowerTemp * 9 / 5) + 32);
+    double lowerTemp = user.inFahrenheit == false
+        ? user.lowerTemp
+        : ((user.lowerTemp * 9 / 5) + 32);
 
-    double upperTemp = user!.inFahrenheit == false
-        ? user!.upperTemp
-        : ((user!.upperTemp * 9 / 5) + 32);
+    double upperTemp = user.inFahrenheit == false
+        ? user.upperTemp
+        : ((user.upperTemp * 9 / 5) + 32);
 
     if (updatedData?.timestamp != null) {
       //notification for PH outside of threshold
       if (phVal != 'NA' &&
-          (double.parse(phVal) < user!.lowerPH ||
-              double.parse(phVal) > user!.upperPH) &&
+          (double.parse(phVal) < user.lowerPH ||
+              double.parse(phVal) > user.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
           body:
-              'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+              'Current PH Level: $phVal is not within the set threshold of ${user.lowerPH}-${user.upperPH}',
         );
       }
       //notification for temperature outside of threshold
@@ -85,14 +85,14 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
 
       //notification for DO outside of threshold
       if (doVal != 'NA' &&
-          (double.parse(doVal) < user!.lowerDO ||
-              double.parse(doVal) > user!.upperDO) &&
+          (double.parse(doVal) < user.lowerDO ||
+              double.parse(doVal) > user.upperDO) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 3,
           title: 'Dissolved Oxygen out of range!',
           body:
-              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user!.lowerDO}-${user!.upperDO}',
+              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user.lowerDO}-${user.upperDO}',
         );
       }
     }
@@ -101,7 +101,7 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
   @override
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user as User;
-    final TextEditingController _annotationController = TextEditingController();
+    final TextEditingController annotationController = TextEditingController();
     QuerySnapshot<Object?>? queryResult =
         context.watch<WaterParameterAnnotationProvider>().query;
     final args =
@@ -124,7 +124,7 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
       return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
-            title: Text(
+            title: const Text(
           "Dissolved Oxygen Annotation",
           style: TextStyle(
             color: Colors.white, // Set the text color here
@@ -133,7 +133,7 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
         body: Container(
             padding: const EdgeInsets.all(10.0),
             child: ListView(
-              children: [CircularProgressIndicator(), backButton],
+              children: [const CircularProgressIndicator(), backButton],
             )),
       );
     } else {
@@ -144,7 +144,7 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
       for (int i = 0; i < args.dataList.length; i++) {
         var text = "None";
 
-        for (var document in queryResult!.docs) {
+        for (var document in queryResult.docs) {
           // Access the data within each document
           String time =
               DateFormat("h:mm a").format(args.dataList[i].timeUpload);
@@ -163,14 +163,14 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
         annotationWidgets.add(SizedBox(
           height: 47,
           child: Padding(
-            padding: EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 10),
             child: InkWell(
               onTap: () {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text(
+                      title: const Text(
                         'Dissolved Oxygen Annotation',
                       ),
                       actions: <Widget>[
@@ -190,45 +190,45 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                                   var date = args.date;
                                   var time = DateFormat("h:mm a")
                                       .format(args.dataList[i].timeUpload);
-                                  var water_parameter = "do";
+                                  var waterParameter = "do";
 
                                   await context
                                       .read<WaterParameterAnnotationProvider>()
                                       .deleteAnnotation(date, time,
-                                          water_parameter, user.email);
+                                          waterParameter, user.email);
                                   Navigator.of(context)
                                       .pop(); // Close the dialog
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
+                                    const SnackBar(
                                       content: Text(
                                           'Annotation deleted successfully'),
                                     ),
                                   );
                                 },
-                                child: Text('Delete'),
+                                child: const Text('Delete'),
                               ),
                               TextButton(
                                 onPressed: () async {
                                   var date = args.date;
                                   var time = DateFormat("h:mm a")
                                       .format(args.dataList[i].timeUpload);
-                                  var water_parameter = "do";
+                                  var waterParameter = "do";
                                   var value = textControllers[i].text;
 
                                   await context
                                       .read<WaterParameterAnnotationProvider>()
                                       .addAnnotation(date, time,
-                                          water_parameter, value, user.email);
+                                          waterParameter, value, user.email);
                                   Navigator.of(context)
                                       .pop(); // Close the dialog
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
+                                    const SnackBar(
                                       content:
                                           Text('Annotation saved successfully'),
                                     ),
                                   );
                                 },
-                                child: Text('Save'),
+                                child: const Text('Save'),
                               ),
                             ])
                       ],
@@ -246,8 +246,8 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                   children: [
                     Expanded(
                       child: Text(
-                        "$text",
-                        style: TextStyle(fontSize: 12),
+                        text,
+                        style: const TextStyle(fontSize: 12),
                         overflow: TextOverflow.ellipsis, //r
                         maxLines: 1, // Add this line
                       ),
@@ -265,7 +265,7 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
       return Scaffold(
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
-            title: Text(
+            title: const Text(
           "Dissolved Oxygen Annotation",
           style: TextStyle(
             color: Colors.white, // Set the text color here
@@ -275,11 +275,11 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
             padding: const EdgeInsets.all(10.0),
             child: ListView(
               children: [
-                Text("$formattedDate",
+                Text(formattedDate,
                     style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                        const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
                 Padding(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -288,8 +288,8 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(height: 10),
-                        Text(
+                        const SizedBox(height: 10),
+                        const Text(
                           "\t Legend:",
                           style: TextStyle(
                             fontSize: 20,
@@ -302,13 +302,13 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                           crossAxisAlignment:
                               CrossAxisAlignment.center, // Vertically centered
                           children: [
-                            Text("\t \t \t \t \t"),
+                            const Text("\t \t \t \t \t"),
                             Container(
                               width: 40,
                               height: 16,
-                              decoration: BoxDecoration(color: Colors.green),
+                              decoration: const BoxDecoration(color: Colors.green),
                             ),
-                            Text("\t Within the threshold"),
+                            const Text("\t Within the threshold"),
                           ],
                         ),
                         Row(
@@ -317,13 +317,13 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                           crossAxisAlignment:
                               CrossAxisAlignment.center, // Vertically centered
                           children: [
-                            Text("\t \t \t \t \t"),
+                            const Text("\t \t \t \t \t"),
                             Container(
                               width: 40,
                               height: 16,
-                              decoration: BoxDecoration(color: Colors.red),
+                              decoration: const BoxDecoration(color: Colors.red),
                             ),
-                            Text("\t Outside the threshold"),
+                            const Text("\t Outside the threshold"),
                           ],
                         ),
                         Row(
@@ -332,22 +332,22 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                           crossAxisAlignment:
                               CrossAxisAlignment.center, // Vertically centered
                           children: [
-                            Text("\t \t \t \t \t"),
+                            const Text("\t \t \t \t \t"),
                             Container(
                               width: 40,
                               height: 16,
-                              decoration: BoxDecoration(color: Colors.orange),
+                              decoration: const BoxDecoration(color: Colors.orange),
                             ),
-                            Text("\t Equal to one of the thresholds"),
+                            const Text("\t Equal to one of the thresholds"),
                           ],
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -358,86 +358,86 @@ class _DoAnnotationPageState extends State<DoAnnotationPage> {
                       children: [
                         Expanded(
                             child: Column(children: [
-                          SizedBox(height: 10),
-                          Text("Time",
+                          const SizedBox(height: 10),
+                          const Text("Time",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                           for (int i = 0; i < args.dataList.length; i++)
                             Padding(
-                              padding: EdgeInsetsDirectional.only(top: 20),
+                              padding: const EdgeInsetsDirectional.only(top: 20),
                               child: Text(
                                 //DateFormat("h:mm a")
                                 DateFormat("HH:mm")
                                     .format(args.dataList[i].timeUpload),
-                                style: TextStyle(fontSize: 21),
+                                style: const TextStyle(fontSize: 21),
                               ),
                             )
                         ])), // time
                         Expanded(
                             child: Column(children: [
-                          SizedBox(height: 10),
-                          Text("DO",
+                          const SizedBox(height: 10),
+                          const Text("DO",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                           for (int i = 0; i < args.dataList.length; i++)
                             Padding(
-                              padding: EdgeInsetsDirectional.only(top: 20),
+                              padding: const EdgeInsetsDirectional.only(top: 20),
                               child: Text(
                                 "${args.dataList[i].dissolvedOxygen}",
-                                style: TextStyle(fontSize: 21),
+                                style: const TextStyle(fontSize: 21),
                               ),
                             )
                         ])), // ph
                         Expanded(
                             child: Column(children: [
-                          SizedBox(height: 10),
-                          Text("Status",
+                          const SizedBox(height: 10),
+                          const Text("Status",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                           for (int i = 0; i < args.dataList.length; i++)
-                            args.dataList[i].dissolvedOxygen < user!.lowerDO ||
+                            args.dataList[i].dissolvedOxygen < user.lowerDO ||
                                     args.dataList[i].dissolvedOxygen >
-                                        user!.upperDO
+                                        user.upperDO
                                 ? Padding(
                                     padding:
-                                        EdgeInsetsDirectional.only(top: 20),
+                                        const EdgeInsetsDirectional.only(top: 20),
                                     child: Container(
                                       width: 40,
                                       height: 27,
                                       decoration:
-                                          BoxDecoration(color: Colors.red),
+                                          const BoxDecoration(color: Colors.red),
                                     ))
                                 : args.dataList[i].dissolvedOxygen ==
-                                            user!.lowerDO ||
+                                            user.lowerDO ||
                                         args.dataList[i].dissolvedOxygen ==
-                                            user!.upperDO
+                                            user.upperDO
                                     ? Padding(
                                         padding:
-                                            EdgeInsetsDirectional.only(top: 20),
+                                            const EdgeInsetsDirectional.only(top: 20),
                                         child: Container(
                                           width: 40,
                                           height: 27,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                               color: Colors.orange),
                                         ))
                                     : Padding(
                                         padding:
-                                            EdgeInsetsDirectional.only(top: 20),
+                                            const EdgeInsetsDirectional.only(top: 20),
                                         child: Container(
                                           width: 40,
                                           height: 27,
-                                          decoration: BoxDecoration(
+                                          decoration: const BoxDecoration(
                                               color: Colors.green),
                                         ))
                         ])), // status
                         Expanded(
                             child: Column(children: [
-                          SizedBox(height: 10),
-                          Text("Annotation",
+                          const SizedBox(height: 10),
+                          const Text("Annotation",
                               style: TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.bold)),
                           ...annotationWidgets,
-                          SizedBox(height: 10)
+                          const SizedBox(height: 10)
                         ])), // annotation
                       ],
                     ),

@@ -74,7 +74,7 @@ class AuthProvider with ChangeNotifier, WidgetsBindingObserver {
   @override
   void dispose() {
     // Remove the observer when the AuthProvider is disposed
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 }

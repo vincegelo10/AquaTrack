@@ -19,14 +19,14 @@ class _SetDissolvedOxygenPageState extends State<SetDissolvedOxygenPage> {
     TextEditingController lowerDOController = TextEditingController();
     TextEditingController upperDOController = TextEditingController();
 
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     final args =
         ModalRoute.of(context)!.settings.arguments as UserScreenArguments;
 
     var lowerDOField = TextFormField(
         controller: lowerDOController,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: "Lower DO Threshold",
           labelText: "Lower DO Threshold",
@@ -39,7 +39,7 @@ class _SetDissolvedOxygenPageState extends State<SetDissolvedOxygenPage> {
           }
 
           try {
-            double DO = double.parse(value!);
+            double DO = double.parse(value);
             try {
               double upperDOValue = double.parse(upperDOController.text);
               if (DO > upperDOValue) {
@@ -51,14 +51,15 @@ class _SetDissolvedOxygenPageState extends State<SetDissolvedOxygenPage> {
           } catch (e) {
             return 'Dissolved Oxygen should be a number';
           }
+          return null;
         },
         onSaved: ((String? value) {
-          lowerDO = double.parse(value!)!;
+          lowerDO = double.parse(value!);
         }));
 
     final upperDOField = TextFormField(
         controller: upperDOController,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           border: OutlineInputBorder(),
           hintText: "Upper DO Threshold",
           labelText: "Upper DO Threshold",
@@ -71,7 +72,7 @@ class _SetDissolvedOxygenPageState extends State<SetDissolvedOxygenPage> {
           }
 
           try {
-            double DO = double.parse(value!);
+            double DO = double.parse(value);
             try {
               double lowerDOValue = double.parse(lowerDOController.text);
               if (DO < lowerDOValue) {
@@ -83,9 +84,10 @@ class _SetDissolvedOxygenPageState extends State<SetDissolvedOxygenPage> {
           } catch (e) {
             return 'Dissolved Oxygen should be a number';
           }
+          return null;
         },
         onSaved: ((String? value) {
-          upperDO = double.parse(value!)!;
+          upperDO = double.parse(value!);
         }));
 
     final SignUpButton = Padding(
@@ -93,8 +95,8 @@ class _SetDissolvedOxygenPageState extends State<SetDissolvedOxygenPage> {
       child: ElevatedButton(
         onPressed: () async {
           //call the auth provider here
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState?.save();
+          if (formKey.currentState!.validate()) {
+            formKey.currentState?.save();
             await context
                 .read<UserProvider>()
                 .addDissolvedOxygen(args.email, lowerDO!, upperDO!);
@@ -123,7 +125,7 @@ class _SetDissolvedOxygenPageState extends State<SetDissolvedOxygenPage> {
       backgroundColor: Colors.white,
       body: Center(
           child: Form(
-        key: _formKey,
+        key: formKey,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 30.0, right: 30.0),

@@ -25,7 +25,7 @@ class _SetTempPageState extends State<SetTempPage> {
     TextEditingController lowerTempController = TextEditingController();
     TextEditingController upperTempController = TextEditingController();
 
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
 
     final dropdownTempUnit = DropdownButton<String>(
       value: dropdownValue,
@@ -48,11 +48,11 @@ class _SetTempPageState extends State<SetTempPage> {
     var lowerTempField = TextFormField(
         controller: lowerTempController,
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           hintText: "Lower Temperature Threshold",
           labelText: "Lower Temperature Threshold",
           suffixText: dropdownValue,
-          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+          contentPadding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -60,7 +60,7 @@ class _SetTempPageState extends State<SetTempPage> {
           }
 
           try {
-            double temp = double.parse(value!);
+            double temp = double.parse(value);
             try {
               double upperTempValue = double.parse(upperTempController.text);
               if (temp > upperTempValue) {
@@ -72,19 +72,20 @@ class _SetTempPageState extends State<SetTempPage> {
           } catch (e) {
             return 'Temperature should be a number';
           }
+          return null;
         },
         onSaved: ((String? value) {
-          lowerTemp = double.parse(value!)!;
+          lowerTemp = double.parse(value!);
         }));
 
     final upperTempField = TextFormField(
         controller: upperTempController,
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           hintText: "Upper Temperature Threshold",
           labelText: "Upper Temperature Threshold",
           suffixText: dropdownValue,
-          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+          contentPadding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -92,7 +93,7 @@ class _SetTempPageState extends State<SetTempPage> {
           }
 
           try {
-            double temp = double.parse(value!);
+            double temp = double.parse(value);
             try {
               double lowerTempValue = double.parse(lowerTempController.text);
               if (temp < lowerTempValue) {
@@ -104,9 +105,10 @@ class _SetTempPageState extends State<SetTempPage> {
           } catch (e) {
             return 'Temperature should be a number';
           }
+          return null;
         },
         onSaved: ((String? value) {
-          upperTemp = double.parse(value!)!;
+          upperTemp = double.parse(value!);
         }));
 
     final nextButton = Padding(
@@ -114,8 +116,8 @@ class _SetTempPageState extends State<SetTempPage> {
       child: ElevatedButton(
         onPressed: () async {
           //call the auth provider here
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState?.save();
+          if (formKey.currentState!.validate()) {
+            formKey.currentState?.save();
             if (dropdownValue == _dropdownOptions[1]) {
               double lowerTempCelsius = (lowerTemp! - 32) * (5 / 9);
               double upperTempCelsius = (upperTemp! - 32) * (5 / 9);
@@ -149,7 +151,7 @@ class _SetTempPageState extends State<SetTempPage> {
       backgroundColor: Colors.white,
       body: Center(
           child: Form(
-        key: _formKey,
+        key: formKey,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -168,7 +170,7 @@ class _SetTempPageState extends State<SetTempPage> {
             //   SizedBox.square(child: dropdownTempUnit)
             // ]),
             Row(children: [
-              Text("Temperature Unit: "),
+              const Text("Temperature Unit: "),
               dropdownTempUnit,
             ]),
             lowerTempField,

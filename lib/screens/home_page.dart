@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
         : context.watch<SensorDataProvider>().dissolvedOxygen;
     String tempVal = context.watch<SensorDataProvider>().waterTemp == ''
         ? 'NA'
-        : user!.inFahrenheit == false
+        : user.inFahrenheit == false
             ? context.watch<SensorDataProvider>().recentWaterTemp
             : ((double.parse(context
                             .watch<SensorDataProvider>()
@@ -50,25 +50,25 @@ class _HomePageState extends State<HomePage> {
                         5) +
                     32)
                 .toString();
-    double lowerTemp = user!.inFahrenheit == false
-        ? user!.lowerTemp
-        : ((user!.lowerTemp * 9 / 5) + 32);
+    double lowerTemp = user.inFahrenheit == false
+        ? user.lowerTemp
+        : ((user.lowerTemp * 9 / 5) + 32);
 
-    double upperTemp = user!.inFahrenheit == false
-        ? user!.upperTemp
-        : ((user!.upperTemp * 9 / 5) + 32);
+    double upperTemp = user.inFahrenheit == false
+        ? user.upperTemp
+        : ((user.upperTemp * 9 / 5) + 32);
 
     if (updatedData?.timestamp != null) {
       //notification for PH outside of threshold
       if (phVal != 'NA' &&
-          (double.parse(phVal) < user!.lowerPH ||
-              double.parse(phVal) > user!.upperPH) &&
+          (double.parse(phVal) < user.lowerPH ||
+              double.parse(phVal) > user.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
           body:
-              'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+              'Current PH Level: $phVal is not within the set threshold of ${user.lowerPH}-${user.upperPH}',
         );
       }
       //notification for temperature outside of threshold
@@ -86,14 +86,14 @@ class _HomePageState extends State<HomePage> {
 
       //notification for DO outside of threshold
       if (doVal != 'NA' &&
-          (double.parse(doVal) < user!.lowerDO ||
-              double.parse(doVal) > user!.upperDO) &&
+          (double.parse(doVal) < user.lowerDO ||
+              double.parse(doVal) > user.upperDO) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 3,
           title: 'Dissolved Oxygen out of range!',
           body:
-              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user!.lowerDO}-${user!.upperDO}',
+              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user.lowerDO}-${user.upperDO}',
         );
       }
     }
@@ -118,7 +118,7 @@ class _HomePageState extends State<HomePage> {
       return Scaffold(
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: [
-          SizedBox(height: 100),
+          const SizedBox(height: 100),
           ListTile(
             title: const Text('Logout'),
             onTap: () {
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ])),
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             "AquaTrack",
             style: TextStyle(
               color: Colors.white, // Set the text color here
@@ -150,13 +150,13 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Center(
           // Wrap the ListView with a Container and set the width
-          child: Container(
+          child: SizedBox(
             width: 250, // Set the desired width for the ListView
             child: ListView(
               // Use children property to define the list of widgets
               children: [
-                SizedBox(height: 40),
-                Align(
+                const SizedBox(height: 40),
+                const Align(
                   alignment:
                       Alignment.center, // Center the text within the container
                   child: Text(
@@ -173,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pushNamed(context, "/phPage");
                   },
                   child: Padding(
-                    padding: EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(15),
                     child: Container(
                       height: 140, // Set the desired height of the square
                       decoration: BoxDecoration(
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(
                             20), // Adjust the radius to control the roundness
                       ),
-                      child: Center(
+                      child: const Center(
                           child: Column(children: [
                         Image(
                           image: AssetImage('assets/images/PHLevel-nobg.png'),
@@ -206,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pushNamed(context, '/tempPage');
                   },
                   child: Padding(
-                    padding: EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(15),
                     child: Container(
                       height: 140, // Set the desired height of the square
                       decoration: BoxDecoration(
@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(
                             20), // Adjust the radius to control the roundness
                       ),
-                      child: Center(
+                      child: const Center(
                           child: Column(children: [
                         Image(
                           image: AssetImage('assets/images/temp-nobg2.png'),
@@ -239,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pushNamed(context, '/doPage');
                   },
                   child: Padding(
-                    padding: EdgeInsets.all(15),
+                    padding: const EdgeInsets.all(15),
                     child: Container(
                       height: 140, // Set the desired height of the square
                       decoration: BoxDecoration(
@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(
                             20), // Adjust the radius to control the roundness
                       ),
-                      child: Center(
+                      child: const Center(
                           child: Column(children: [
                         Image(
                           image: AssetImage('assets/images/do-nobg.png'),
@@ -301,7 +301,7 @@ class _HomePageState extends State<HomePage> {
       return Scaffold(
         drawer: Drawer(
             child: ListView(padding: EdgeInsets.zero, children: [
-          SizedBox(height: 100),
+          const SizedBox(height: 100),
           ListTile(
             title: const Text('Logout'),
             onTap: () {
@@ -324,11 +324,11 @@ class _HomePageState extends State<HomePage> {
           ),
         ])),
         appBar: AppBar(
-          title: Text(
+          title: const Text(
             "AquaTrack",
           ),
         ),
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.cyan,
           type: BottomNavigationBarType.fixed,

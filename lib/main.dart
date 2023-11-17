@@ -41,7 +41,7 @@ void main() async {
         ChangeNotifierProvider(
             create: ((context) => WaterParameterAnnotationProvider())),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -61,7 +61,7 @@ class MyApp extends StatelessWidget {
               // Initialize providers from Firestore when the app is opened
               future: context.read<UserProvider>().initializeFromFirestore(),
               builder: (context, snapshot) {
-                return AuthWrapper();
+                return const AuthWrapper();
               },
             ),
         '/setPhPage': (context) => const SetPhPage(),
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
         '/setDissolvedOxygenPage': (context) => const SetDissolvedOxygenPage(),
         '/phPage': (context) => const PH_Page(),
         '/tempPage': (context) => const WaterTemperaturePage(),
-        '/doPage': (context) => DO_Page(),
+        '/doPage': (context) => const DO_Page(),
         '/editPage': (context) => const EditPage(),
         '/editPhPage': (context) => const EditPhPage(),
         '/editTempPage': (context) => const EditTempPage(),

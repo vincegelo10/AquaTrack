@@ -69,48 +69,46 @@ class SensorDataProvider with ChangeNotifier {
   }
 
   void fetchData() async {
-    DateTime current_date = DateTime.now();
-    String date_today = current_date.toString().split(' ')[0];
+    DateTime currentDate = DateTime.now();
+    String dateToday = currentDate.toString().split(' ')[0];
     print("fetching data...");
-    void streamSubscription = await ref
+    void streamSubscription = ref
         .reference()
-        .child("ATLAS/$date_today")
+        .child("ATLAS/$dateToday")
         .onValue
         .listen((DatabaseEvent event) {
       if (event.snapshot.value == null) {
         print(
-            "no collection available yet in firebase realtime database for the date: $date_today");
+            "no collection available yet in firebase realtime database for the date: $dateToday");
       } else {
         Map<dynamic, dynamic> sensorDataMap =
             event.snapshot.value as Map<dynamic, dynamic>;
-        if (sensorDataMap != null) {
-          dataList.clear();
-          print("HERE IS THE DATALIST BEFORE");
-          print(dataList);
-          sensorDataMap.forEach((key, value) {
-            if (value != null) {
-              var pH = double.parse(
-                  value["ph"].replaceAll(',', '').replaceAll('"', ''));
-              var waterTemperature = double.parse(value["water_temperature"]
-                  .replaceAll(',', '')
-                  .replaceAll('"', ''));
-              var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
-              var dissolvedOxygen = double.parse(
-                  value["do"].replaceAll(',', '').replaceAll('"', ''));
-              var timestamp =
-                  int.parse(key); // Parse the timestamp from the key
-              var millis = timestamp;
-              DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
-              print(timestamp);
-              dataList.add(SensorData(waterTemperature, pH, timestamp, dt,
-                  waterTempInFahrenheit, dissolvedOxygen));
-            }
-          });
-          dataList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-          print("HERE IS THE SORTED DATALIST");
-          print(dataList);
-          notifyListeners();
-        }
+        dataList.clear();
+        print("HERE IS THE DATALIST BEFORE");
+        print(dataList);
+        sensorDataMap.forEach((key, value) {
+          if (value != null) {
+            var pH = double.parse(
+                value["ph"].replaceAll(',', '').replaceAll('"', ''));
+            var waterTemperature = double.parse(value["water_temperature"]
+                .replaceAll(',', '')
+                .replaceAll('"', ''));
+            var waterTempInFahrenheit = ((waterTemperature * 9 / 5) + 32);
+            var dissolvedOxygen = double.parse(
+                value["do"].replaceAll(',', '').replaceAll('"', ''));
+            var timestamp =
+                int.parse(key); // Parse the timestamp from the key
+            var millis = timestamp;
+            DateTime dt = DateTime.fromMillisecondsSinceEpoch(millis * 1000);
+            print(timestamp);
+            dataList.add(SensorData(waterTemperature, pH, timestamp, dt,
+                waterTempInFahrenheit, dissolvedOxygen));
+          }
+        });
+        dataList.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        print("HERE IS THE SORTED DATALIST");
+        print(dataList);
+        notifyListeners();
 
         // Update ph level and water temperature to the recently updated value in the database
         if (dataList.isNotEmpty) {
@@ -132,7 +130,7 @@ class SensorDataProvider with ChangeNotifier {
   }
 
   void _scheduleMidnightFetch() {
-    Timer.periodic(Duration(hours: 24), (timer) {
+    Timer.periodic(const Duration(hours: 24), (timer) {
       DateTime now = DateTime.now();
       DateTime midnight = DateTime(now.year, now.month, now.day, 0, 0, 0);
 

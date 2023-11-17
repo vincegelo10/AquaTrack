@@ -38,7 +38,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
         : context.watch<SensorDataProvider>().dissolvedOxygen;
     String tempVal = context.watch<SensorDataProvider>().waterTemp == ''
         ? 'NA'
-        : user!.inFahrenheit == false
+        : user.inFahrenheit == false
             ? context.watch<SensorDataProvider>().recentWaterTemp
             : ((double.parse(context
                             .watch<SensorDataProvider>()
@@ -47,25 +47,25 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
                         5) +
                     32)
                 .toString();
-    double lowerTemp = user!.inFahrenheit == false
-        ? user!.lowerTemp
-        : ((user!.lowerTemp * 9 / 5) + 32);
+    double lowerTemp = user.inFahrenheit == false
+        ? user.lowerTemp
+        : ((user.lowerTemp * 9 / 5) + 32);
 
-    double upperTemp = user!.inFahrenheit == false
-        ? user!.upperTemp
-        : ((user!.upperTemp * 9 / 5) + 32);
+    double upperTemp = user.inFahrenheit == false
+        ? user.upperTemp
+        : ((user.upperTemp * 9 / 5) + 32);
 
     if (updatedData?.timestamp != null) {
       //notification for PH outside of threshold
       if (phVal != 'NA' &&
-          (double.parse(phVal) < user!.lowerPH ||
-              double.parse(phVal) > user!.upperPH) &&
+          (double.parse(phVal) < user.lowerPH ||
+              double.parse(phVal) > user.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
           body:
-              'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+              'Current PH Level: $phVal is not within the set threshold of ${user.lowerPH}-${user.upperPH}',
         );
       }
       //notification for temperature outside of threshold
@@ -83,14 +83,14 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
 
       //notification for DO outside of threshold
       if (doVal != 'NA' &&
-          (double.parse(doVal) < user!.lowerDO ||
-              double.parse(doVal) > user!.upperDO) &&
+          (double.parse(doVal) < user.lowerDO ||
+              double.parse(doVal) > user.upperDO) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 3,
           title: 'Dissolved Oxygen out of range!',
           body:
-              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user!.lowerDO}-${user!.upperDO}',
+              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user.lowerDO}-${user.upperDO}',
         );
       }
     }
@@ -104,7 +104,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
   Widget build(BuildContext context) {
     User? user = context.watch<UserProvider>().user;
     lowerDOTextController.text = user!.lowerDO.toString();
-    upperDOTextController.text = user!.upperDO.toString();
+    upperDOTextController.text = user.upperDO.toString();
     checkAndShowNotification();
     final lowerDOField = TextFormField(
         controller: lowerDOTextController,
@@ -122,7 +122,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
             return 'Lower DO is required';
           }
           try {
-            double DO = double.parse(value!);
+            double DO = double.parse(value);
             try {
               double upperDO = double.parse(upperDOTextController.text);
               if (DO > upperDO) {
@@ -134,6 +134,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
           } catch (e) {
             return 'Input must be a floating point';
           }
+          return null;
         },
         onSaved: ((String? value) {
           lowerDO = double.parse(value!);
@@ -154,7 +155,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
             return 'Higher PH Level is required';
           }
           try {
-            double DO = double.parse(value!);
+            double DO = double.parse(value);
 
             try {
               double lowerDO = double.parse(lowerDOTextController.text);
@@ -167,6 +168,7 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
           } catch (e) {
             return 'Input must be a floating point';
           }
+          return null;
         },
         onSaved: ((String? value) {
           upperDO = double.parse(value!);
@@ -181,20 +183,20 @@ class _EditDissolvedOxygenPageState extends State<EditDissolvedOxygenPage> {
             _formKey.currentState?.save();
             context
                 .read<UserProvider>()
-                .editDO(user!.email, lowerDO!, upperDO!);
+                .editDO(user.email, lowerDO!, upperDO!);
             showDialog(
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Success'),
-                  content: Text('DO Threshold edit has been successful.'),
+                  title: const Text('Success'),
+                  content: const Text('DO Threshold edit has been successful.'),
                   actions: [
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context); // Close the dialog
                         Navigator.pop(context); // Close the form screen
                       },
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 );

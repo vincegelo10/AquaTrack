@@ -19,7 +19,7 @@ class _SignupPageState extends State<SignupPage> {
 
   Widget invalidEmailMessage(BuildContext context) {
     return Text(context.watch<AuthProvider>().signUpStatus,
-        style: TextStyle(color: Colors.red));
+        style: const TextStyle(color: Colors.red));
   }
 
   //shows the fields in a sign up page-first name, last name, username, email, password, birthday, and location-with each field having a validator
@@ -30,7 +30,7 @@ class _SignupPageState extends State<SignupPage> {
     TextEditingController passwordController = TextEditingController();
     TextEditingController confirmPasswordController = TextEditingController();
 
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     final firstName = TextFormField(
         decoration: const InputDecoration(
           border: OutlineInputBorder(),
@@ -42,6 +42,7 @@ class _SignupPageState extends State<SignupPage> {
           if (value == null || value.isEmpty) {
             return 'First Name is Required!';
           }
+          return null;
         },
         onSaved: ((String? value) {
           firstNameValue = value!;
@@ -58,6 +59,7 @@ class _SignupPageState extends State<SignupPage> {
           if (value == null || value.isEmpty) {
             return 'Last Name is Required!';
           }
+          return null;
         },
         onSaved: ((String? value) {
           lastNameValue = value!;
@@ -79,6 +81,7 @@ class _SignupPageState extends State<SignupPage> {
               return 'Email format must be valid!';
             }
           }
+          return null;
         },
         onSaved: ((String? value) {
           emailValue = value!;
@@ -103,6 +106,7 @@ class _SignupPageState extends State<SignupPage> {
               return 'Password must be at least 8 characters, includes a\nnumber and a special character, and contains both\nuppercase and lowercase letters';
             }
           }
+          return null;
         },
         onSaved: ((String? value) {
           passwordValue = value!;
@@ -127,6 +131,7 @@ class _SignupPageState extends State<SignupPage> {
               return 'Passwords do not match!';
             }
           }
+          return null;
         },
         onSaved: ((String? value) {
           passwordValue = value!;
@@ -137,13 +142,13 @@ class _SignupPageState extends State<SignupPage> {
       child: ElevatedButton(
         onPressed: () async {
           //call the auth provider here
-          if (_formKey.currentState!.validate()) {
+          if (formKey.currentState!.validate()) {
             // Navigator.pushNamed(context, '/setPhPage');
 
-            _formKey.currentState?.save();
+            formKey.currentState?.save();
 
-            DateTime current_date = DateTime.now();
-            String dateCreated = current_date.toString().split(' ')[0];
+            DateTime currentDate = DateTime.now();
+            String dateCreated = currentDate.toString().split(' ')[0];
             User user = User(
                 email: emailValue!,
                 firstName: firstNameValue!,
@@ -192,12 +197,12 @@ class _SignupPageState extends State<SignupPage> {
       backgroundColor: Colors.white,
       body: Center(
           child: Form(
-        key: _formKey,
+        key: formKey,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 40.0, right: 40.0),
           children: <Widget>[
-            Image(
+            const Image(
               image: AssetImage('assets/images/aquatrack-logo-nobg.png'),
               width: 80,
               height: 104,
@@ -211,7 +216,7 @@ class _SignupPageState extends State<SignupPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 60),
+            const SizedBox(height: 60),
             const Text(
               "Sign Up",
               textAlign: TextAlign.center,

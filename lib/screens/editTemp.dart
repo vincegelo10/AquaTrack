@@ -39,7 +39,7 @@ class _EditTempPageState extends State<EditTempPage> {
         : context.watch<SensorDataProvider>().dissolvedOxygen;
     String tempVal = context.watch<SensorDataProvider>().waterTemp == ''
         ? 'NA'
-        : user!.inFahrenheit == false
+        : user.inFahrenheit == false
             ? context.watch<SensorDataProvider>().recentWaterTemp
             : ((double.parse(context
                             .watch<SensorDataProvider>()
@@ -48,25 +48,25 @@ class _EditTempPageState extends State<EditTempPage> {
                         5) +
                     32)
                 .toString();
-    double lowerTemp = user!.inFahrenheit == false
-        ? user!.lowerTemp
-        : ((user!.lowerTemp * 9 / 5) + 32);
+    double lowerTemp = user.inFahrenheit == false
+        ? user.lowerTemp
+        : ((user.lowerTemp * 9 / 5) + 32);
 
-    double upperTemp = user!.inFahrenheit == false
-        ? user!.upperTemp
-        : ((user!.upperTemp * 9 / 5) + 32);
+    double upperTemp = user.inFahrenheit == false
+        ? user.upperTemp
+        : ((user.upperTemp * 9 / 5) + 32);
 
     if (updatedData?.timestamp != null) {
       //notification for PH outside of threshold
       if (phVal != 'NA' &&
-          (double.parse(phVal) < user!.lowerPH ||
-              double.parse(phVal) > user!.upperPH) &&
+          (double.parse(phVal) < user.lowerPH ||
+              double.parse(phVal) > user.upperPH) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 1,
           title: 'PH Level out of range!',
           body:
-              'Current PH Level: $phVal is not within the set threshold of ${user!.lowerPH}-${user!.upperPH}',
+              'Current PH Level: $phVal is not within the set threshold of ${user.lowerPH}-${user.upperPH}',
         );
       }
       //notification for temperature outside of threshold
@@ -84,14 +84,14 @@ class _EditTempPageState extends State<EditTempPage> {
 
       //notification for DO outside of threshold
       if (doVal != 'NA' &&
-          (double.parse(doVal) < user!.lowerDO ||
-              double.parse(doVal) > user!.upperDO) &&
+          (double.parse(doVal) < user.lowerDO ||
+              double.parse(doVal) > user.upperDO) &&
           timestampInSeconds - updatedData!.timestamp <= 5) {
         service.showNotification(
           id: 3,
           title: 'Dissolved Oxygen out of range!',
           body:
-              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user!.lowerDO}-${user!.upperDO}',
+              'Current Dissolved Oxygen: $doVal is not within the set threshold of ${user.lowerDO}-${user.upperDO}',
         );
       }
     }
@@ -120,7 +120,7 @@ class _EditTempPageState extends State<EditTempPage> {
   @override
   Widget build(BuildContext context) {
     User? user = context.read<UserProvider>().user;
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     checkAndShowNotification();
     final dropdownTempUnit = DropdownButton<String>(
       value: dropdownValue,
@@ -143,11 +143,11 @@ class _EditTempPageState extends State<EditTempPage> {
     var lowerTempField = TextFormField(
         controller: lowerTempController,
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           hintText: "Lower Temperature Threshold",
           labelText: "Lower Temperature Threshold",
           suffixText: dropdownValue,
-          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+          contentPadding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -155,7 +155,7 @@ class _EditTempPageState extends State<EditTempPage> {
           }
 
           try {
-            double temp = double.parse(value!);
+            double temp = double.parse(value);
             try {
               double upperTempValue = double.parse(upperTempController.text);
               if (temp > upperTempValue) {
@@ -167,19 +167,20 @@ class _EditTempPageState extends State<EditTempPage> {
           } catch (e) {
             return 'Temperature should be a number';
           }
+          return null;
         },
         onSaved: ((String? value) {
-          lowerTemp = double.parse(value!)!;
+          lowerTemp = double.parse(value!);
         }));
 
     final upperTempField = TextFormField(
         controller: upperTempController,
         decoration: InputDecoration(
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
           hintText: "Upper Temperature Threshold",
           labelText: "Upper Temperature Threshold",
           suffixText: dropdownValue,
-          contentPadding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
+          contentPadding: const EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 5.0),
         ),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -187,7 +188,7 @@ class _EditTempPageState extends State<EditTempPage> {
           }
 
           try {
-            double temp = double.parse(value!);
+            double temp = double.parse(value);
             try {
               double lowerTempValue = double.parse(lowerTempController.text);
               if (temp < lowerTempValue) {
@@ -199,9 +200,10 @@ class _EditTempPageState extends State<EditTempPage> {
           } catch (e) {
             return 'Temperature should be a number';
           }
+          return null;
         },
         onSaved: ((String? value) {
-          upperTemp = double.parse(value!)!;
+          upperTemp = double.parse(value!);
         }));
 
     final saveButton = Padding(
@@ -209,8 +211,8 @@ class _EditTempPageState extends State<EditTempPage> {
       child: ElevatedButton(
         onPressed: () async {
           //call the auth provider here
-          if (_formKey.currentState!.validate()) {
-            _formKey.currentState?.save();
+          if (formKey.currentState!.validate()) {
+            formKey.currentState?.save();
             if (dropdownValue == _dropdownOptions[1]) {
               double lowerTempCelsius = (lowerTemp! - 32) * (5 / 9);
               double upperTempCelsius = (upperTemp! - 32) * (5 / 9);
@@ -227,8 +229,8 @@ class _EditTempPageState extends State<EditTempPage> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text('Success'),
-                  content: Text(
+                  title: const Text('Success'),
+                  content: const Text(
                       'Water temperature threshold edit has been successful.'),
                   actions: [
                     TextButton(
@@ -236,7 +238,7 @@ class _EditTempPageState extends State<EditTempPage> {
                         Navigator.pop(context); // Close the dialog
                         Navigator.pop(context); // Close the form screen
                       },
-                      child: Text('OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 );
@@ -262,7 +264,7 @@ class _EditTempPageState extends State<EditTempPage> {
       backgroundColor: Colors.white,
       body: Center(
           child: Form(
-        key: _formKey,
+        key: formKey,
         child: ListView(
           shrinkWrap: true,
           padding: const EdgeInsets.only(left: 30.0, right: 30.0),
@@ -273,7 +275,7 @@ class _EditTempPageState extends State<EditTempPage> {
               style: TextStyle(fontSize: 25),
             ),
             Row(children: [
-              Text("Temperature Unit: "),
+              const Text("Temperature Unit: "),
               dropdownTempUnit,
             ]),
             lowerTempField,

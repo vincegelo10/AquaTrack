@@ -35,7 +35,7 @@ class _SetPhPageState extends State<SetPhPage> {
             return 'Lower PH Level is required';
           }
           try {
-            double PH = double.parse(value!);
+            double PH = double.parse(value);
             if ((PH < 0 || PH > 14)) {
               return 'PH level should be between 0 and 14 inclusive';
             }
@@ -50,6 +50,7 @@ class _SetPhPageState extends State<SetPhPage> {
           } catch (e) {
             return 'Input must be a floating point';
           }
+          return null;
         },
         onSaved: ((String? value) {
           lowerPHLevel = double.parse(value!);
@@ -69,7 +70,7 @@ class _SetPhPageState extends State<SetPhPage> {
           }
 
           try {
-            double PH = double.parse(value!);
+            double PH = double.parse(value);
             if ((PH < 0 || PH > 14)) {
               return 'PH level should be between 0 and 14 inclusive';
             }
@@ -84,6 +85,7 @@ class _SetPhPageState extends State<SetPhPage> {
           } catch (e) {
             return 'Input must be a floating point';
           }
+          return null;
         },
         onSaved: ((String? value) {
           upperPHLevel = double.parse(value!);

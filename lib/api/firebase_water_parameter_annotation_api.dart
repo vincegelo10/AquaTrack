@@ -1,26 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:week7_networking_discussion/models/user_model.dart';
 
 class FirebaseWaterParameterAnnotationAPI {
   static final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  Future<void> addAnnotation(String date, String time, String water_parameter,
+  Future<void> addAnnotation(String date, String time, String waterParameter,
       String value, String email) async {
     try {
       print("I am here");
-      final query = await db
+      final query = db
           .collection("annotations")
           .where("date", isEqualTo: date)
-          .where("water_parameter", isEqualTo: water_parameter)
+          .where("water_parameter", isEqualTo: waterParameter)
           .where("time", isEqualTo: time);
 
       final querySnapshot = await query.get();
-      if (querySnapshot.docs.length == 0) {
+      if (querySnapshot.docs.isEmpty) {
         try {
           await db.collection("annotations").add({
             "date": date,
             "time": time,
-            "water_parameter": water_parameter,
+            "water_parameter": waterParameter,
             "value": value,
             "author": email
           });
@@ -44,12 +43,12 @@ class FirebaseWaterParameterAnnotationAPI {
   }
 
   Future<void> deleteAnnotation(
-      String date, String time, String water_parameter, String email) async {
+      String date, String time, String waterParameter, String email) async {
     QuerySnapshot querySnapshot = await db
         .collection("annotations")
         .where("date", isEqualTo: date)
         .where("time", isEqualTo: time)
-        .where("water_parameter", isEqualTo: water_parameter)
+        .where("water_parameter", isEqualTo: waterParameter)
         .where("author", isEqualTo: email)
         .get();
 
@@ -59,18 +58,18 @@ class FirebaseWaterParameterAnnotationAPI {
   }
 
   Future<QuerySnapshot> fetchAnnotation(
-      String date, String water_parameter, String email) async {
+      String date, String waterParameter, String email) async {
     try {
       var querySnapshot = await db
           .collection("annotations")
           .where("date", isEqualTo: date)
-          .where("water_parameter", isEqualTo: water_parameter)
+          .where("water_parameter", isEqualTo: waterParameter)
           .where("author", isEqualTo: email)
           .get();
       return querySnapshot;
     } catch (e) {
       print("Error: $e");
-      throw e;
+      rethrow;
     }
   }
 
