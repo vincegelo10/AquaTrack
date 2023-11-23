@@ -98,6 +98,16 @@ class FirebaseUserAPI {
             });
   }
 
+  Future<void> changeFcmTokenFirestore(String email, String token) async {
+    await db
+        .collection("users")
+        .where('email', isEqualTo: email)
+        .get()
+        .then((querySnapshot) => {
+              querySnapshot.docs[0].reference.update({"fcmToken": token})
+            });
+  }
+
   Future<Map<String, dynamic>> findLoggedInUser() async {
     Map<String, dynamic> user;
     try {

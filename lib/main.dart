@@ -90,11 +90,20 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseMessagingAPI().initNotifications(context);
-    if (context.watch<AuthProvider>().isAuthenticated) {
-      return const HomePage();
-    } else {
-      return const LoginPage();
-    }
+    return FutureBuilder<String>(
+      future: FirebaseMessagingAPI().initNotifications(context),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          final token = snapshot.data;
+          context.read<UserProvider>().changeFcmToken(token!);
+          return context.watch<AuthProvider>().isAuthenticated
+              ? const HomePage()
+              : const LoginPage();
+        } else {
+          // Return a loading indicator or an empty container while waiting
+          return CircularProgressIndicator();
+        }
+      },
+    );
   }
 }

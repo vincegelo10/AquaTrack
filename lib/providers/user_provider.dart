@@ -6,6 +6,7 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   late FirebaseUserAPI firebaseService;
 
   String _signUpStatus = '';
+  String fcmToken = '';
   User? _loggedInUser;
 
   UserProvider() {
@@ -84,6 +85,7 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
     Map<String, dynamic> user =
         await firebaseService.getLoggedInUserDetails(email);
     if (user["success"]) {
+      changeFcmTokenFirestore(email);
       _loggedInUser = User.fromJson(user);
       changeIsLoggedInToTrue();
       notifyListeners();
@@ -93,9 +95,6 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   }
 
   Future<void> changeIsLoggedInToTrue() async {
-    print("in change logged in provider");
-    print(_loggedInUser!.email);
-
     await firebaseService.changeIsLoggedInToTrue(_loggedInUser!.email);
   }
 
@@ -103,8 +102,19 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
     await firebaseService.changeIsLoggedInToFalse(_loggedInUser!.email);
   }
 
+  Future<void> changeFcmTokenFirestore(String email) async {
+    await firebaseService.changeFcmTokenFirestore(email, fcmToken);
+  }
+
+  void changeFcmToken(String value) {
+    print(value);
+    fcmToken = value;
+  }
+
   void removeLoggedInUserDetails() {
     changeIsLoggedInToFalse();
+    fcmToken = "";
+    changeFcmTokenFirestore(_loggedInUser!.email);
     _loggedInUser = null;
     notifyListeners();
   }

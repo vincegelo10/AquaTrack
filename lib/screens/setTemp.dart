@@ -128,7 +128,7 @@ class _SetTempPageState extends State<SetTempPage> {
                   .read<UserProvider>()
                   .addTemp(args.email, lowerTemp!, upperTemp!, false);
             }
-            context.read<UserProvider>().getLoggedInUserDetails(args.email);
+
             Navigator.pushNamed(context, '/setDissolvedOxygenPage',
                 arguments: UserScreenArguments(args.email));
           }

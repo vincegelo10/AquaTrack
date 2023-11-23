@@ -1,4 +1,3 @@
-
 class User {
   late String email;
   late String firstName;
@@ -19,6 +18,8 @@ class User {
 
   late bool isLoggedIn;
 
+  late String fcmToken;
+
   User(
       {required this.email,
       required this.firstName,
@@ -32,7 +33,8 @@ class User {
       required this.inFahrenheit,
       required this.lowerDO,
       required this.upperDO,
-      required this.isLoggedIn});
+      required this.isLoggedIn,
+      required this.fcmToken});
 
   // Factory constructor to instantiate object from json format
   factory User.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class User {
         inFahrenheit: json['inFahrenheit'],
         lowerDO: json['lowerDO'],
         upperDO: json['upperDO'],
-        isLoggedIn: json['isLoggedIn']);
+        isLoggedIn: json['isLoggedIn'],
+        fcmToken: json["fcmToken"]);
   }
 }

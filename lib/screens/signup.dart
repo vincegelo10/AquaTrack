@@ -162,7 +162,8 @@ class _SignupPageState extends State<SignupPage> {
                 inFahrenheit: false,
                 lowerDO: 0,
                 upperDO: 0,
-                isLoggedIn: false);
+                isLoggedIn: false,
+                fcmToken: "");
             bool success = await context.read<AuthProvider>().signUp(
                 emailValue!,
                 passwordValue!,
