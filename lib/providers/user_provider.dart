@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:week7_networking_discussion/api/firebase_user_api.dart';
 import 'package:week7_networking_discussion/models/user_model.dart';
+import 'package:week7_networking_discussion/screens/file_storage.dart';
 
 class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   late FirebaseUserAPI firebaseService;
@@ -25,11 +26,18 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   Future<void> initializeFromFirestore() async {
     print("initializing data from firestore");
     try {
-      Map<String, dynamic> user = await firebaseService.findLoggedInUser();
-
-      if (user["success"]) {
-        _loggedInUser = User.fromJson(user);
-        notifyListeners();
+      FileStorage fileHandler = FileStorage("fcmtoken.txt");
+      List<String>? fileContents = await fileHandler.readFile();
+      if (fileContents != null && fileContents.isNotEmpty) {
+        String token = fileContents[0];
+        Map<String, dynamic> user =
+            await firebaseService.findLoggedInUserWithSpecificFCMToken(token);
+        if (user["success"]) {
+          _loggedInUser = User.fromJson(user);
+          notifyListeners();
+        }
+      } else {
+        print("Error reading file or file is empty.");
       }
     } catch (e) {
       print("Error initializing from Firestore: $e");
@@ -84,10 +92,13 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   Future<void> getLoggedInUserDetails(String email) async {
     Map<String, dynamic> user =
         await firebaseService.getLoggedInUserDetails(email);
+    FileStorage fileHandler = FileStorage("fcmtoken.txt");
     if (user["success"]) {
       changeFcmTokenFirestore(email);
       _loggedInUser = User.fromJson(user);
       changeIsLoggedInToTrue();
+      //write data for persistence
+      fileHandler.writeString("$fcmToken\n");
       notifyListeners();
     } else {
       print("the credentials are invalid");
@@ -111,7 +122,9 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
     fcmToken = value;
   }
 
-  void removeLoggedInUserDetails() {
+  void removeLoggedInUserDetails() async {
+    FileStorage fileHandler = FileStorage("fcmtoken.txt");
+    await fileHandler.clearFile();
     changeIsLoggedInToFalse();
     fcmToken = "";
     changeFcmTokenFirestore(_loggedInUser!.email);

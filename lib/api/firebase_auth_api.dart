@@ -17,6 +17,7 @@ class FirebaseAuthAPI {
     try {
       final credential = await auth.signInWithEmailAndPassword(
           email: email, password: password);
+
       return '';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -31,40 +32,6 @@ class FirebaseAuthAPI {
     }
   }
 
-  // Future<String> signUp(
-  //     String email,
-  //     String password,
-  //     String firstName,
-  //     String lastName,
-  //     String dateCreated,
-  //     double lowerPH,
-  //     double upperPH,
-  //     double lowerTemp,
-  //     double upperTemp) async {
-  //   UserCredential credential;
-  //   try {
-  //     credential = await auth.createUserWithEmailAndPassword(
-  //       email: email,
-  //       password: password,
-  //     );
-  //     if (credential.user != null) {
-  //       saveUserToFirestore(credential.user?.uid, email, firstName, lastName,
-  //           dateCreated, lowerPH, upperPH, lowerTemp, upperTemp);
-  //     }
-  //     return '';
-  //   } on FirebaseAuthException catch (e) {
-  //     //possible to return something more useful
-  //     //than just print an error message to improve UI/UX
-  //     if (e.code == 'weak-password') {
-  //       return 'The password provided is too weak.';
-  //     } else if (e.code == 'email-already-in-use') {
-  //       return 'The account already exists for that email.';
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   return '';
-  // }
   Future<String> signUp(
     String email,
     String password,

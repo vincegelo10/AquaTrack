@@ -108,12 +108,16 @@ class FirebaseUserAPI {
             });
   }
 
-  Future<Map<String, dynamic>> findLoggedInUser() async {
+  Future<Map<String, dynamic>> findLoggedInUserWithSpecificFCMToken(
+      String token) async {
+    print("in the API");
+    print("the token in the file is $token");
     Map<String, dynamic> user;
     try {
       var querySnapshot = await db
           .collection("users")
           .where('isLoggedIn', isEqualTo: true)
+          .where('fcmToken', isEqualTo: token)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
