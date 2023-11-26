@@ -90,11 +90,12 @@ class UserProvider with ChangeNotifier, WidgetsBindingObserver {
   }
 
   Future<void> getLoggedInUserDetails(String email) async {
+    FileStorage fileHandler = FileStorage("fcmtoken.txt");
     Map<String, dynamic> user =
         await firebaseService.getLoggedInUserDetails(email);
-    FileStorage fileHandler = FileStorage("fcmtoken.txt");
     if (user["success"]) {
-      changeFcmTokenFirestore(email);
+      await changeFcmTokenFirestore(email);
+      user = await firebaseService.getLoggedInUserDetails(email);
       _loggedInUser = User.fromJson(user);
       changeIsLoggedInToTrue();
       //write data for persistence
